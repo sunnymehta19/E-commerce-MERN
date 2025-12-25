@@ -2,16 +2,16 @@ const express = require('express');
 const app = express()
 const PORT = process.env.PORT || 3000
 
-const mongoose = require("mongoose");
+require("dotenv").config();
+const database = require("./config/mongooseConnection");
+
+const authRouter = require("./routes/auth/authRouter");
+
 const cookieParser = require("cookie-parser");
+app.use(cookieParser());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 const cors = require("cors");
-
-
-
-mongoose.connect("mongodb+srv://sunnymehta:sunnymehta19@cluster0.at9buvj.mongodb.net/")
-    .then(() => console.log("MongoDB Connected"))
-    .catch((err) => console.log(err))
-
 
 app.use(
     cors({
@@ -28,8 +28,7 @@ app.use(
     })
 )
 
-app.use(cookieParser());
-app.use(express.json());
+app.use("/api/auth", authRouter);
 
 
 

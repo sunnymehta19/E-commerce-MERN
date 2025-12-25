@@ -54,6 +54,7 @@ const Login = () => {
           <input
             type="email"
             placeholder="Enter Email"
+            name="email"
             {...register("email", {
               required: "Email is required",
               pattern: {
@@ -81,6 +82,7 @@ const Login = () => {
             <input
               type={showPassword ? "text" : "password"}
               placeholder="Enter Password"
+              name="password"
               {...register("password", {
                 required: "Password is required",
                 minLength: {

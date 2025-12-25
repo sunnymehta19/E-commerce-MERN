@@ -15,7 +15,6 @@ const Register = () => {
   const onSubmit = async (data) => {
     setLoading(true);
 
-    // simulate API call
     setTimeout(() => {
       console.log("Register Data:", data);
       setLoading(false);
@@ -24,12 +23,11 @@ const Register = () => {
 
   return (
     <div className="w-full max-w-sm sm:max-w-md mx-auto">
-      {/* Header */}
       <div className="text-center mb-6">
         <h2 className="text-2xl sm:text-3xl font-bold tracking-tight pb-2">
           Create account
         </h2>
-        
+
       </div>
 
       {/* Form */}
@@ -52,6 +50,7 @@ const Register = () => {
           <input
             type="text"
             placeholder="Enter Name"
+            name="username"
             {...register("name", { required: "Name is required" })}
             className="mt-1 w-full rounded-lg bg-gray-100 px-3 py-2 text-sm 
               focus:ring-black"
@@ -63,30 +62,6 @@ const Register = () => {
           )}
         </div>
 
-        {/* Email */}
-        <div>
-          <label className="text-sm font-medium text-gray-700">
-            Email Address
-          </label>
-          <input
-            type="email"
-            placeholder="Enter Email"
-            {...register("email", {
-              required: "Email is required",
-              pattern: {
-                value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                message: "Enter a valid email address",
-              },
-            })}
-            className="mt-1 w-full rounded-lg bg-gray-100 px-3 py-2 text-sm
-               focus:ring-black"
-          />
-          {errors.email && (
-            <p className="text-red-500 text-xs mt-1">
-              {errors.email.message}
-            </p>
-          )}
-        </div>
 
         {/* Mobile */}
         <div>
@@ -95,7 +70,8 @@ const Register = () => {
           </label>
           <input
             type="tel"
-            placeholder="Enter Mobile Number "
+            placeholder="Enter Mobile Number"
+            name="mobilenumber"
             {...register("mobile", {
               required: "Mobile number is required",
               minLength: {
@@ -113,16 +89,44 @@ const Register = () => {
           )}
         </div>
 
-        {/* Password + Show/Hide */}
+
+        {/* Email */}
+        <div>
+          <label className="text-sm font-medium text-gray-700">
+            Email Address
+          </label>
+          <input
+            type="email"
+            placeholder="Enter Email"
+            name="email"
+            {...register("email", {
+              required: "Email is required",
+              pattern: {
+                value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                message: "Enter a valid email address",
+              },
+            })}
+            className="mt-1 w-full rounded-lg bg-gray-100 px-3 py-2 text-sm
+               focus:ring-black"
+          />
+          {errors.email && (
+            <p className="text-red-500 text-xs mt-1">
+              {errors.email.message}
+            </p>
+          )}
+        </div>
+
+
+        {/* Password */}
         <div>
           <label className="text-sm font-medium text-gray-700">
             Password
           </label>
-
           <div className="relative">
             <input
               type={showPassword ? "text" : "password"}
               placeholder="Enter Password"
+              name="password"
               {...register("password", {
                 required: "Password is required",
                 minLength: {
@@ -163,10 +167,9 @@ const Register = () => {
           {loading ? "Creating account..." : "Create Account"}
         </button>
 
-        {/* Footer */}
         <p className="text-center text-xs text-gray-500">
           Already have an account?{" "}
-          
+
           <Link
             to="/auth/login"
             className="text-black font-medium hover:underline"
