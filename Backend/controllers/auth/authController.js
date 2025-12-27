@@ -1,6 +1,5 @@
 const bcrypt = require("bcrypt");
 const userModel = require('../../models/user');
-const user = require("../../models/user");
 
 
 //Register
@@ -15,7 +14,7 @@ const registerUser = async (req, res) => {
 
         const saltRounds = 12;
         const hashedPassword = await bcrypt.hash(password, saltRounds);
-        console.log(hashedPassword);
+        // console.log(hashedPassword);
         let newUser = await userModel.create({
             username,
             mobilenumber,

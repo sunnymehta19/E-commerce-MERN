@@ -1,6 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch } from 'react-redux'
+import { registerUser } from "../../store/slices/authSlice";
 
 const Register = () => {
   const {
@@ -12,14 +14,25 @@ const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const onSubmit = async (data) => {
-    setLoading(true);
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
 
-    setTimeout(() => {
-      console.log("Register Data:", data);
-      setLoading(false);
-    }, 1500);
+
+  const onSubmit = async (data) => {
+    dispatch(registerUser(data))
+      .unwrap()
+      .then((data) => {
+        if (data?.success) navigate("/auth/login")
+
+      })
+      .catch((err) => {
+        console.log("Registration failed", err)
+
+      })
+
+    console.log("Register Data:", data);
   };
+
 
   return (
     <div className="w-full max-w-sm sm:max-w-md mx-auto">
@@ -51,8 +64,8 @@ const Register = () => {
             type="text"
             placeholder="Enter Name"
             name="username"
-            {...register("name", { required: "Name is required" })}
-            className="mt-1 w-full rounded-lg bg-gray-100 px-3 py-2 text-sm 
+            {...register("username", { required: "Name is required" })}
+            className="mt-1 w-full capitalize rounded-lg bg-gray-100 px-3 py-2 text-sm 
               focus:ring-black"
           />
           {errors.name && (
@@ -72,7 +85,7 @@ const Register = () => {
             type="tel"
             placeholder="Enter Mobile Number"
             name="mobilenumber"
-            {...register("mobile", {
+            {...register("mobilenumber", {
               required: "Mobile number is required",
               minLength: {
                 value: 10,
@@ -130,8 +143,8 @@ const Register = () => {
               {...register("password", {
                 required: "Password is required",
                 minLength: {
-                  value: 8,
-                  message: "Minimum 8 characters",
+                  value: 6,
+                  message: "Minimum 6 characters",
                 },
               })}
               className="mt-1 w-full rounded-lg  px-3 bg-gray-100 py-2 pr-10 text-sm
