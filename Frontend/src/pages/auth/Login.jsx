@@ -116,7 +116,7 @@ const Login = () => {
           disabled={loading}
           className="
             w-full rounded-lg bg-black text-white py-2.5
-            text-sm font-medium
+            text-sm font-medium cursor-pointer
             hover:bg-gray-900 transition
             disabled:opacity-60 disabled:cursor-not-allowed
           "

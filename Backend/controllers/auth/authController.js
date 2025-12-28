@@ -7,9 +7,9 @@ const registerUser = async (req, res) => {
     let { username, mobilenumber, email, password } = req.body;
 
     try {
-        let checkUser = await userModel.findOne({ email });
+        let checkUser = await userModel.findOne({ email: email });
         if (checkUser) {
-            return res.status(400).json({ message: "User already exists" });
+            return res.status(400).json({ message: "User already exists! Try Login" });
         }
 
         const saltRounds = 12;
@@ -25,7 +25,7 @@ const registerUser = async (req, res) => {
         await newUser.save();
         res.status(201).json({
             success: true,
-            message: "Account created successfully",
+            message: "Account created successfully! Please Login.",
         });
 
     } catch (err) {
