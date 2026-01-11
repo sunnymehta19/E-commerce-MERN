@@ -5,7 +5,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { registerUser } from "../../store/slices/authSlice";
 import { showToast } from "../../utils/toast";
 
-/* ---------- Spinner Component ---------- */
 const FormSpinner = () => (
   <div className="w-10 h-10 border-4 border-gray-300 border-t-black rounded-full animate-spin" />
 );
@@ -22,10 +21,8 @@ const Register = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // Redux loading state
   const { isLoading } = useSelector((state) => state.auth);
 
-  
 
   const onSubmit = async (data) => {
     try {
@@ -34,7 +31,7 @@ const Register = () => {
       showToast.success(response.message);
       if (response.success) navigate("/auth/login");
     } catch (err) {
-      showToast.error(err || "Registration failed");
+      showToast.error(err || "Registration failed!");
     }
   };
 

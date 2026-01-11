@@ -1,6 +1,15 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import { showToast } from "../../utils/toast";
+import { loginUser } from "../../store/slices/authSlice";
+
+const initialState = {
+  email: "",
+  password: ""
+}
+
 
 const Login = () => {
   const {
@@ -9,17 +18,22 @@ const Login = () => {
     formState: { errors },
   } = useForm();
 
+  const dispatch = useDispatch();
+  const navigate = useNavigate()
+  const { isLoading } = useSelector((state) => state.auth)
+
   const [showPassword, setShowPassword] = useState(false);
-  const [loading, setLoading] = useState(false);
 
-  const onSubmit = async (data) => {
-    setLoading(true);
+  const onSubmit = async (formData) => {
+    try {
+      const response = await dispatch(loginUser(formData)).unwrap()
+      showToast.success(response.message);
+      navigate("/shop");
 
-    // simulate API call
-    setTimeout(() => {
-      console.log("Login Data:", data);
-      setLoading(false);
-    }, 1500);
+    } catch (errorMessage) {
+      showToast.error(errorMessage)
+    }
+
   };
 
   return (
@@ -86,8 +100,8 @@ const Login = () => {
               {...register("password", {
                 required: "Password is required",
                 minLength: {
-                  value: 8,
-                  message: "Minimum 8 characters",
+                  value: 6,
+                  message: "Minimum 6 characters",
                 },
               })}
               className="mt-1 w-full rounded-lg bg-gray-100 px-3 py-2 pr-10 text-sm
@@ -113,7 +127,7 @@ const Login = () => {
         {/* Submit with Loading */}
         <button
           type="submit"
-          disabled={loading}
+          disabled={isLoading}
           className="
             w-full rounded-lg bg-black text-white py-2.5
             text-sm font-medium cursor-pointer
@@ -121,13 +135,13 @@ const Login = () => {
             disabled:opacity-60 disabled:cursor-not-allowed
           "
         >
-          {loading ? "Logging in..." : "Login"}
+          {isLoading ? "Logging in..." : "Login"}
         </button>
 
         {/* Footer */}
         <p className="text-center text-xs text-gray-500">
           Don’t have an account?{" "}
-          
+
           <Link
             to="/auth/register"
             className="text-black font-medium hover:underline"
