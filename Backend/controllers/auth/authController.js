@@ -68,7 +68,7 @@ const loginUser = async (req, res) => {
             { expiresIn: "60m" }
         );
 
-        res.cookie("token", token, { httpOnly: true, secure: false }).json({
+        res.cookie("token", token, { httpOnly: true, secure: false, path: "/" }).json({
             success: true,
             message: "Logged in successfully",
             user: {
@@ -91,13 +91,19 @@ const loginUser = async (req, res) => {
 
 //Logout
 const logOutUser = (req, res) => {
-    res.clearCookie("token").json({
+    res.clearCookie("token", {
+        httpOnly: true,
+        secure: false,
+        sameSite: "lax",
+        path: "/",
+    });
+
+    res.status(200).json({
         success: true,
-        message: "Logged Out successfully!"
+        message: "Logged out successfully",
+    });
+};
 
-    })
-
-}
 
 
 //Authentication Middleware
@@ -107,7 +113,7 @@ const authMiddleware = async (req, res, next) => {
         return res.status(401).json({
             success: false,
             message: "Unauthorised user!"
-        });      
+        });
     }
 
     try {
@@ -115,11 +121,11 @@ const authMiddleware = async (req, res, next) => {
         req.user = decoded;
         next();
     } catch (error) {
-        req.status(401).json({
+        res.status(401).json({
             success: false,
             message: "Unauthorised user!"
-        });      
-    }  
+        });
+    }
 }
 
 

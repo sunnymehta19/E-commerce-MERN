@@ -1,12 +1,12 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import axios from "axios";
+
 const initialState = {
     isAuthenticated: false,
     isLoading: true,
     user: null
 
 }
-
 
 //async thunk for registerUser
 export const registerUser = createAsyncThunk(
@@ -48,7 +48,25 @@ export const loginUser = createAsyncThunk(
 );
 
 
-//async thunk for loginUser
+//async thunk for logOutUser
+export const logOutUser = createAsyncThunk(
+    "/auth/logout",
+    async (_, thunkAPI) => {
+        try {
+            const response = await axios.post(
+                "http://localhost:3000/api/auth/logout",
+                {},
+                { withCredentials: true }
+            );
+            return response.data
+        } catch (error) {
+            return thunkAPI.rejectWithValue("Logout failed!")
+        }
+    }
+);
+
+
+//async thunk for check authenticate user
 export const checkAuth = createAsyncThunk(
     "/auth/checkauth",
     async (thunkAPI) => {
@@ -70,8 +88,6 @@ export const checkAuth = createAsyncThunk(
         }
     }
 );
-
-
 
 
 
@@ -112,6 +128,11 @@ const authSlice = createSlice({
             })
             .addCase(checkAuth.pending, (state) => {
                 state.isLoading = true;
+            })
+            .addCase(logOutUser.fulfilled, (state) => {
+                state.user = null;
+                state.isAuthenticated = false;
+                state.isLoading = false;
             })
             .addCase(checkAuth.fulfilled, (state, action) => {
                 state.isLoading = false;

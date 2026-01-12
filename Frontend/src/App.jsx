@@ -22,6 +22,7 @@ import ProtectedRoute from "./components/common/ProtectedRoute"
 import AdminRoute from "./components/common/AdminRoute"
 import { useDispatch, useSelector } from "react-redux"
 import { checkAuth } from "./store/slices/authSlice"
+import { Skeleton } from "./components/ui/skeleton"
 
 
 function App() {
@@ -32,7 +33,7 @@ function App() {
     dispatch(checkAuth());
   }, [dispatch])
 
-  if(isLoading) return <div>Loading...</div>
+  if(isLoading) return <Skeleton className="h-[20px] w-[100px] rounded-full" />
 
   return (
     <>
