@@ -29,7 +29,7 @@ const MenuItems = ({ setOpen }) => {
   const navigate = useNavigate();
   return (
     <>
-      <nav className="mt-5 flex-col flex gap-2">
+      <nav className="md:mt-8 mt-5 flex-col flex gap-2">
         {adminSidebarMenu.map((menuItem) => (
           <div
             key={menuItem.id}
