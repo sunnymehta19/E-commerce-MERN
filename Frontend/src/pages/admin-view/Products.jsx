@@ -54,7 +54,7 @@ const AdminProducts = () => {
   return (
     <>
       <Fragment>
-        <div className="mt-5 flex w-full justify-end">
+        <div className="mt-3 flex w-full justify-end">
           <Button className="cursor-pointer" onClick={() => { setCreateProductDialog(true) }} >
             Add New Product
           </Button>
@@ -85,6 +85,7 @@ const AdminProducts = () => {
                     setImageFile={setImageFile}
                     uploadImageUrl={uploadImageUrl}
                     setUploadImageUrl={setUploadImageUrl}
+                    setImageLoadingState={setImageLoadingState}
 
                     />
                     {/* Title */}
