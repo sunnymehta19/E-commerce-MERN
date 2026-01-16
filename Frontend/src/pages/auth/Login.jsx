@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { showToast } from "../../utils/toast";
-import { loginUser } from "../../store/slices/authSlice";
+import { loginUser } from "../../store/auth-slice/authSlice";
 
 const initialState = {
   email: "",

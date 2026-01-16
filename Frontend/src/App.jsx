@@ -21,7 +21,7 @@ import ShoppingListing from './pages/shopping-view/Listing'
 import ProtectedRoute from "./components/common/ProtectedRoute"
 import AdminRoute from "./components/common/AdminRoute"
 import { useDispatch, useSelector } from "react-redux"
-import { checkAuth } from "./store/slices/authSlice"
+import { checkAuth } from "./store/auth-slice/authSlice"
 import { Skeleton } from "./components/ui/skeleton"
 
 

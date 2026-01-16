@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { registerUser } from "../../store/slices/authSlice";
+import { registerUser } from "../../store/auth-slice/authSlice";
 import { showToast } from "../../utils/toast";
 
 const FormSpinner = () => (

@@ -1,7 +1,7 @@
 import React from 'react'
 import { AlignJustify, LogOut } from "lucide-react"
 import { useDispatch } from 'react-redux'
-import { logOutUser } from '../../store/slices/authSlice'
+import { logOutUser } from '../../store/auth-slice/authSlice'
 import { Button } from '../ui/button'
 
 const AdminHeader = ({ setOpen }) => {

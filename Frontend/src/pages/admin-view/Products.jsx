@@ -1,33 +1,18 @@
 import { Button } from '@/components/ui/button'
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet'
-import React, { Fragment, useState } from 'react'
+import React, { Fragment, useState, useEffect } from 'react'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { useForm } from "react-hook-form"
 import ProductImageUpload from '@/components/admin-view/ProductImageUpload'
+import { useDispatch, useSelector } from 'react-redux'
+import { addNewProduct, editProduct, fetchAllProduct } from '@/store/admin-slice/productSlice'
 
-// const initialFormData = {
-//   image: null,
-//   title: "",
-//   description: "",
-//   category: "",
-//   brand: "",
-//   price: "",
-//   salePrice: "",
-//   totalStock: "",
-//   averageReview: 0,
-// }
+
 
 const AdminProducts = () => {
-
-  const [createProductDialog, setCreateProductDialog] = useState(false);
-  const [imageFile, setImageFile] = useState(null);
-  const [uploadImageUrl, setUploadImageUrl] = useState("");
-  const [imageLoadingState, setImageLoadingState] = useState(false);
-
-
 
   const form = useForm({
     defaultValues: {
@@ -43,12 +28,38 @@ const AdminProducts = () => {
     },
   })
 
+  const [createProductDialog, setCreateProductDialog] = useState(false);
+  const [imageFile, setImageFile] = useState(null);
+  const [uploadImageUrl, setUploadImageUrl] = useState("");
+  const [imageLoadingState, setImageLoadingState] = useState(false);
+
+  const dispatch = useDispatch();
+  const { productList } = useSelector((state) => state.adminProducts);
+
 
   const onSubmit = (data) => {
-    console.log("Product Data:", data);
-    setCreateProductDialog(false);
-    form.reset()
+
+    dispatch(
+      addNewProduct({
+        ...data,
+        image: uploadImageUrl,
+      })
+    ).then((data) => {
+      if (data?.payload?.success) {
+        dispatch(fetchAllProduct());
+
+        setCreateProductDialog(false);
+        setUploadImageUrl("")
+        setImageFile(null);
+        form.reset();
+
+      }
+    });
   }
+
+  useEffect(() => {
+    dispatch(fetchAllProduct());
+  }, [dispatch]);
 
 
   return (
@@ -68,24 +79,25 @@ const AdminProducts = () => {
             }}
           >
             <SheetContent side='right' className='overflow-auto'>
-              <SheetHeader  className="pb-2 space-y-1">
+              <SheetHeader className="pb-2 space-y-1">
                 <SheetTitle className='md:text-xl text-xl'>
                   Add New Product
                 </SheetTitle>
               </SheetHeader>
-              
+
               <div className=" py-2 px-4">
                 <Form {...form}>
                   <form
                     onSubmit={form.handleSubmit(onSubmit)}
                     className='space-y-4'
                   >
-                    <ProductImageUpload 
-                    imageFile={imageFile}
-                    setImageFile={setImageFile}
-                    uploadImageUrl={uploadImageUrl}
-                    setUploadImageUrl={setUploadImageUrl}
-                    setImageLoadingState={setImageLoadingState}
+                    <ProductImageUpload
+                      imageFile={imageFile}
+                      setImageFile={setImageFile}
+                      uploadImageUrl={uploadImageUrl}
+                      setUploadImageUrl={setUploadImageUrl}
+                      setImageLoadingState={setImageLoadingState}
+                      imageLoadingState={imageLoadingState}
 
                     />
                     {/* Title */}
@@ -130,7 +142,7 @@ const AdminProducts = () => {
                           <FormLabel>Category</FormLabel>
                           <Select
                             onValueChange={field.onChange}
-                            field={field.value}
+                            value={field.value}
                           >
                             <FormControl>
                               <SelectTrigger className='w-full'>

@@ -4,6 +4,7 @@ import { Input } from '../ui/input';
 import { FileIcon, UploadCloudIcon, XIcon } from 'lucide-react';
 import { Button } from '../ui/button';
 import axios from 'axios';
+import { Skeleton } from '../ui/skeleton';
 
 const ProductImageUpload = ({ imageFile,
   setImageFile,
@@ -52,7 +53,7 @@ const ProductImageUpload = ({ imageFile,
       setUploadImageUrl(response.data.result.url);
       setImageLoadingState(false);
     }
-    
+
   }
 
 
@@ -87,23 +88,26 @@ const ProductImageUpload = ({ imageFile,
               <UploadCloudIcon className="w-10 h-10 text-muted-foreground mb-2" />
               <span className='text-xs md:text-base'>Drag & drop or click to upload image</span>
             </Label>
-          ) : <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <FileIcon className='w-8 text-primary mr-2 h-8' />
+          ) : imageLoadingState ? (
+            <Skeleton className="h-10 bg-gray-100" />
+          ) : (
+            < div className="flex items-center justify-between">
+              <div className="flex items-center">
+                <FileIcon className='w-8 text-primary mr-2 h-8' />
+              </div>
+              <p className="text-sm font-medium">{imageFile.name}</p>
+              <Button
+                variant='ghost'
+                size='icon'
+                className="text-muted-foreground hover:text-foreground cursor-pointer"
+                onClick={handleRemoveImage}
+              >
+                <XIcon className='w-4 h-4 ' />
+                <span className="sr-only">Remove File</span>
+              </Button>
             </div>
-            <p className="text-sm font-medium">{imageFile.name}</p>
-            <Button
-              variant='ghost'
-              size='icon'
-              className="text-muted-foreground hover:text-foreground cursor-pointer"
-              onClick={handleRemoveImage}
-            >
-              <XIcon className='w-4 h-4 ' />
-              <span className="sr-only">Remove File</span>
-            </Button>
-          </div>
-        }
-      </div>
+          )}
+      </div >
     </>
   )
 }
