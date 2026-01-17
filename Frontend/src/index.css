@@ -2,6 +2,7 @@
 @import "tw-animate-css";
 
 @layer utilities {
+
   .no-spinner::-webkit-inner-spin-button,
   .no-spinner::-webkit-outer-spin-button {
     -webkit-appearance: none;
@@ -11,6 +12,28 @@
   .no-spinner {
     -moz-appearance: textfield;
   }
+}
+
+
+/* hide scrollbar but allow scroll */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* word selection backgroundcolor black */
+::selection {
+  background-color: black;
+  color: white;
+}
+
+::-moz-selection {
+  background-color: black;
+  color: white;
 }
 
 @custom-variant dark (&:is(.dark *));
@@ -129,6 +152,7 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
   }

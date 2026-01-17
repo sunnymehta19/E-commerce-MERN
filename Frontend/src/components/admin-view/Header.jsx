@@ -14,10 +14,15 @@ const AdminHeader = ({ setOpen }) => {
 
   return (
     <header className="flex items-center justify-between px-4 py-3 bg-background border-b">
-      <button onClick={() => setOpen(true)} className="text-black lg:hidden sm:block">
-        <AlignJustify />
-        <span className="sr-only">Toggle Menu</span>
-      </button>
+      <div className="flex items-center gap-2 lg:hidden">
+        <button onClick={() => setOpen(true)} className="text-black lg:hidden sm:block">
+          <AlignJustify />
+          <span className="sr-only">Toggle Menu</span>
+        </button>
+        {/* <span className="text-lg font-bold">TownStore</span> */}
+        
+      </div>
+
       <div className="flex flex-1 justify-end">
         <Button
           onClick={handleLogout}

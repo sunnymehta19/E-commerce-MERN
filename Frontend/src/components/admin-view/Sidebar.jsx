@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '../ui/sheet';
 import { ChartNoAxesCombined, LayoutDashboard, ShoppingBasket, Truck } from 'lucide-react';
 
@@ -27,22 +27,33 @@ const adminSidebarMenu = [
 
 const MenuItems = ({ setOpen }) => {
   const navigate = useNavigate();
+  const location = useLocation();
+
   return (
     <>
       <nav className="md:mt-8 mt-5 flex-col flex gap-2">
-        {adminSidebarMenu.map((menuItem) => (
-          <div
-            key={menuItem.id}
-            onClick={() => {
-              navigate(menuItem.path);
-              setOpen ? setOpen(false) : null;
-            }}
-            className="flex cursor-pointer text-xl items-center gap-2 rounded-md px-3 py-2 text-muted-foreground hover:bg-muted hover:text-foreground"
-          >
-            {menuItem.icon}
-            <span>{menuItem.label}</span>
-          </div>
-        ))}
+        {adminSidebarMenu.map((menuItem) => {
+          const isActive = location.pathname === menuItem.path;
+          return (
+            <div
+              key={menuItem.id}
+              onClick={() => {
+                navigate(menuItem.path);
+                setOpen ? setOpen(false) : null;
+              }}
+              className={`
+              flex cursor-pointer text-xl items-center gap-2 rounded-md px-3 py-2
+              ${isActive
+                  ? "bg-gray-200 text-foreground font-semibold  md:rounded-lg mx-2 md:mx-0"
+                  : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                }
+            `}
+            >
+              {menuItem.icon}
+              <span>{menuItem.label}</span>
+            </div>
+          );
+        })}
       </nav>
     </>
   );
@@ -71,11 +82,11 @@ const AdminSidebar = ({ open, setOpen }) => {
         <aside className='hidden w-64 flex-col border-r bg-background p-6 lg:flex'>
           <div
             onClick={() => { navigate("/admin/dashboard") }}
-            className="flex cursor-pointer items-center gap-2">
+            className="flex cursor-pointer items-center gap-2 ">
             <ChartNoAxesCombined size={30} />
             <div className="text-2xl font-extrabold">Admin Panel</div>
           </div>
-          <MenuItems />
+          <MenuItems className="" />
         </aside>
       </Fragment>
     </>
