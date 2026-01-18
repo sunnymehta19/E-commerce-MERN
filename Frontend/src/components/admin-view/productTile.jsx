@@ -1,8 +1,15 @@
 import React from 'react'
 import { Card, CardContent, CardFooter } from '../ui/card'
+import { AlertDialog, AlertDialogTrigger, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogFooter, AlertDialogCancel, AlertDialogAction } from "../ui/alert-dialog";
 import { Button } from '../ui/button'
 
-const AdminProductTile = ({ product, setCreateProductDialog }) => {
+const AdminProductTile = ({
+    product,
+    setCreateProductDialog,
+    setCurrentEditedId,
+    setSelectedProduct,
+    handleDelete,
+}) => {
     return (
         <>
             <Card className="w-full max-w-sm mx-auto p-0 ">
@@ -11,7 +18,7 @@ const AdminProductTile = ({ product, setCreateProductDialog }) => {
                         <img
                             src={product?.image}
                             alt={product?.title}
-                            className='w-full h-[180px] md:h-[250px] object-center rounded-t-lg'
+                            className='w-full h-[180px] md:h-[220px] object-center rounded-t-lg'
                         />
                     </div>
                     <div>
@@ -31,14 +38,44 @@ const AdminProductTile = ({ product, setCreateProductDialog }) => {
                         </CardContent>
                         <CardFooter className="flex justify-between items-center pb-3 px-3">
                             <Button
+                                className="cursor-pointer"
                                 onClick={() => {
                                     setCreateProductDialog(true);
-
+                                    setCurrentEditedId(product._id);
+                                    setSelectedProduct(product);
                                 }}
                             >
                                 Edit
                             </Button>
-                            <Button>Delete</Button>
+                            <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                    <Button  className="cursor-pointer">
+                                        Delete
+                                    </Button>
+                                </AlertDialogTrigger>
+
+                                <AlertDialogContent>
+                                    <AlertDialogHeader>
+                                        <AlertDialogTitle>
+                                            Are you absolutely sure?
+                                        </AlertDialogTitle>
+                                        <AlertDialogDescription>
+                                            This action cannot be undone. This will permanently delete
+                                            this product.
+                                        </AlertDialogDescription>
+                                    </AlertDialogHeader>
+
+                                    <AlertDialogFooter>
+                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                        <AlertDialogAction
+                                            onClick={() => handleDelete(product._id)}
+                                        >
+                                            Yes, Delete
+                                        </AlertDialogAction>
+                                    </AlertDialogFooter>
+                                </AlertDialogContent>
+                            </AlertDialog>
+
                         </CardFooter>
                     </div>
                 </div>

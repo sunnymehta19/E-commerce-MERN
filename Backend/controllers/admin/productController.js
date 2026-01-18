@@ -72,7 +72,7 @@ const editProduct = async (req, res) => {
         const { id } = req.params;
         const { image, title, description, category, brand, price, salePrice, totalStock } = req.body;
 
-        let findProduct = await productModel.findById({ id })
+        let findProduct = await productModel.findById( id );
         if (!findProduct) return res.status(404).json({
             success: false,
             message: "Product not found"
@@ -107,7 +107,7 @@ const editProduct = async (req, res) => {
 const deleteProduct = async (req, res) => {
     try {
         const { id } = req.params;
-        const product = await productModel.findByIdAndDelete({ id });
+        const product = await productModel.findByIdAndDelete( id );
 
         if (!product) return res.status(404).json({
             success: false,

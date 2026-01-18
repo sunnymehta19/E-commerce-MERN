@@ -36,6 +36,8 @@
   color: white;
 }
 
+
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
@@ -157,3 +159,25 @@
     @apply bg-background text-foreground;
   }
 }
+
+
+/* Desktop */
+.Toastify__toast-container--top-right {
+  top: 0.75rem;
+}
+
+/* Mobile */
+@media (max-width: 640px) {
+  .Toastify__toast-container--top-right {
+    top: 4rem !important;
+    width: 70vw !important;
+    right: 0.85rem !important;   /* 👈 anchor to right */
+    left: auto !important;       /* 👈 prevent left push */
+  }
+
+  .Toastify__toast {
+    font-size: 0.85rem;
+  }
+}
+
+

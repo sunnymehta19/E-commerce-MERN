@@ -8,32 +8,38 @@ import { Textarea } from "@/components/ui/textarea"
 import { useForm } from "react-hook-form"
 import ProductImageUpload from '@/components/admin-view/ProductImageUpload'
 import { useDispatch, useSelector } from 'react-redux'
-import { addNewProduct, editProduct, fetchAllProduct } from '@/store/admin-slice/productSlice'
+import { addNewProduct, deleteProduct, editProduct, fetchAllProduct } from '@/store/admin-slice/productSlice'
 import { showToast } from '@/utils/toast'
 import AdminProductTile from '@/components/admin-view/productTile'
+import { ChartNoAxesColumnDecreasing } from 'lucide-react'
 
-
+const initialFormValues = {
+  title: "",
+  description: "",
+  category: "",
+  brand: "",
+  price: "",
+  salePrice: "",
+  totalStock: "",
+  averageReview: 0,
+  customCategory: "",
+  customBrand: "",
+};
 
 const AdminProducts = () => {
 
   const form = useForm({
-    defaultValues: {
-      image: null,
-      title: "",
-      description: "",
-      category: "",
-      brand: "",
-      price: "",
-      salePrice: "",
-      totalStock: "",
-      averageReview: 0,
-    },
+    defaultValues: initialFormValues,
   })
+
+
 
   const [createProductDialog, setCreateProductDialog] = useState(false);
   const [imageFile, setImageFile] = useState(null);
   const [uploadImageUrl, setUploadImageUrl] = useState("");
   const [imageLoadingState, setImageLoadingState] = useState(false);
+  const [currentEditedId, setCurrentEditedId] = useState(null)
+  const [selectedProduct, setSelectedProduct] = useState(null)
   const [isCustomCategory, setIsCustomCategory] = useState(false);
   const [isCustomBrand, setIsCustomBrand] = useState(false);
 
@@ -41,38 +47,86 @@ const AdminProducts = () => {
   const { productList } = useSelector((state) => state.adminProducts);
 
 
+  //Editing Product
+  useEffect(() => {
+    if (!selectedProduct) return;
+
+    form.reset({
+      title: selectedProduct.title,
+      description: selectedProduct.description,
+      category: selectedProduct.category,
+      brand: selectedProduct.brand,
+      price: selectedProduct.price,
+      salePrice: selectedProduct.salePrice,
+      totalStock: selectedProduct.totalStock,
+    });
+
+  }, [selectedProduct, form])
+
+  //Fetching Product
+  useEffect(() => {
+    dispatch(fetchAllProduct());
+  }, [dispatch]);
+
+
   const onSubmit = (data) => {
     const finalData = {
       ...data,
       category: data.category === "other" ? data.customCategory : data.category,
       brand: data.brand === "other" ? data.customBrand : data.brand,
+      image: uploadImageUrl || selectedProduct?.image,
     };
 
 
-    dispatch(
-      addNewProduct({
-        ...finalData,
-        image: uploadImageUrl,
+    currentEditedId !== null
+      ? dispatch(
+        editProduct({
+          id: currentEditedId,
+          formData: finalData,
+        })
+      ).then((data) => {
+        if (data?.payload?.success) {
+          dispatch(fetchAllProduct());
+          showToast.success("Product updated successfully");
+          setCreateProductDialog(false);
+          form.reset(initialFormValues);
+          setCurrentEditedId(null)
+        }
       })
-    ).then((data) => {
+      : dispatch(
+        addNewProduct({
+          ...finalData,
+          image: uploadImageUrl,
+        })
+      ).then((data) => {
+        if (data?.payload?.success) {
+          dispatch(fetchAllProduct());
+
+          showToast.success("Product added successfully.");
+          setCreateProductDialog(false);
+          setUploadImageUrl("")
+          setImageFile(null);
+          setIsCustomCategory(false);
+          setIsCustomBrand(false);
+          form.reset();
+
+        }
+      });
+  }
+
+  const handleDelete = (getProductId) => {
+    dispatch(deleteProduct(getProductId)).then((data) => {
       if (data?.payload?.success) {
         dispatch(fetchAllProduct());
-
-        showToast.success("Product added successfully.");
-        setCreateProductDialog(false);
-        setUploadImageUrl("")
-        setImageFile(null);
-        setIsCustomCategory(false);
-        setIsCustomBrand(false);
-        form.reset();
-
+        showToast.success("Product deleted successfully.")
       }
     });
   }
 
-  useEffect(() => {
-    dispatch(fetchAllProduct());
-  }, [dispatch]);
+  
+ 
+
+
 
 
   return (
@@ -88,8 +142,11 @@ const AdminProducts = () => {
             ? productList.map((productItem) => (
               <AdminProductTile
                 key={productItem._id}
+                setCurrentEditedId={setCurrentEditedId}
                 setCreateProductDialog={setCreateProductDialog}
+                setSelectedProduct={setSelectedProduct}
                 product={productItem}
+                handleDelete={handleDelete}
 
               />
             )) : null}
@@ -97,14 +154,16 @@ const AdminProducts = () => {
         <Sheet
           open={createProductDialog}
           onOpenChange={() => {
-            setCreateProductDialog(false)
+            setCreateProductDialog(false);
+            setSelectedProduct(null);
+            form.reset(initialFormValues);
 
           }}
         >
           <SheetContent side='right' className='overflow-auto'>
             <SheetHeader className="pb-2 space-y-1">
               <SheetTitle className='md:text-xl text-xl'>
-                Add New Product
+                {currentEditedId !== null ? "Edit Product" : "Add New Product"}
               </SheetTitle>
             </SheetHeader>
 
@@ -121,6 +180,7 @@ const AdminProducts = () => {
                     setUploadImageUrl={setUploadImageUrl}
                     setImageLoadingState={setImageLoadingState}
                     imageLoadingState={imageLoadingState}
+                    isEditMode={currentEditedId !== null}
 
                   />
                   {/* Title */}
@@ -199,7 +259,7 @@ const AdminProducts = () => {
                             render={({ field }) => (
                               <FormItem className="">
                                 <FormControl>
-                                  <Input placeholder="Enter custom category" {...field} />
+                                  <Input placeholder="Enter category" {...field} />
                                 </FormControl>
                                 <FormMessage />
                               </FormItem>
@@ -257,7 +317,7 @@ const AdminProducts = () => {
                             render={({ field }) => (
                               <FormItem>
                                 <FormControl>
-                                  <Input placeholder="Enter custom brand" {...field} />
+                                  <Input placeholder="Enter brand name" {...field} />
                                 </FormControl>
 
                                 <FormMessage />
@@ -343,7 +403,9 @@ const AdminProducts = () => {
                     disabled={imageLoadingState}
                     className={`w-full ${imageLoadingState ? "cursor-not-allowed opacity-60" : "cursor-pointer"}`}
                   >
-                    {imageLoadingState ? "Uploading Image..." : "Add Product"}
+                    {/* {imageLoadingState ? "Uploading Image..." : "Add Product"} */}
+                    {currentEditedId !== null ? "Edit Product" : "Add New Product"}
+
                   </Button>
                 </form>
               </Form>

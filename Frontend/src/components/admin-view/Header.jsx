@@ -3,6 +3,8 @@ import { AlignJustify, LogOut } from "lucide-react"
 import { useDispatch } from 'react-redux'
 import { logOutUser } from '../../store/auth-slice/authSlice'
 import { Button } from '../ui/button'
+import { AlertDialog, AlertDialogTrigger, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogFooter, AlertDialogCancel, AlertDialogAction } from "../ui/alert-dialog";
+
 
 const AdminHeader = ({ setOpen }) => {
 
@@ -20,21 +22,41 @@ const AdminHeader = ({ setOpen }) => {
           <span className="sr-only">Toggle Menu</span>
         </button>
         {/* <span className="text-lg font-bold">TownStore</span> */}
-        
+
       </div>
 
       <div className="flex flex-1 justify-end">
-        <Button
-          onClick={handleLogout}
-          className="inline-flex gap-2 items-center rounded-md px-4 py-2 text-sm font-medium shadow cursor-pointer"
-        >
-          <LogOut />
-          Logout
-        </Button>
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button
+              className="inline-flex gap-2 items-center rounded-md px-4 py-2 text-sm font-medium shadow cursor-pointer"
+            >
+              <LogOut />
+              Logout
+            </Button>
+          </AlertDialogTrigger>
+
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>
+                Confirm Logout
+              </AlertDialogTitle>
+              <AlertDialogDescription>
+                Are you sure you want to logout from your account?
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction onClick={handleLogout}>
+                Yes, Logout
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+
       </div>
     </header>
-
-
   )
 }
 
