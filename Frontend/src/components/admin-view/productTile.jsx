@@ -14,16 +14,17 @@ const AdminProductTile = ({
         <>
             <Card className="w-full max-w-sm mx-auto p-0 ">
                 <div>
-                    <div className="relative">
+                    <div className="relative ">
                         <img
                             src={product?.image}
                             alt={product?.title}
-                            className='w-full h-[180px] md:h-[220px] object-center rounded-t-lg'
+                            className='w-full h-[240px] md:h-[280px] object-cover rounded-t-lg'
+                        // className='w-full h-[180px] md:h-[220px] object-center rounded-t-lg'
                         />
                     </div>
                     <div>
                         <CardContent className="px-3">
-                            <h2 className='text-base md:text-xl font-semibold mb-2 mt-2 overflow-x-scroll no-scrollbar whitespace-nowrap'>{product?.title}</h2>
+                            <h2 className='text-sm md:text-base font-semibold mb-1 mt-2 truncate '>{product?.title}</h2>
                             <div className="flex justify-between items-center mb-2">
                                 <span
                                     className={`${product?.salePrice > 0 ? "line-through" : ""
@@ -38,6 +39,7 @@ const AdminProductTile = ({
                         </CardContent>
                         <CardFooter className="flex justify-between items-center pb-3 px-3">
                             <Button
+                                size='sm'
                                 className="cursor-pointer"
                                 onClick={() => {
                                     setCreateProductDialog(true);
@@ -49,7 +51,9 @@ const AdminProductTile = ({
                             </Button>
                             <AlertDialog>
                                 <AlertDialogTrigger asChild>
-                                    <Button  className="cursor-pointer">
+                                    <Button
+                                        size='sm'
+                                        className="cursor-pointer">
                                         Delete
                                     </Button>
                                 </AlertDialogTrigger>

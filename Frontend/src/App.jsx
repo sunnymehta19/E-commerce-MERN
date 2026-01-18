@@ -33,7 +33,7 @@ function App() {
     dispatch(checkAuth());
   }, [dispatch])
 
-  if(isLoading) return <Skeleton className="h-[20px] w-[100px] rounded-full" />
+  if (isLoading) return <Skeleton className="h-[20px] w-[100px] rounded-full" />
 
   return (
     <>
@@ -45,22 +45,9 @@ function App() {
           <Route path='register' element={<Register />} />
         </Route>
 
-        {/* Admin routes */}
-        <Route
-          path='/admin'
-          element={
-            <AdminRoute isAuthenticated={isAuthenticated} user={user}>
-              <AdminLayout />
-            </AdminRoute>}>
-          <Route path='dashboard' element={<AdminDashboard />} />
-          <Route path='features' element={<AdminFeatures />} />
-          <Route path='orders' element={<AdminOrders />} />
-          <Route path='products' element={<AdminProducts />} />
-        </Route>
-
         {/* Shop routes */}
-        <Route path='/shop' element={<ShoppingLayout />}>
-          <Route path='home' element={<ShoppingHome />} />
+        <Route path='/' element={<ShoppingLayout />}>
+          <Route index element={<ShoppingHome />} />
           <Route path='listing' element={<ShoppingListing />} />
 
           <Route
@@ -76,6 +63,19 @@ function App() {
                 <ShoppingAccount />
               </ProtectedRoute>} />
 
+        </Route>
+
+        {/* Admin routes */}
+        <Route
+          path='/admin'
+          element={
+            <AdminRoute isAuthenticated={isAuthenticated} user={user}>
+              <AdminLayout />
+            </AdminRoute>}>
+          <Route path='dashboard' element={<AdminDashboard />} />
+          <Route path='features' element={<AdminFeatures />} />
+          <Route path='orders' element={<AdminOrders />} />
+          <Route path='products' element={<AdminProducts />} />
         </Route>
 
         {/* 404 routes */}
