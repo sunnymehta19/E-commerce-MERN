@@ -1,4 +1,4 @@
-import { ChartNoAxesCombined, HousePlug, LogOut, Menu, ShoppingCart, UserCog } from 'lucide-react'
+import { HousePlug, LogOut, Menu, ShoppingCart, UserCog } from 'lucide-react'
 import React from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { Sheet, SheetContent, SheetTrigger } from '../ui/sheet'
@@ -114,7 +114,7 @@ const HeaderRightContent = () => {
       {isAuthenticated ? (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Avatar className="bg-black">
+            <Avatar className="bg-black cursor-pointer">
               <AvatarFallback className="bg-black text-white font-extrabold">
                 {user?.username[0]?.toUpperCase()}
               </AvatarFallback>
@@ -178,7 +178,6 @@ const HeaderRightContent = () => {
 
 const ShoppingHeader = () => {
   const { isAuthenticated, user } = useSelector((state) => state.auth);
-  console.log(user, "username")
 
   return (
     <header className='sticky top-0 z-40 w-full border-b bg-background'>
