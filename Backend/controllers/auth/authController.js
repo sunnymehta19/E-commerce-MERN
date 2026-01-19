@@ -60,9 +60,9 @@ const loginUser = async (req, res) => {
 
         const token = jwt.sign({
             id: checkUser._id,
-            role: checkUser.role,
+            username: checkUser.username,
             email: checkUser.email,
-            role: checkUser.role
+            role: checkUser.role,
         },
             "CLIENT_SECRET_KEY",
             { expiresIn: "60m" }
@@ -73,9 +73,9 @@ const loginUser = async (req, res) => {
             message: "Logged in successfully",
             user: {
                 id: checkUser._id,
-                role: checkUser.role,
+                username: checkUser.username,
                 email: checkUser.email,
-                role: checkUser.role
+                role: checkUser.role,
             }
         });
     } catch (err) {

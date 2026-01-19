@@ -28,7 +28,7 @@ const Login = () => {
     try {
       const response = await dispatch(loginUser(formData)).unwrap()
       showToast.success(response.message);
-      navigate("/shop");
+      navigate("/");
 
     } catch (errorMessage) {
       showToast.error(errorMessage)
