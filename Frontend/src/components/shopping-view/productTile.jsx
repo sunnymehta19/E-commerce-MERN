@@ -5,7 +5,7 @@ import { Button } from '../ui/button'
 
 const ShoppingProductTile = ({ product }) => {
     return (
-        <Card className="w-full max-w-sm mx-auto" >
+        <Card className="w-full max-w-sm mx-auto p-0 h-fit" >
             <div className="">
                 <div className="relative">
                     <img
@@ -17,13 +17,13 @@ const ShoppingProductTile = ({ product }) => {
                         <Badge className="absolute top-2 left-2 bg-red-500 hover:bg-red-600">Sale</Badge>
                     ) : null}
                 </div>
-                <CardContent className="p-4">
-                    <h2 className="text-xl font-bold mb-2">{product?.title}</h2>
-                    <div className="flex justify-between items-center mb-2">
-                        <span className="text-[16px] text-muted-foreground">
+                <CardContent className="p-2">
+                    <h2 className="text-xl font-bold mb-0 capitalize">{product?.title}</h2>
+                    <div className="flex justify-between items-center mb-1">
+                        <span className="text-[16px] text-muted-foreground capitalize">
                             {product?.category}
                         </span>
-                        <span className="text-[16px] text-muted-foreground">
+                        <span className="text-[16px] text-muted-foreground capitalize">
                             {product?.brand}
                         </span>
                     </div>
@@ -31,16 +31,16 @@ const ShoppingProductTile = ({ product }) => {
                         <span
                             className={`${product?.salePrice > 0 ? "line-through" : ""} text-lg font-semibold text-primary`}
                         >
-                            ${product?.price}
+                            ₹{product?.price}
                         </span>
                         {product?.salePrice > 0 ? (
-                            <span className="text-lg font-semibold text-primary">
-                                ${product?.salePrice}
+                            <span className="text-lg font-bold text-primary">
+                                ₹{product?.salePrice}
                             </span>
                         ) : null}
                     </div>
-                    <CardFooter>
-                        <Button className="w-full">Add to Cart</Button>
+                    <CardFooter className=' pb-1'>
+                        <Button className="w-full cursor-pointer">Add to Cart</Button>
                     </CardFooter>
                 </CardContent>
             </div>

@@ -165,8 +165,8 @@ const HeaderRightContent = () => {
 
       ) : (
         <div className="flex gap-2">
-          <Button variant='outline' onClick={() => navigate("/auth/login")}>Login</Button>
-          <Button onClick={() => navigate("/auth/register")}>Sign up</Button>
+          <Button className="cursor-pointer" variant='outline' onClick={() => navigate("/auth/login")}>Login</Button>
+          <Button className="cursor-pointer" onClick={() => navigate("/auth/register")}>Sign up</Button>
         </div>
       )}
     </div>
