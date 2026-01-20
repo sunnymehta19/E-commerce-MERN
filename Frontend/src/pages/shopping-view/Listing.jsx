@@ -2,7 +2,7 @@ import ProductFilter from '@/components/shopping-view/Filter'
 import ShoppingProductTile from '@/components/shopping-view/productTile'
 import { Button } from '@/components/ui/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
-import { fetchAllFilteredProducts } from '@/store/shop-slice/productSlice'
+import { fetchAllFilteredProducts, fetchProductDetails } from '@/store/shop-slice/productSlice'
 import { ArrowUpDownIcon } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
@@ -34,7 +34,7 @@ const createSearchParamsHelper = (filterParams) => {
 const ShoppingListing = () => {
 
   const dispatch = useDispatch();
-  const { productList } = useSelector(state => state.shopProducts)
+  const { productList, productDetails } = useSelector(state => state.shopProducts)
   const [filters, setFilters] = useState({});
   const [sort, setSort] = useState(null);
   const [searchParams, setSearchParams] = useSearchParams();
@@ -72,9 +72,12 @@ const ShoppingListing = () => {
 
   }
 
-  console.log(filters, searchParams, "filters")
+  const handleGetProductDetails = (getCurrentProductId) => {
+    dispatch(fetchProductDetails(getCurrentProductId));
+  }
 
 
+  console.log("productDetails", productDetails);
 
   useEffect(() => {
     setSort("price-lowtohigh");
@@ -119,7 +122,7 @@ const ShoppingListing = () => {
                 <DropdownMenuRadioGroup value={sort} onValueChange={handleSort} >
                   {sortOptions.map((sortItem) => (
                     <DropdownMenuRadioItem
-                    className='cursor-pointer'
+                      className='cursor-pointer'
                       value={sortItem.id}
                       key={sortItem.id}
                     >
@@ -134,11 +137,10 @@ const ShoppingListing = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4 h-[78vh] overflow-y-auto no-scrollbar">
           {productList && productList.length > 0
             ? productList.map((productItem) => (
-
               <ShoppingProductTile
+                handleGetProductDetails={handleGetProductDetails}
                 key={productItem._id}
                 product={productItem}
-
               />
             )) : null}
         </div>

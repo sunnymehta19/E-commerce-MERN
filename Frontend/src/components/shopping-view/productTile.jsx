@@ -2,11 +2,14 @@ import React from 'react'
 import { Card, CardContent, CardFooter } from '../ui/card'
 import { Badge } from '../ui/badge'
 import { Button } from '../ui/button'
+import { useNavigate } from 'react-router-dom'
 
-const ShoppingProductTile = ({ product }) => {
+const ShoppingProductTile = ({ product, handleGetProductDetails }) => {
+    const navigate = useNavigate();
+
     return (
-        <Card className="w-full max-w-sm mx-auto p-0 h-fit" >
-            <div className="">
+        <Card className="w-full max-w-sm mx-auto p-0 h-fit cursor-pointer" >
+            <div onClick={() =>navigate(`/products/${product._id}`) }>
                 <div className="relative">
                     <img
                         src={product?.image}
