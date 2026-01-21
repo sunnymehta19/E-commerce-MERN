@@ -20,6 +20,7 @@ const ShoppingProductTile = ({ product, handleGetProductDetails, handleAddToCart
                         <Badge className="absolute top-2 left-2 bg-red-500 hover:bg-red-600">Sale</Badge>
                     ) : null}
                 </div>
+                
                 <CardContent className="p-2">
                     <h2 className="text-xl font-bold mb-0 capitalize">{product?.title}</h2>
                     <div className="flex justify-between items-center mb-1">
@@ -49,7 +50,9 @@ const ShoppingProductTile = ({ product, handleGetProductDetails, handleAddToCart
                                 handleAddToCart(product._id)
                             }}
                             className="w-full cursor-pointer"
-                        >Add to Cart</Button>
+                        >
+                            Add to Cart
+                        </Button>
                     </CardFooter>
                 </CardContent>
             </div>
