@@ -143,7 +143,7 @@ const ProductDetailsPage = () => {
                 <div className="flex flex-col gap-6 md:relative">
                     {/* TITLE + RATING */}
                     <div className="space-y-2">
-                        <h1 className="text-2xl md:text-3xl font-semibold leading-tight">
+                        <h1 className="text-2xl md:text-3xl md:pt-5 font-bold leading-tight">
                             {productDetails.title}
                         </h1>
 
@@ -177,14 +177,11 @@ const ProductDetailsPage = () => {
                                 ₹{productDetails.salePrice}
                             </span>
                         )}
-                    </div>
+                    </div> 
 
-
-
-                    {/* CTA */}
                     <div className="flex flex-col  gap-3 pt-4 md:absolute w-full bottom-0">
                         <Button
-                            className="h-12 text-base flex-1"
+                            className="h-12 text-base flex-1 cursor-pointer"
                             onClick={handleAddToCart}
                             disabled={productDetails.totalStock === 0}
                         >
@@ -194,7 +191,7 @@ const ProductDetailsPage = () => {
                         </Button>
                         <Button
                             variant="outline"
-                            className="h-12 text-base flex-1"
+                            className="h-12 text-base flex-1 cursor-pointer"
                             disabled={productDetails.totalStock === 0}
                         >
                             Buy Now

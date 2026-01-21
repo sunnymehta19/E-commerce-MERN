@@ -1,5 +1,5 @@
 import { HousePlug, LogOut, Menu, ShoppingCart, UserCog } from 'lucide-react'
-import React from 'react'
+import { React, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { Sheet, SheetContent, SheetTrigger } from '../ui/sheet'
 import { Button } from '../ui/button'
@@ -9,6 +9,7 @@ import { AlertDialog, AlertDialogTrigger, AlertDialogContent, AlertDialogHeader,
 import { Avatar, AvatarFallback } from '../ui/avatar'
 import { useDispatch, useSelector } from 'react-redux'
 import { logOutUser } from '@/store/auth-slice/authSlice'
+import UserCartWrapper from './cartWrapper'
 
 
 const shoppingHeaderMenuItems = [
@@ -92,6 +93,7 @@ const HeaderRightContent = () => {
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [openCartSheet, setOpenCartSheet] = useState(false);
 
 
   const handleLogout = () => {
@@ -101,14 +103,18 @@ const HeaderRightContent = () => {
 
   return (
     <div className="flex lg:items-center lg:flex-row flex-col gap-4">
-      <Button
-        variant='outline'
-        size='icon'
-        onClick={() => { }}
-      >
-        <ShoppingCart className='w-6 h-6' />
-        <span className="sr-only">User cart</span>
-      </Button>
+      <Sheet open={openCartSheet} onOpenChange={() => setOpenCartSheet(false)}>
+        <Button
+          className="cursor-pointer border-none "
+          variant='ghost'
+          size='icon'
+          onClick={() => setOpenCartSheet(true)}
+        >
+          <ShoppingCart className='w-6 h-6' />
+          <span className="sr-only">User cart</span>
+        </Button>
+        <UserCartWrapper />
+      </Sheet>
 
       {/* Checks Authenticated user */}
       {isAuthenticated ? (

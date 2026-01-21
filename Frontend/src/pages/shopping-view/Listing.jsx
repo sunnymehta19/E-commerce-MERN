@@ -2,7 +2,9 @@ import ProductFilter from '@/components/shopping-view/Filter'
 import ShoppingProductTile from '@/components/shopping-view/productTile'
 import { Button } from '@/components/ui/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+import { addToCart, fetchCartItems } from '@/store/shop-slice/cartSlice'
 import { fetchAllFilteredProducts, fetchProductDetails } from '@/store/shop-slice/productSlice'
+import { showToast } from '@/utils/toast'
 import { ArrowUpDownIcon } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
@@ -34,6 +36,8 @@ const createSearchParamsHelper = (filterParams) => {
 const ShoppingListing = () => {
 
   const dispatch = useDispatch();
+  const { user } = useSelector((state) => state.auth);
+  const { cartItems } = useSelector((state) => state.shopCart);
   const { productList, productDetails } = useSelector(state => state.shopProducts)
   const [filters, setFilters] = useState({});
   const [sort, setSort] = useState(null);
@@ -76,8 +80,23 @@ const ShoppingListing = () => {
     dispatch(fetchProductDetails(getCurrentProductId));
   }
 
+  const handleAddToCart = (getCurrentProductId) => {
+    console.log(getCurrentProductId);
 
-  console.log("productDetails", productDetails);
+    dispatch(addToCart({
+      userId: user?.id, productId: getCurrentProductId, quantity: 1
+    })
+    ).then((data) => {
+      if (data?.payload?.success) {
+        dispatch(fetchCartItems(user.id));
+        showToast.success("Added to Cart")
+      }
+    })
+  }
+
+  console.log("cartItems", cartItems)
+
+
 
   useEffect(() => {
     setSort("price-lowtohigh");
@@ -141,6 +160,7 @@ const ShoppingListing = () => {
                 handleGetProductDetails={handleGetProductDetails}
                 key={productItem._id}
                 product={productItem}
+                handleAddToCart={handleAddToCart}
               />
             )) : null}
         </div>

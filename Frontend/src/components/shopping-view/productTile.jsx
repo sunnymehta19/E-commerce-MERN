@@ -4,12 +4,12 @@ import { Badge } from '../ui/badge'
 import { Button } from '../ui/button'
 import { useNavigate } from 'react-router-dom'
 
-const ShoppingProductTile = ({ product, handleGetProductDetails }) => {
+const ShoppingProductTile = ({ product, handleGetProductDetails, handleAddToCart }) => {
     const navigate = useNavigate();
 
     return (
         <Card className="w-full max-w-sm mx-auto p-0 h-fit cursor-pointer" >
-            <div onClick={() =>navigate(`/products/${product._id}`) }>
+            <div onClick={() => navigate(`/products/${product._id}`)}>
                 <div className="relative">
                     <img
                         src={product?.image}
@@ -43,7 +43,13 @@ const ShoppingProductTile = ({ product, handleGetProductDetails }) => {
                         ) : null}
                     </div>
                     <CardFooter className=' pb-1'>
-                        <Button className="w-full cursor-pointer">Add to Cart</Button>
+                        <Button
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                handleAddToCart(product._id)
+                            }}
+                            className="w-full cursor-pointer"
+                        >Add to Cart</Button>
                     </CardFooter>
                 </CardContent>
             </div>

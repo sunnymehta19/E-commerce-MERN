@@ -71,7 +71,7 @@ const getProductDetails = async (req, res) => {
         res.status(500).json({
             success: false,
             message: "Some error occured while getting product details."
-        })
+        });
     }
 }
 
