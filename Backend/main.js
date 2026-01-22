@@ -9,6 +9,7 @@ const authRouter = require("./routes/auth/authRouter");
 const adminProductRouter = require("./routes/admin/productRouter");
 const shopProductRouter = require("./routes/shop/productRouter");
 const shopCartRouter = require("./routes/shop/cartRouter");
+const shopAddressRouter = require("./routes/shop/addressRouter");
 
 const cookieParser = require("cookie-parser");
 app.use(cookieParser());
@@ -35,6 +36,7 @@ app.use("/api/auth", authRouter);
 app.use("/api/admin/products", adminProductRouter);
 app.use("/api/shop/products", shopProductRouter);
 app.use("/api/shop/cart", shopCartRouter);
+app.use("/api/shop/address", shopAddressRouter);
 
 
 
