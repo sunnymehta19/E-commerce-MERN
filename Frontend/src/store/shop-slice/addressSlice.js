@@ -11,7 +11,7 @@ const initialState = {
 export const addNewAddress = createAsyncThunk(
     "/address/addNewAddress",
     async (formData) => {
-        const response = axios.post(
+        const response = await axios.post(
             "http://localhost:3000/api/shop/address/add",
             formData
         );
@@ -23,7 +23,7 @@ export const addNewAddress = createAsyncThunk(
 export const fetchAllAddress = createAsyncThunk(
     "/address/fetchAllAddress",
     async (userId) => {
-        const response = axios.get(
+        const response = await axios.get(
             `http://localhost:3000/api/shop/address/get/${userId}`
         );
         return response?.data;
@@ -34,7 +34,7 @@ export const fetchAllAddress = createAsyncThunk(
 export const editAddress = createAsyncThunk(
     "/address/editAddress",
     async ({ userId, addressId, formData }) => {
-        const response = axios.put(
+        const response = await axios.put(
             `http://localhost:3000/api/shop/address/update/${userId}/${addressId}`,
             formData
         );
@@ -46,7 +46,7 @@ export const editAddress = createAsyncThunk(
 export const deleteAddress = createAsyncThunk(
     "/address/deleteAddress",
     async ({ userId, addressId }) => {
-        const response = axios.delete(
+        const response = await axios.delete(
             `http://localhost:3000/api/shop/address/delete/${userId}/${addressId}`
         );
         return response?.data;
@@ -65,22 +65,20 @@ const ShopAddressSlice = createSlice({
             })
             .addCase(addNewAddress.fulfilled, (state, action) => {
                 state.isLoading = false;
-                state.addressList = action.payload.data
             })
             .addCase(addNewAddress.rejected, (state) => {
                 state.isLoading = false;
-                state.addressList = [];
             })
             .addCase(fetchAllAddress.pending, (state) => {
                 state.isLoading = true;
             })
             .addCase(fetchAllAddress.fulfilled, (state, action) => {
                 state.isLoading = false;
-                state.addressList = action.payload.data
+                state.addressList = action.payload?.data || [];
             })
             .addCase(fetchAllAddress.rejected, (state) => {
                 state.isLoading = false;
-                state.addressList = [];
+
             })
     }
 });
