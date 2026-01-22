@@ -10,7 +10,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Star } from "lucide-react";
-// import { useToast } from "@/components/ui/use-toast";
+import { showToast } from "@/utils/toast";
+
+
+
 
 function StarRating({ value, onChange, size = 18, readOnly = false }) {
     return (
@@ -74,32 +77,20 @@ const ProductDetailsPage = () => {
             ).toFixed(1)
             : 0;
 
-    function handleAddToCart() {
-        const items = cartItems.items || [];
-        const existing = items.find(
-            (i) => i.productId === productDetails._id
-        );
 
-        if (existing && existing.quantity + 1 > productDetails.totalStock) {
-            toast({
-                title: "Stock limit reached",
-                variant: "destructive",
-            });
-            return;
-        }
 
-        dispatch(
-            addToCart({
-                userId: user?.id,
-                productId: productDetails._id,
-                quantity: 1,
-            })
-        ).then((res) => {
-            if (res?.payload?.success) {
-                dispatch(fetchCartItems(user?.id));
-                toast({ title: "Added to cart" });
+    const handleAddToCart = (getCurrentProductId) => {
+        console.log(getCurrentProductId);
+
+        dispatch(addToCart({
+            userId: user?.id, productId: getCurrentProductId, quantity: 1
+        })
+        ).then((data) => {
+            if (data?.payload?.success) {
+                dispatch(fetchCartItems(user.id));
+                showToast.success("Added to Cart")
             }
-        });
+        })
     }
 
     function handleAddReview() {
@@ -177,12 +168,12 @@ const ProductDetailsPage = () => {
                                 ₹{productDetails.salePrice}
                             </span>
                         )}
-                    </div> 
+                    </div>
 
                     <div className="flex flex-col  gap-3 pt-4 md:absolute w-full bottom-0">
                         <Button
                             className="h-12 text-base flex-1 cursor-pointer"
-                            onClick={handleAddToCart}
+                            onClick={() => handleAddToCart(productDetails._id)}
                             disabled={productDetails.totalStock === 0}
                         >
                             {productDetails.totalStock === 0

@@ -61,10 +61,20 @@ const MenuItems = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const handleNavigate = (path) => {
-    if (location.pathname !== path) {
-      navigate(path)
-    }
+  const handleNavigate = ( getCurrentMenuItem) => {
+  
+
+    sessionStorage.removeItem("filters");
+    const currentFilters = getCurrentMenuItem.id !== "home" ? 
+    {
+      category: [getCurrentMenuItem.id]
+    } : null
+
+    sessionStorage.setItem("filters", JSON.stringify(currentFilters));
+    navigate(getCurrentMenuItem.path);
+
+
+
   }
 
 
@@ -74,7 +84,7 @@ const MenuItems = () => {
         {
           shoppingHeaderMenuItems.map((items) => (
             <Label
-              onClick={() => handleNavigate(items.path)}
+              onClick={() => handleNavigate(items)}
               key={items.id}
               className="text-sm font-medium cursor-pointer"
             >
