@@ -43,6 +43,8 @@ const ShoppingListing = () => {
   const [sort, setSort] = useState(null);
   const [searchParams, setSearchParams] = useSearchParams();
 
+  const categorySearchParam = searchParams.get("category");
+
 
 
   const handleSort = (value) => {
@@ -81,7 +83,7 @@ const ShoppingListing = () => {
   }
 
   const handleAddToCart = (getCurrentProductId) => {
-    console.log(getCurrentProductId);
+    
 
     dispatch(addToCart({
       userId: user?.id, productId: getCurrentProductId, quantity: 1
@@ -94,14 +96,10 @@ const ShoppingListing = () => {
     })
   }
 
-  console.log("cartItems", cartItems)
-
-
-
   useEffect(() => {
     setSort("price-lowtohigh");
     setFilters(JSON.parse(sessionStorage.getItem("filters")) || {});
-  }, [])
+  }, [categorySearchParam])
 
   useEffect(() => {
     if (filters && Object.keys(filters).length > 0) {

@@ -1,5 +1,5 @@
 import React from 'react'
-import accountBg from "../../assets/account.jpg"
+import accountBanner from "../../assets/account.jpg"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import ShopOrders from '@/components/shopping-view/orders'
 import ShopAddress from '@/components/shopping-view/address'
@@ -10,7 +10,7 @@ const ShoppingAccount = () => {
       <div className="flex flex-col gap-6">
         <div className="relative h-[300px] w-full overflow-hidden">
           <img
-            src={accountBg}
+            src={accountBanner}
             className="h-full w-full object-cover object-center"
           />
         </div>

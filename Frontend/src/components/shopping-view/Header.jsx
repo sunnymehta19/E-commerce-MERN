@@ -61,14 +61,14 @@ const MenuItems = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const handleNavigate = ( getCurrentMenuItem) => {
-  
+  const handleNavigate = (getCurrentMenuItem) => {
+
 
     sessionStorage.removeItem("filters");
-    const currentFilters = getCurrentMenuItem.id !== "home" ? 
-    {
-      category: [getCurrentMenuItem.id]
-    } : null
+    const currentFilters = getCurrentMenuItem.id !== "home" ?
+      {
+        category: [getCurrentMenuItem.id]
+      } : null
 
     sessionStorage.setItem("filters", JSON.stringify(currentFilters));
     navigate(getCurrentMenuItem.path);
@@ -120,21 +120,24 @@ const HeaderRightContent = () => {
 
   return (
     <div className="flex lg:items-center lg:flex-row flex-col gap-4">
-      <Sheet open={openCartSheet} onOpenChange={() => setOpenCartSheet(false)}>
+      <Sheet open={openCartSheet} onOpenChange={setOpenCartSheet}>
         <Button
           className="cursor-pointer border-none "
-          variant='ghost'
+          variant='outline'
           size='icon'
           onClick={() => setOpenCartSheet(true)}
         >
           <ShoppingCart className='w-6 h-6' />
           <span className="sr-only">User cart</span>
         </Button>
-        <UserCartWrapper cartItems={cartItems && cartItems.items && cartItems.items.length > 0
-          ? cartItems.items
-          : []
-        }
-        />
+        <SheetContent side="right" className="sm:max-w-md p-0">
+          <UserCartWrapper cartItems={cartItems && cartItems.items && cartItems.items.length > 0
+            ? cartItems.items
+            : []
+          }
+            setOpenCartSheet={setOpenCartSheet}
+          />
+        </SheetContent>
       </Sheet>
 
       {/* Checks Authenticated user */}

@@ -17,7 +17,7 @@ const ProductImageUpload = ({ imageFile,
   const inputRef = useRef(null);
 
   const handleImageFileChange = (e) => {
-    console.log(e.target.files);
+   
     const selectedFile = e.target.files?.[0];
 
     if (selectedFile) setImageFile(selectedFile);
@@ -48,7 +48,7 @@ const ProductImageUpload = ({ imageFile,
     const response = await axios.post(
       "http://localhost:3000/api/admin/products/upload-image", data
     );
-    console.log("response", response);
+    
 
     if (response?.data?.success) {
       setUploadImageUrl(response.data.result.url);
