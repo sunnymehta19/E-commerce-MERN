@@ -16,11 +16,23 @@ const ShoppingProductTile = ({ product, handleGetProductDetails, handleAddToCart
                         alt={product.id}
                         className='w-full h-[300px] object-cover rounded-t-lg'
                     />
-                    {product?.salePrice ? (
-                        <Badge className="absolute top-2 left-2 bg-red-500 hover:bg-red-600">Sale</Badge>
-                    ) : null}
+                    {
+                        product?.totalStock === 0 ? (
+                            <Badge className="absolute top-2 left-2 bg-red-500 hover:bg-red-600">
+                                Out Of Stock
+                            </Badge>
+                        ) : product?.totalStock < 10 ? (
+                            <Badge className="absolute top-2 left-2 bg-red-500 hover:bg-red-600">
+                                {`Only ${product?.totalStock} items left`}
+                            </Badge>
+                        ) : product?.salePrice > 0 ? (
+                            <Badge className="absolute top-2 left-2 bg-red-500 hover:bg-red-600">
+                                Sale
+                            </Badge>
+                        ) : null
+                    }
                 </div>
-                
+
                 <CardContent className="p-2">
                     <h2 className="text-xl font-bold mb-0 capitalize">{product?.title}</h2>
                     <div className="flex justify-between items-center mb-1">

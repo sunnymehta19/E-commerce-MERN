@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { fetchProductDetails } from "@/store/shop-slice/productSlice";
 import { addToCart, fetchCartItems } from "@/store/shop-slice/cartSlice";
 import { getReviews, addReview } from "@/store/shop-slice/reviewSlice";
@@ -48,6 +48,7 @@ const ProductDetailsPage = () => {
     const [rating, setRating] = useState(0);
     const [reviewMsg, setReviewMsg] = useState("");
     const [activeImage, setActiveImage] = useState(0);
+    const navigate = useNavigate();
 
     useEffect(() => {
         dispatch(fetchProductDetails(productId));
@@ -90,8 +91,22 @@ const ProductDetailsPage = () => {
                 dispatch(fetchCartItems(user.id));
                 showToast.success("Added to Cart")
             }
-        })
+        });
     }
+
+    const handleBuyNow = (getCurrentProductId) => {
+        dispatch(
+            addToCart({
+                userId: user?.id, productId: getCurrentProductId, quantity: 1
+            })
+        ).then((data) => {
+            if (data?.payload?.success) {
+                dispatch(fetchCartItems(user.id));
+                navigate("/checkout")
+            }
+        });
+    }
+
 
     function handleAddReview() {
         dispatch(
@@ -176,13 +191,16 @@ const ProductDetailsPage = () => {
                             onClick={() => handleAddToCart(productDetails._id)}
                             disabled={productDetails.totalStock === 0}
                         >
-                            {productDetails.totalStock === 0
-                                ? "Out of Stock"
-                                : "Add to Cart"}
+                            {
+                                productDetails.totalStock === 0
+                                    ? "Out of Stock"
+                                    : "Add to Cart"
+                            }
                         </Button>
                         <Button
                             variant="outline"
                             className="h-12 text-base flex-1 cursor-pointer"
+                            onClick={() => handleBuyNow(productDetails?._id)}
                             disabled={productDetails.totalStock === 0}
                         >
                             Buy Now

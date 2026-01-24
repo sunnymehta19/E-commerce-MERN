@@ -1,6 +1,6 @@
 import { HousePlug, LogOut, Menu, ShoppingCart, UserCog } from 'lucide-react'
 import { React, useEffect, useState } from 'react'
-import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import { Sheet, SheetContent, SheetTrigger } from '../ui/sheet'
 import { Button } from '../ui/button'
 import { Label } from '../ui/label'
@@ -60,19 +60,27 @@ const shoppingHeaderMenuItems = [
 const MenuItems = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const { isAuthenticated, user } = useSelector((state) => state.auth);
+
 
   const handleNavigate = (getCurrentMenuItem) => {
 
-
     sessionStorage.removeItem("filters");
-    const currentFilters = getCurrentMenuItem.id !== "home" ?
-      {
-        category: [getCurrentMenuItem.id]
-      } : null
+    const currentFilters =
+      getCurrentMenuItem.id !== "home" &&
+        getCurrentMenuItem.id !== "products" &&
+        getCurrentMenuItem.id !== "search"
+        ? {
+          category: [getCurrentMenuItem.id],
+        } : null;
 
     sessionStorage.setItem("filters", JSON.stringify(currentFilters));
-    navigate(getCurrentMenuItem.path);
 
+    location.pathname.includes("listing") && currentFilters !== null
+      ? setSearchParams(
+        new URLSearchParams(`?category=${getCurrentMenuItem.id}`)
+      ) : navigate(getCurrentMenuItem.path);
 
 
   }
@@ -80,13 +88,13 @@ const MenuItems = () => {
 
   return (
     <>
-      <nav className="flex flex-col mb-3 lg:mb-0 lg:items-center gap-6 lg:flex-row">
+      <nav className={`${isAuthenticated ? "" : "pl-24"} flex flex-col mb-3 lg:mb-0 lg:items-center gap-6 lg:flex-row`}>
         {
           shoppingHeaderMenuItems.map((items) => (
             <Label
               onClick={() => handleNavigate(items)}
               key={items.id}
-              className="text-sm font-medium cursor-pointer"
+              className="text-sm font-medium cursor-pointer  "
             >
               {items.label}
             </Label>
