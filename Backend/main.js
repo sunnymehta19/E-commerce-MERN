@@ -7,9 +7,12 @@ const database = require("./config/mongooseConnection");
 
 const authRouter = require("./routes/auth/authRouter");
 const adminProductRouter = require("./routes/admin/productRouter");
+const adminOrderRouter = require("./routes/admin/orderRouter");
+
 const shopProductRouter = require("./routes/shop/productRouter");
 const shopCartRouter = require("./routes/shop/cartRouter");
 const shopAddressRouter = require("./routes/shop/addressRouter");
+const shopOrderRouter = require("./routes/shop/orderRouter");
 
 const cookieParser = require("cookie-parser");
 app.use(cookieParser());
@@ -34,9 +37,12 @@ app.use(
 
 app.use("/api/auth", authRouter);
 app.use("/api/admin/products", adminProductRouter);
+app.use("/api/admin/orders", adminOrderRouter);
+
 app.use("/api/shop/products", shopProductRouter);
 app.use("/api/shop/cart", shopCartRouter);
 app.use("/api/shop/address", shopAddressRouter);
+app.use("/api/shop/order", shopOrderRouter);
 
 
 

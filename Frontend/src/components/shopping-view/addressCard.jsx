@@ -6,10 +6,16 @@ import { FaEdit } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 
 
-const ShopAddressCard = ({ addressInfo, handleEditAddress, handleDeleteAddress }) => {
+const ShopAddressCard = ({ addressInfo, handleEditAddress, handleDeleteAddress, setCurrentSelectedAddress }) => {
     return (
         <>
-            <Card className="gap-4 p-4 flex flex-col h-full">
+            <Card
+                onClick={setCurrentSelectedAddress ?
+                    () => setCurrentSelectedAddress(addressInfo)
+                    : null
+                }
+                className="gap-4 p-4 flex flex-col h-full"
+            >
                 <CardContent className="grid px-3 gap-3">
                     <Label>Address: {addressInfo?.address}</Label>
                     <Label>City: {addressInfo?.city}</Label>

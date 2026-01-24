@@ -1,13 +1,35 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../ui/table'
 import { Button } from '../ui/button'
 import { Dialog } from '../ui/dialog'
 import AdminOrderDetails from './orderDetails'
+import { useDispatch, useSelector } from 'react-redux'
+import { getAllOrdersForAdmin, getOrderDetailsForAdmin, resetOrderDetails } from '@/store/admin-slice/orderSlice'
+import { Badge } from '../ui/badge'
 
 const AdminOrdersContent = () => {
 
     const [openDetailsDialog, setOpenDetailsDialog] = useState(false);
+    const { orderList, orderDetails } = useSelector((state) => state.adminOrder);
+    const dispatch = useDispatch();
+
+    const handleFetchOrderDetails = (getId) => {
+      dispatch(getOrderDetailsForAdmin(getId)); 
+    }
+    
+
+    useEffect(() => {
+        dispatch(getAllOrdersForAdmin());
+    }, [dispatch])
+
+    useEffect(() => {
+      if (orderDetails !== null) {
+        setOpenDetailsDialog(true);
+      }
+    }, [orderDetails])
+
+
     return (
         <>
             <Card>
@@ -26,24 +48,46 @@ const AdminOrdersContent = () => {
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            <TableRow>
-                                <TableCell>00000</TableCell>
-                                <TableCell>23/01/2026</TableCell>
-                                <TableCell>In Progress</TableCell>
-                                <TableCell>3000</TableCell>
-                                <TableCell>
-                                    <Dialog
-                                        open={openDetailsDialog}
-                                        onOpenChange={setOpenDetailsDialog}
-                                    >
-                                        <Button
-                                            onClick={() => setOpenDetailsDialog(true)}
-                                            className="cursor-pointer">view detials
-                                        </Button>
-                                        <AdminOrderDetails />
-                                    </Dialog>
-                                </TableCell>
-                            </TableRow>
+                            {
+                                orderList && orderList.length > 0
+                                    ? orderList.map((orderItem) => (
+                                        <TableRow>
+                                            <TableCell>{orderItem?.id}</TableCell>
+                                            <TableCell>{orderItem?.orderDate.split("T")[0]}</TableCell>
+                                            <TableCell>
+                                                <Badge
+                                                    className={`py-1 px-3 ${orderItem?.orderStatus === "confirmed"
+                                                        ? "bg-green-500"
+                                                        : orderItem?.orderStatus === "rejected"
+                                                            ? "bg-red-600"
+                                                            : "bg-black"
+                                                        }`}
+                                                >
+                                                    {orderItem?.orderStatus}
+                                                </Badge>
+                                            </TableCell>
+                                            <TableCell>{orderItem?.totalAmount}</TableCell>
+                                            <TableCell>
+                                                <Dialog
+                                                    open={openDetailsDialog}
+                                                    onOpenChange={() => {
+                                                        setOpenDetailsDialog(false);
+                                                        dispatch(resetOrderDetails())
+                                                    }}
+                                                >
+                                                    <Button
+                                                        onClick={() => handleFetchOrderDetails(orderItem?._id)}
+                                                        className="cursor-pointer">view detials</Button>
+                                                    <AdminOrderDetails orderDetails={orderDetails} />
+                                                </Dialog>
+                                            </TableCell>
+                                        </TableRow>
+                                    )) : (
+                                        <div className=" p-4 font-bold text-2xl">
+                                            No order yet.
+                                        </div>
+                                    )
+                            }
                         </TableBody>
                     </Table>
                 </CardContent>

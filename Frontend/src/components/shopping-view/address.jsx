@@ -21,7 +21,7 @@ const initialAddressFormData = {
 
 
 
-const ShopAddress = () => {
+const ShopAddress = (setCurrentSelectedAddress) => {
 
     const dispatch = useDispatch();
     const { user } = useSelector((state) => state.auth);
@@ -115,6 +115,7 @@ const ShopAddress = () => {
                                     handleDeleteAddress={handleDeleteAddress}
                                     handleEditAddress={handleEditAddress}
                                     setCurrentEditedId={setCurrentEditedId}
+                                    setCurrentSelectedAddress={setCurrentSelectedAddress}
                                 />
                             )) : null
                     }
@@ -218,8 +219,6 @@ const ShopAddress = () => {
                                     </FormItem>
                                 )}
                             />
-
-
 
                             {/* Notes */}
                             <FormField
