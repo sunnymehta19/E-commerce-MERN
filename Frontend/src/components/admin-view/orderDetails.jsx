@@ -4,13 +4,29 @@ import { Label } from '../ui/label'
 import { Separator } from '../ui/separator'
 import OrderStatusForm from '../common/OrderStatusForm'
 import { Badge } from '../ui/badge'
+import { useDispatch } from 'react-redux'
+import { getAllOrdersForAdmin, getOrderDetailsForAdmin, updateOrderStatus } from '@/store/admin-slice/orderSlice'
+import { showToast } from '@/utils/toast'
 
 const AdminOrderDetails = ({ orderDetails }) => {
 
     const { user } = useSelector((state) => state.auth);
+    const dispatch = useDispatch();
 
     const handleStatusUpdate = (data) => {
+        const { status } = data;
 
+        dispatch(
+            updateOrderStatus({
+                id: orderDetails?._id, orderStatus: data
+            })
+        ).then((response) => {
+            if (response?.payload?.success) {
+                dispatch(getOrderDetailsForAdmin(orderDetails?._id));
+                dispatch(getAllOrdersForAdmin());
+                showToast.success("Order status updated successfully");
+            }
+        });
     }
 
     return (

@@ -20,7 +20,9 @@ const OrderStatusForm = ({ defaultStatus = "pending", onSubmitStatus }) => {
     });
 
     const onSubmit = (data) => {
-        onSubmitStatus?.(data);
+        onSubmitStatus?.({
+            orderStatus: data.status
+        });
     };
 
     return (

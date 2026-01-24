@@ -32,6 +32,20 @@ export const getOrderDetailsForAdmin = createAsyncThunk(
 );
 
 
+export const updateOrderStatus = createAsyncThunk(
+    "/order/updateOrderStatus",
+    async ({id, orderStatus}) => {
+        const response = await axios.put(
+            `http://localhost:3000/api/admin/orders/update/${id}`,
+            {
+                orderStatus
+            },
+        );
+        return response?.data;
+    }
+);
+
+
 
 const AdminOrderSlice = createSlice({
     name: "adminOrder",
