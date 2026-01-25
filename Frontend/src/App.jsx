@@ -17,13 +17,14 @@ import ShoppingAccount from './pages/shopping-view/Account'
 import ShoppingHome from './pages/shopping-view/Home'
 import ShoppingCheckout from './pages/shopping-view/Checkout'
 import ShoppingListing from './pages/shopping-view/Listing'
-import ProductDetailsPage from "./pages/shopping-view/productDetails"
+import ProductDetailsPage from "./pages/shopping-view/ProductDetails"
 
 import ProtectedRoute from "./components/common/ProtectedRoute"
 import AdminRoute from "./components/common/AdminRoute"
 import { useDispatch, useSelector } from "react-redux"
 import { checkAuth } from "./store/auth-slice/authSlice"
 import { Skeleton } from "./components/ui/skeleton"
+import ShopSearchProducts from "./pages/shopping-view/Search"
 
 
 function App() {
@@ -51,6 +52,7 @@ function App() {
           <Route index element={<ShoppingHome />} />
           <Route path='listing' element={<ShoppingListing />} />
           <Route path="/products/:productId" element={<ProductDetailsPage />} />
+          <Route path='search' element={<ShopSearchProducts />} />
 
           <Route
             path='checkout'

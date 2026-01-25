@@ -13,6 +13,7 @@ const shopProductRouter = require("./routes/shop/productRouter");
 const shopCartRouter = require("./routes/shop/cartRouter");
 const shopAddressRouter = require("./routes/shop/addressRouter");
 const shopOrderRouter = require("./routes/shop/orderRouter");
+const shopSearchRouter = require("./routes/shop/searchRouter");
 
 const cookieParser = require("cookie-parser");
 app.use(cookieParser());
@@ -43,6 +44,8 @@ app.use("/api/shop/products", shopProductRouter);
 app.use("/api/shop/cart", shopCartRouter);
 app.use("/api/shop/address", shopAddressRouter);
 app.use("/api/shop/order", shopOrderRouter);
+app.use("/api/shop/search", shopSearchRouter);
+
 
 
 

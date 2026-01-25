@@ -242,7 +242,7 @@ const ProductDetailsPage = () => {
 
                         <Button
                             variant="outline"
-                            className="h-12 text-base flex-1 cursor-not-allowed"
+                            className="h-12 text-base flex-1 cursor-pointer"
                             onClick={() => handleBuyNow(productDetails?._id)}
                             disabled={productDetails.totalStock === 0}
                         >

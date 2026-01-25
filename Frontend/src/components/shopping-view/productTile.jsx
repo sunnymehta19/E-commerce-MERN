@@ -34,7 +34,7 @@ const ShoppingProductTile = ({ product, handleGetProductDetails, handleAddToCart
                 </div>
 
                 <CardContent className="p-2">
-                    <h2 className="text-xl font-bold mb-0 capitalize">{product?.title}</h2>
+                    <h2 className="text-xl font-bold mb-0 capitalize truncate">{product?.title}</h2>
                     <div className="flex justify-between items-center mb-1">
                         <span className="text-[16px] text-muted-foreground capitalize">
                             {product?.category}

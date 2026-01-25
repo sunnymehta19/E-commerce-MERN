@@ -54,6 +54,12 @@ const shoppingHeaderMenuItems = [
     path: "/listing",
 
   },
+  {
+    id: "search",
+    label: "Search",
+    path: "/search",
+
+  },
 ]
 
 
@@ -94,7 +100,7 @@ const MenuItems = () => {
             <Label
               onClick={() => handleNavigate(items)}
               key={items.id}
-              className="text-sm font-medium cursor-pointer  "
+              className="text-sm font-medium cursor-pointer"
             >
               {items.label}
             </Label>
