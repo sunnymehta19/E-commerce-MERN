@@ -56,15 +56,22 @@ const ShoppingProductTile = ({ product, handleGetProductDetails, handleAddToCart
                         ) : null}
                     </div>
                     <CardFooter className=' pb-1'>
-                        <Button
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                handleAddToCart(product._id)
-                            }}
-                            className="w-full cursor-pointer"
-                        >
-                            Add to Cart
-                        </Button>
+                        {product?.totalStock === 0 ? (
+                            <Button className="w-full  opacity-60 cursor-not-allowed">
+                                Out Of Stock
+                            </Button>
+                        ) : (
+                            <Button
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleAddToCart(product._id, product?.totalStock);
+                                }}
+                                className="w-full cursor-pointer"
+                            >
+                                Add to Cart
+                            </Button>
+                        )}
+
                     </CardFooter>
                 </CardContent>
             </div>

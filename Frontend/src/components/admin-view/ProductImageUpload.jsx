@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react'
+import { React, useRef, useEffect, useState } from 'react'
 import { Label } from '../ui/label';
 import { Input } from '../ui/input';
 import { FileIcon, UploadCloudIcon, XIcon } from 'lucide-react';
@@ -14,13 +14,24 @@ const ProductImageUpload = ({ imageFile,
   setImageLoadingState,
   isEditMode,
 }) => {
+
   const inputRef = useRef(null);
+  const [errorMessage, setErrorMessage] = useState("");
 
+  const max_file_size = 10 * 1024 * 1024;
   const handleImageFileChange = (e) => {
-   
-    const selectedFile = e.target.files?.[0];
 
-    if (selectedFile) setImageFile(selectedFile);
+    const selectedFile = e.target.files?.[0];
+    setErrorMessage("");
+
+    if (!selectedFile) return;
+    if (selectedFile.size > max_file_size) {
+      setErrorMessage("Image upload failed: File size must be under 10 MB.");
+      if (inputRef.current) inputRef.current.value = "";
+      return;
+    }
+
+    setImageFile(selectedFile);
 
   }
 
@@ -31,7 +42,16 @@ const ProductImageUpload = ({ imageFile,
   const handleDrop = (e) => {
     e.preventDefault();
     const droppedFile = e.dataTransfer.files?.[0];
-    if (droppedFile) setImageFile(droppedFile);
+    setErrorMessage("");
+
+    if (!droppedFile) return;
+
+    if (droppedFile.size > max_file_size) {
+      setErrorMessage("Image upload failed: File size must be under 10 MB.");
+      return;
+    }
+
+    setImageFile(droppedFile);
   }
 
   const handleRemoveImage = () => {
@@ -43,26 +63,37 @@ const ProductImageUpload = ({ imageFile,
 
   const uploadImageToCloudinary = async () => {
     setImageLoadingState(true);
-    const data = new FormData()
-    data.append("image", imageFile);
-    const response = await axios.post(
-      "http://localhost:3000/api/admin/products/upload-image", data
-    );
-    
+    setErrorMessage("");
 
-    if (response?.data?.success) {
-      setUploadImageUrl(response.data.result.url);
+    try {
+      const data = new FormData()
+      data.append("image", imageFile);
+
+      const response = await axios.post(
+        "http://localhost:3000/api/admin/products/upload-image", data
+      );
+
+
+      if (response?.data?.success) {
+        setUploadImageUrl(response.data.result.url);
+      } else {
+        setErrorMessage("Image upload failed. Please try again.");
+      }
+
+    } catch (error) {
+      const backendMessage =
+        error?.response?.data?.message || "Image upload failed due to server error.";
+      setErrorMessage(`Upload failed: ${backendMessage}`);
+
+    } finally {
       setImageLoadingState(false);
     }
 
-  }
-
+  };
 
   useEffect(() => {
     if (imageFile !== null) uploadImageToCloudinary()
   }, [imageFile])
-
-
 
 
   return (
@@ -79,14 +110,14 @@ const ProductImageUpload = ({ imageFile,
           className="hidden"
           ref={inputRef}
           onChange={handleImageFileChange}
-          // disabled={isEditMode}
+        // disabled={isEditMode}
         />
         {
           !imageFile ? (
             <Label
               htmlFor="upload-image"
               className="flex flex-col items-center justify-center h-24 cursor-pointer"
-              // className={`${isEditMode ? "cursor-not-allowed" : ""}flex flex-col items-center justify-center h-24 cursor-pointer`}
+            // className={`${isEditMode ? "cursor-not-allowed" : ""}flex flex-col items-center justify-center h-24 cursor-pointer`}
             >
               <UploadCloudIcon className="w-10 h-10 text-muted-foreground mb-2" />
               <span className='text-xs md:text-base'>Drag & drop or click to upload image</span>
@@ -111,8 +142,13 @@ const ProductImageUpload = ({ imageFile,
             </div>
           )}
       </div >
+      {errorMessage && (
+        <p className=" text-sm text-red-500 ">
+          *{errorMessage}
+        </p>
+      )}
     </>
   )
 }
 
-export default ProductImageUpload
+export default ProductImageUpload;

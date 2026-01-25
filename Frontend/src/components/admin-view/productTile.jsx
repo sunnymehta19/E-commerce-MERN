@@ -2,6 +2,7 @@ import React from 'react'
 import { Card, CardContent, CardFooter } from '../ui/card'
 import { AlertDialog, AlertDialogTrigger, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogFooter, AlertDialogCancel, AlertDialogAction } from "../ui/alert-dialog";
 import { Button } from '../ui/button'
+import { Badge } from '../ui/badge';
 
 const AdminProductTile = ({
     product,
@@ -21,6 +22,21 @@ const AdminProductTile = ({
                             className='w-full h-[240px] md:h-[280px] object-cover rounded-t-lg'
                         // className='w-full h-[180px] md:h-[220px] object-center rounded-t-lg'
                         />
+                        {
+                            product?.totalStock === 0 ? (
+                                <Badge className="absolute top-2 left-2 bg-red-500 hover:bg-red-600">
+                                    Out Of Stock
+                                </Badge>
+                            ) : product?.totalStock < 10 ? (
+                                <Badge className="absolute top-2 left-2 bg-red-500 hover:bg-red-600">
+                                    {`Only ${product?.totalStock} items left`}
+                                </Badge>
+                            ) : product?.totalStock ? (
+                                <Badge className="absolute top-2 left-2 bg-red-500 hover:bg-red-600">
+                                    {`Total Stock ${product?.totalStock} items`}
+                                </Badge>
+                            ) : null
+                        }
                     </div>
                     <div>
                         <CardContent className="px-3">

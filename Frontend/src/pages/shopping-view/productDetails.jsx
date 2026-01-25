@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Star } from "lucide-react";
 import { showToast } from "@/utils/toast";
+import { Badge } from "@/components/ui/badge";
 
 
 
@@ -80,8 +81,22 @@ const ProductDetailsPage = () => {
 
 
 
-    const handleAddToCart = (getCurrentProductId) => {
-        console.log(getCurrentProductId);
+    const handleAddToCart = (getCurrentProductId, getTotalStock) => {
+        let getCartItems = cartItems.items || [];
+
+        if (getCartItems.length) {
+            const indexOfCurrentItem = getCartItems.findIndex(
+                (item) => item.productId === getCurrentProductId
+            );
+            if (indexOfCurrentItem > -1) {
+                const getQuantity = getCartItems[indexOfCurrentItem].quantity;
+                if (getQuantity + 1 > getTotalStock) {
+                    showToast.error(`Only ${getQuantity} items available in stock`);
+                    return;
+                }
+            }
+        }
+
 
         dispatch(addToCart({
             userId: user?.id, productId: getCurrentProductId, quantity: 1
@@ -95,6 +110,17 @@ const ProductDetailsPage = () => {
     }
 
     const handleBuyNow = (getCurrentProductId) => {
+        let getCartItems = cartItems.items || [];
+
+        const isAlreadyInCart = getCartItems.some(
+            (item) => item.productId === getCurrentProductId
+        );
+
+        if (isAlreadyInCart) {
+            navigate("/checkout");
+            return;
+        }
+
         dispatch(
             addToCart({
                 userId: user?.id, productId: getCurrentProductId, quantity: 1
@@ -134,12 +160,27 @@ const ProductDetailsPage = () => {
                 {/* IMAGE SECTION */}
                 <div className="flex flex-col gap-4">
                     {/* MAIN IMAGE */}
-                    <div className="w-full max-w-md mx-auto lg:mx-0 border rounded-2xl overflow-hidden bg-muted">
+                    <div className="w-full max-w-md mx-auto lg:mx-0 border rounded-2xl overflow-hidden bg-muted relative">
                         <img
                             src={images[activeImage]}
                             alt={productDetails.title}
                             className="w-full aspect-square object-cover"
                         />
+                        {
+                            productDetails?.totalStock === 0 ? (
+                                <Badge className="absolute top-2 left-2 bg-red-500 hover:bg-red-600">
+                                    Out Of Stock
+                                </Badge>
+                            ) : productDetails?.totalStock < 10 ? (
+                                <Badge className="absolute top-2 left-2 bg-red-500 hover:bg-red-600">
+                                    {`Only ${productDetails?.totalStock} items left`}
+                                </Badge>
+                            ) : productDetails?.salePrice > 0 ? (
+                                <Badge className="absolute top-2 left-2 bg-red-500 hover:bg-red-600">
+                                    Sale
+                                </Badge>
+                            ) : null
+                        }
                     </div>
 
 
@@ -186,20 +227,22 @@ const ProductDetailsPage = () => {
                     </div>
 
                     <div className="flex flex-col  gap-3 pt-4 md:absolute w-full bottom-0">
-                        <Button
-                            className="h-12 text-base flex-1 cursor-pointer"
-                            onClick={() => handleAddToCart(productDetails._id)}
-                            disabled={productDetails.totalStock === 0}
-                        >
-                            {
-                                productDetails.totalStock === 0
-                                    ? "Out of Stock"
-                                    : "Add to Cart"
-                            }
-                        </Button>
+                        {productDetails?.totalStock === 0 ? (
+                            <Button className="h-12 text-base flex-1 opacity-60 cursor-not-allowed">
+                                Out Of Stock
+                            </Button>
+                        ) : (
+                            <Button
+                                className="h-12 text-base flex-1 cursor-pointer"
+                                onClick={() => handleAddToCart(productDetails._id, productDetails?.totalStock)}
+                            >
+                                Add to Cart
+                            </Button>
+                        )}
+
                         <Button
                             variant="outline"
-                            className="h-12 text-base flex-1 cursor-pointer"
+                            className="h-12 text-base flex-1 cursor-not-allowed"
                             onClick={() => handleBuyNow(productDetails?._id)}
                             disabled={productDetails.totalStock === 0}
                         >

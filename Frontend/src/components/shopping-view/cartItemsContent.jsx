@@ -9,6 +9,9 @@ const UserCartItemsContent = ({ cartItems }) => {
 
     const dispatch = useDispatch();
     const { user } = useSelector((state) => state.auth);
+    // const { cartItems } = useSelector((state) => state.shopCart);
+    const { productList } = useSelector((state) => state.shopProducts);
+
 
     const handleCartItemDelete = (getCartItem) => {
         dispatch(
@@ -22,12 +25,31 @@ const UserCartItemsContent = ({ cartItems }) => {
     }
 
     const handleUpdateQuantity = (getCartItem, typeOfAction) => {
+        if (typeOfAction === "plus") {
+            const currentProduct = productList.find(
+                (product) => product._id === cartItems.productId
+            );
+
+            if (!currentProduct) return;
+
+            if (cartItems.quantity + 1 > currentProduct.totalStock) {
+                showToast.error(
+                    `Only ${currentProduct.totalStock} items available in stock`
+                );
+                return;
+            }
+        }
+
+        if (typeOfAction === "minus" && cartItems.quantity === 1) return;
+
+
         dispatch(updateCartItems({
             userId: user?.id,
             productId: getCartItem?.productId,
             quantity:
                 typeOfAction === "plus"
-                    ? getCartItem?.quantity + 1 : getCartItem?.quantity - 1
+                    ? getCartItem?.quantity + 1
+                    : getCartItem?.quantity - 1
         })
         )
     }

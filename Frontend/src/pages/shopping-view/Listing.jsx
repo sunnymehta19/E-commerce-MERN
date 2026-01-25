@@ -82,8 +82,22 @@ const ShoppingListing = () => {
     dispatch(fetchProductDetails(getCurrentProductId));
   }
 
-  const handleAddToCart = (getCurrentProductId) => {
-    
+  const handleAddToCart = (getCurrentProductId, getTotalStock) => {
+
+    let getCartItems = cartItems.items || [];
+
+    if (getCartItems.length) {
+      const indexOfCurrentItem = getCartItems.findIndex(
+        (item) => item.productId === getCurrentProductId
+      );
+      if (indexOfCurrentItem > -1) {
+        const getQuantity = getCartItems[indexOfCurrentItem].quantity;
+        if (getQuantity + 1 > getTotalStock) {
+          showToast.error(`Only ${getQuantity} items available in stock`);
+          return;
+        }
+      }
+    }
 
     dispatch(addToCart({
       userId: user?.id, productId: getCurrentProductId, quantity: 1
@@ -91,7 +105,7 @@ const ShoppingListing = () => {
     ).then((data) => {
       if (data?.payload?.success) {
         dispatch(fetchCartItems(user.id));
-        showToast.success("Added to Cart")
+        showToast.success("Added to Cart");
       }
     })
   }
