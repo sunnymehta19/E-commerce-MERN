@@ -1,39 +1,41 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
+
 const initialState = {
-  reviews: [],
   isLoading: false,
-};
+  reviews: [],
+}
 
-/* ------------------------
-   GET REVIEWS
-------------------------- */
+
+export const addReviews = createAsyncThunk(
+  "/order/addReviews",
+  async (formData, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/api/shop/review/add",
+        formData
+      );
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+
 export const getReviews = createAsyncThunk(
-  "shopReview/getReviews",
-  async (productId) => {
-    const res = await axios.get(
-      `http://localhost:3000/api/shop/reviews/${productId}`
+  "/order/getReviews",
+  async (id) => {
+    const response = await axios.get(
+      `http://localhost:3000/api/shop/review/${id}`
     );
-    return res.data;
+    return response.data;
   }
-);
+)
 
-/* ------------------------
-   ADD REVIEW
-------------------------- */
-export const addReview = createAsyncThunk(
-  "shopReview/addReview",
-  async (reviewData) => {
-    const res = await axios.post(
-      `http://localhost:3000/api/shop/reviews/add`,
-      reviewData
-    );
-    return res.data;
-  }
-);
 
-const reviewSlice = createSlice({
+const ShopReviewSlice = createSlice({
   name: "shopReview",
   initialState,
   reducers: {},
@@ -49,8 +51,9 @@ const reviewSlice = createSlice({
       .addCase(getReviews.rejected, (state) => {
         state.isLoading = false;
         state.reviews = [];
-      });
-  },
-});
+      })
+  }
+})
 
-export default reviewSlice.reducer;
+
+export default ShopReviewSlice.reducer;

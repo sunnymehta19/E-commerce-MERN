@@ -1,4 +1,4 @@
-const razorpay = require("razorpay");
+const razorpay = require("../../helpers/razorpay");
 const crypto = require("crypto");
 const productModel = require("../../models/product");
 const orderModel = require("../../models/order");
@@ -83,7 +83,7 @@ const captureOrder = async (req, res) => {
         const body = razorpay_order_id + "|" + razorpay_payment_id;
 
         const expectedSignature = crypto
-            .createHmac("sha256", process.env.RAZORPAY_SECRET_KE)
+            .createHmac("sha256", process.env.RAZORPAY_SECRET_KEY)
             .update(body)
             .digest("hex");
 
@@ -98,7 +98,7 @@ const captureOrder = async (req, res) => {
         order.orderStatus = "confirmed";
         order.paymentId = razorpay_payment_id;
         order.payerId = razorpay_order_id;
-        orderUpdateDate = new Date();
+        order.orderUpdateDate = new Date();
 
 
         for (const item of order.cartItems) {

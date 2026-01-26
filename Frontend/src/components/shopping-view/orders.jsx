@@ -27,10 +27,10 @@ const ShopOrders = () => {
   console.log("orderList:", orderList);
 
   useEffect(() => {
-    if (orderDetails !== null) {
+    if (orderDetails) {
       setOpenDetailsDialog(true);
     }
-  }, [dispatch])
+  }, [orderDetails])
 
 
   return (
@@ -52,44 +52,53 @@ const ShopOrders = () => {
             </TableHeader>
             <TableBody>
               {
-                orderList && orderList.length > 0
-                  ? orderList.map((orderItem) => (
-                    <TableRow>
-                      <TableCell>{orderItem?.id}</TableCell>
-                      <TableCell>{orderItem?.orderDate.split("T")[0]}</TableCell>
-                      <TableCell>
-                        <Badge
-                          className={`py-1 px-3 ${orderItem?.orderStatus === "confirmed"
-                            ? "bg-green-500"
-                            : orderItem?.orderStatus === "rejected"
-                              ? "bg-red-600"
-                              : "bg-black"
-                            }`}
-                        >
-                          {orderItem?.orderStatus}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>{orderItem?.totalAmount}</TableCell>
-                      <TableCell>
-                        <Dialog
-                          open={openDetailsDialog}
-                          onOpenChange={() => {
-                            setOpenDetailsDialog(false);
-                            dispatch(resetOrderDetails())
-                          }}
-                        >
-                          <Button
-                            onClick={() => handleFetchOrderDetails(orderItem?._id)}
-                            className="cursor-pointer">view detials</Button>
-                          <ShopOrderDetails orderDetails={orderDetails} />
-                        </Dialog>
-                      </TableCell>
-                    </TableRow>
-                  )) : (
-                    <div className=" p-4 font-bold text-2xl">
+                orderList && orderList.length > 0 ? (
+                  [...orderList]
+                    .sort((a, b) => new Date(b.orderDate) - new Date(a.orderDate))
+                    .map((orderItem) => (
+                      <TableRow key={orderItem._id}>
+                        <TableCell>{orderItem?._id}</TableCell>
+                        <TableCell>{orderItem?.orderDate.split("T")[0]}</TableCell>
+                        <TableCell>
+                          <Badge
+                            className={`py-1 px-3 ${orderItem?.orderStatus === "confirmed"
+                              ? "bg-green-500"
+                              : orderItem?.orderStatus === "rejected"
+                                ? "bg-red-600"
+                                : "bg-black"
+                              }`}
+                          >
+                            {orderItem?.orderStatus}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>{orderItem?.totalAmount}</TableCell>
+                        <TableCell>
+                          <Dialog
+                            open={openDetailsDialog}
+                            onOpenChange={(open) => {
+                              if (!open) {
+                                setOpenDetailsDialog(false);
+                                dispatch(resetOrderDetails());
+                              }
+                            }}
+                          >
+                            <Button
+                              onClick={() => handleFetchOrderDetails(orderItem?._id)}
+                            >
+                              View details
+                            </Button>
+                            <ShopOrderDetails orderDetails={orderDetails} />
+                          </Dialog>
+                        </TableCell>
+                      </TableRow>
+                    ))
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={5} className="text-center p-4 font-bold text-2xl">
                       No order yet.
-                    </div>
-                  )
+                    </TableCell>
+                  </TableRow>
+                )
               }
             </TableBody>
           </Table>

@@ -166,7 +166,7 @@ const HeaderRightContent = () => {
           </DropdownMenuTrigger>
           <DropdownMenuContent side="bottom" sideOffset={8} align="end" className="w-56">
             <DropdownMenuLabel>
-              Logged in as {user?.username}
+              Logged in as <span className="capitalize">{user?.username}</span>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={() => navigate("/account")}>

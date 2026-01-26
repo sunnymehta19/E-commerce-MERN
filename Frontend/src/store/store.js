@@ -7,7 +7,7 @@ import ShopCartSlice from "./shop-slice/cartSlice"
 import ShopAddressSlice from "./shop-slice/addressSlice"
 import ShopOrderSlice from "./shop-slice/orderSlice";
 import ShopSearchSlice from "./shop-slice/searchSlice";
-import reviewSlice from "./shop-slice/reviewSlice"
+import ShopReviewSlice from "./shop-slice/reviewSlice"
 
 
 const store = configureStore({
@@ -20,7 +20,7 @@ const store = configureStore({
         shopAddress: ShopAddressSlice,
         shopOrder: ShopOrderSlice,
         shopSearch: ShopSearchSlice,
-        shopReview: reviewSlice,
+        shopReview: ShopReviewSlice,
 
     },
 })

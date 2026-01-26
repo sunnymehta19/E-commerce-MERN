@@ -39,6 +39,42 @@
   scrollbar-width: none;
 }
 
+
+
+/* Floating pill scrollbar */
+@layer utilities {
+  .pill-scrollbar::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .pill-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+    margin: 6px 0; /* top & bottom gap like reference */
+    
+  }
+
+  .pill-scrollbar::-webkit-scrollbar-thumb {
+    background-color: black; /* indigo-ish */
+    border-radius: 999px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+  }
+
+  .pill-scrollbar::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(36, 36, 37, 0.9);
+  }
+
+  /* Firefox */
+  .pill-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: rgb(77, 75, 75) transparent;
+    padding-right: 10px;
+  }
+}
+
+
+
+
 /* word selection backgroundcolor black */
 ::selection {
   background-color: black;

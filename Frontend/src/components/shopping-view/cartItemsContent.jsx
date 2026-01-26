@@ -30,7 +30,17 @@ const UserCartItemsContent = ({ cartItems }) => {
                 (product) => product._id === cartItems.productId
             );
 
-            if (!currentProduct) return;
+            if (!currentProduct) {
+                dispatch(updateCartItems({
+                    userId: user?.id,
+                    productId: getCartItem?.productId,
+                    quantity:
+                        typeOfAction === "plus"
+                            ? getCartItem?.quantity + 1
+                            : getCartItem?.quantity - 1
+                }));
+                return;
+            }
 
             if (cartItems.quantity + 1 > currentProduct.totalStock) {
                 showToast.error(

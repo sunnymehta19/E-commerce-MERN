@@ -5,9 +5,29 @@ import UserCartItemsContent from '@/components/shopping-view/cartItemsContent'
 import { useDispatch, useSelector } from 'react-redux'
 import { Button } from '@/components/ui/button'
 import { showToast } from '@/utils/toast'
-import { createNewOrder } from '@/store/shop-slice/orderSlice'
+import { capturePayment, createNewOrder } from '@/store/shop-slice/orderSlice'
 import axios from 'axios'
-import { any } from 'zod'
+import { clearCart } from '@/store/shop-slice/cartSlice'
+import { useNavigate } from 'react-router-dom'
+
+
+//Razorpay script loader
+const loadRazorpayScript = () => {
+  return new Promise((resolve) => {
+    if (window.Razorpay) {
+      resolve(true);
+      return;
+    }
+
+    const script = document.createElement("script");
+    script.src = "https://checkout.razorpay.com/v1/checkout.js"
+    script.onload = () => resolve(true);
+    script.onerror = () => resolve(false);
+    document.body.appendChild(script);
+
+  });
+};
+
 
 
 const ShoppingCheckout = () => {
@@ -16,7 +36,8 @@ const ShoppingCheckout = () => {
   const { user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const [currentSelectedAddress, setCurrentSelectedAddress] = useState(null);
-  const [isPaymentStart, setIsPaymentStart] = useState(false)
+  const [isPaymentStart, setIsPaymentStart] = useState(false);
+  const navigate = useNavigate();
 
 
   const TotalCartAmount =
@@ -36,6 +57,16 @@ const ShoppingCheckout = () => {
 
     if (!currentSelectedAddress) {
       showToast.error("Please select an address.")
+      return;
+    }
+
+    setIsPaymentStart(true);
+
+    const isRazorpayLoaded = await loadRazorpayScript();
+
+    if (!isRazorpayLoaded) {
+      showToast.error("Razorpay SDK failed to load");
+      setIsPaymentStart(false);
       return;
     }
 
@@ -63,7 +94,6 @@ const ShoppingCheckout = () => {
 
     console.log("orderData:", orderData);
 
-    setIsPaymentStart(true);
 
     const response = await dispatch(createNewOrder(orderData));
 
@@ -84,14 +114,26 @@ const ShoppingCheckout = () => {
       order_id: razorpayOrder.id,
 
       handler: async (response) => {
-        await axios.post("/api/order/capture-payment", {
-          razorpay_order_id: response.razorpay_order_id,
-          razorpay_payment_id: response.razorpay_payment_id,
-          razorpay_signature: response.razorpay_signature,
-          orderId,
-        });
+        try {
+          await dispatch(
+            capturePayment({
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature,
+              orderId,
+            }),
+          ).unwrap();
 
-        showToast.success("Payment successfully")
+          //Clear Cart on successful order
+          dispatch(clearCart());
+          navigate("/account")
+          showToast.success("Payment successfully");
+
+        } catch (error) {
+          showToast.error("Payment verification failed");
+        } finally {
+          setIsPaymentStart(false);
+        }
       },
 
       modal: {
@@ -106,14 +148,14 @@ const ShoppingCheckout = () => {
       },
     };
 
-    const rzp = new window.Razorpay(options);
+    const razorpayInstance = new window.Razorpay(options);
 
-    rzp.on("Payment failed", () => {
+    razorpayInstance.on("Payment failed", () => {
       setIsPaymentStart(false);
       showToast.error("Payment failed")
     });
 
-    rzp.open();
+    razorpayInstance.open();
 
   };
 
@@ -133,6 +175,7 @@ const ShoppingCheckout = () => {
             cartItems && cartItems.items && cartItems.items.length > 0
               ? cartItems.items.map((item) => (
                 <UserCartItemsContent
+                  key={item.productId}
                   cartItems={item}
                 />
               )) : (

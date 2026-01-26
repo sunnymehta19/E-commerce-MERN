@@ -3,45 +3,23 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { fetchProductDetails } from "@/store/shop-slice/productSlice";
 import { addToCart, fetchCartItems } from "@/store/shop-slice/cartSlice";
-import { getReviews, addReview } from "@/store/shop-slice/reviewSlice";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Star } from "lucide-react";
 import { showToast } from "@/utils/toast";
 import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
+import StarRatingComponent from "@/components/common/StarRatingComponent";
+import { addReviews, getReviews } from "@/store/shop-slice/reviewSlice";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import StarRatingDisplayOnly from "@/components/common/StarRatingDisplayOnly";
 
 
-
-
-function StarRating({ value, onChange, size = 18, readOnly = false }) {
-    return (
-        <div className="flex items-center gap-1">
-            {[1, 2, 3, 4, 5].map((star) => (
-                <Star
-                    key={star}
-                    size={size}
-                    className={`cursor-pointer ${star <= value
-                        ? "fill-yellow-400 text-yellow-400"
-                        : "text-muted-foreground"
-                        }`}
-                    onClick={() => !readOnly && onChange?.(star)}
-                />
-            ))}
-        </div>
-    );
-}
 
 const ProductDetailsPage = () => {
     const { productId } = useParams();
     const dispatch = useDispatch();
-    //   const { toast } = useToast();
 
-    const { productDetails, isLoading } = useSelector(
-        (state) => state.shopProducts
-    );
+    const { productDetails, isLoading } = useSelector((state) => state.shopProducts);
     const { user } = useSelector((state) => state.auth);
     const { cartItems } = useSelector((state) => state.shopCart);
     const { reviews } = useSelector((state) => state.shopReview);
@@ -53,31 +31,49 @@ const ProductDetailsPage = () => {
 
     useEffect(() => {
         dispatch(fetchProductDetails(productId));
+        dispatch(getReviews(productId));
     }, [dispatch, productId]);
 
-    useEffect(() => {
-        if (productDetails?._id) {
-            dispatch(getReviews(productDetails._id));
-        }
-    }, [productDetails]);
+
 
     if (isLoading || !productDetails) {
-        return <div className="p-6">Loading product...</div>;
+        return <div className="p-6">
+            <Skeleton className="h-[20px] w-[100px] rounded-full" />
+        </div>;
     }
-
     const images = [
         productDetails.image,
         productDetails.image,
-        productDetails.image,
+        productDetails.image
     ];
 
-    const avgRating =
-        reviews?.length > 0
-            ? (
-                reviews.reduce((sum, r) => sum + r.reviewValue, 0) /
-                reviews.length
-            ).toFixed(1)
-            : 0;
+    const handleRatingChange = (getRating) => {
+        setRating(getRating);
+    }
+
+
+    const handleAddReview = async () => {
+        try {
+            await dispatch(
+                addReviews({
+                    productId: productDetails?._id,
+                    userId: user?.id,
+                    username: user?.username,
+                    reviewMessage: reviewMsg,
+                    reviewValue: rating,
+                })
+            ).unwrap();
+
+            showToast.success("Review added successfully");
+            setRating(0);
+            setReviewMsg("");
+            dispatch(getReviews(productDetails?._id));
+
+        } catch (error) {
+            showToast.error(error?.message || "You already reviewed this product");
+        }
+    }
+
 
 
 
@@ -133,26 +129,6 @@ const ProductDetailsPage = () => {
         });
     }
 
-
-    function handleAddReview() {
-        dispatch(
-            addReview({
-                productId: productDetails._id,
-                userId: user?.id,
-                userName: user?.userName,
-                reviewMessage: reviewMsg,
-                reviewValue: rating,
-            })
-        ).then((res) => {
-            if (res.payload.success) {
-                setRating(0);
-                setReviewMsg("");
-                dispatch(getReviews(productDetails._id));
-                toast({ title: "Review submitted" });
-            }
-        });
-    }
-
     return (
         <div className="max-w-7xl mx-auto px-4 py-6">
             {/* TOP SECTION */}
@@ -201,9 +177,9 @@ const ProductDetailsPage = () => {
 
 
                         <div className="flex items-center gap-2">
-                            <StarRating value={avgRating} readOnly />
+
                             <span className="text-sm text-muted-foreground">
-                                {avgRating} ({reviews?.length || 0} reviews)
+
                             </span>
                         </div>
                     </div>
@@ -255,58 +231,98 @@ const ProductDetailsPage = () => {
 
             <Separator className="my-10" />
 
-            {/* REVIEWS */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-                <div className="lg:col-span-2 space-y-6">
-                    <h2 className="text-xl font-bold">Customer Reviews</h2>
+            <div className="max-w-5xl mx-auto">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                    {/* LEFT: REVIEWS (REFERENCE STYLE) */}
+                    <div className="space-y-6 md:h-[60vh] overflow-y-scroll pill-scrollbar">
+                        <h3 className="text-xl font-semibold">Ratings & Reviews</h3>
 
-                    {reviews?.length > 0 ? (
-                        reviews.map((review) => (
-                            <div key={review._id} className="flex gap-4">
-                                <Avatar>
-                                    <AvatarFallback>
-                                        {review.userName[0].toUpperCase()}
-                                    </AvatarFallback>
-                                </Avatar>
+                        {reviews && reviews.length > 0 ? (
+                            reviews.map((reviewItem) => (
+                                <div
+                                    key={reviewItem?._id}
+                                    className="bg-muted/40 border rounded-xl p-6 space-y-3"
+                                >
+                                    {/* USER */}
+                                    <div className="flex gap-2 items-center">
+                                        <div className="">
+                                            <Avatar>
+                                                <AvatarFallback>{reviewItem?.username[0].toUpperCase()}</AvatarFallback>
+                                            </Avatar>
+                                        </div>
+                                        <div className="">
+                                            <h3 className="capitalize font-bold ">{reviewItem?.username}</h3>
+                                        </div>
+                                        <div className="">
+                                            <span className="text-muted-foreground font-normal">(Verified Buyer)</span>
+                                        </div>
 
-                                <div>
-                                    <p className="font-semibold">{review.userName}</p>
-                                    <StarRating value={review.reviewValue} readOnly />
-                                    <p className="text-muted-foreground">
-                                        {review.reviewMessage}
+                                    </div>
+                                        {/* STARS */}
+                                    <div className="flex gap-2 items-center">
+                                        <div className="flex gap-1">
+                                            <StarRatingDisplayOnly rating={reviewItem?.reviewValue} />
+                                        </div>
+                                        <div className="font-semibold">({reviewItem?.reviewValue} <span className="pl-0.1">★</span>)</div>
+                                    </div>
+
+                                    
+
+                                    {/* REVIEW TEXT */}
+                                    <p className="text-sm leading-relaxed text-muted-foreground">
+                                        {reviewItem?.reviewMessage}
                                     </p>
+
+
                                 </div>
+                            )
+                            )) : (
+                            <h2 className="text-2xl font-bold">No reviews</h2>
+                        )}
+                    </div>
+
+                    {/* RIGHT: WRITE REVIEW FORM */}
+                    <div className="space-y-6">
+                        <h3 className="text-xl font-semibold">Write a review</h3>
+
+                        <div className="border rounded-xl p-6 space-y-5">
+
+                            {/* REVIEW MESSAGE */}
+                            <div>
+                                <div className="mb-3">
+                                    <p className="text-sm font-medium mb-2">Your Rating</p>
+                                    <StarRatingComponent
+                                        rating={rating}
+                                        handleRatingChange={handleRatingChange}
+                                    />
+                                </div>
+                                <p className="text-sm font-medium mb-2">Your Review</p>
+                                <textarea
+                                    name="reviewMsg"
+                                    value={reviewMsg}
+                                    onChange={(e) => setReviewMsg(e.target.value)}
+                                    placeholder="Write your experience with this product..."
+                                    className="w-full min-h-[110px] resize-none border rounded-md p-3 mb-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                                />
+                                {/* SUBMIT */}
+                                <Button
+                                    onClick={handleAddReview}
+                                    disabled={reviewMsg.trim() === ""}
+                                    className="w-full"
+                                >
+                                    Submit Review
+                                </Button>
                             </div>
-                        ))
-                    ) : (
-                        <p className="text-muted-foreground">No reviews yet</p>
-                    )}
-                </div>
 
-                {/* ADD REVIEW */}
-                <div className="border rounded-xl p-5 h-fit">
-                    <h3 className="font-bold mb-3">Write a Review</h3>
 
-                    <Label>Rating</Label>
-                    <StarRating value={rating} onChange={setRating} />
-
-                    <Label className="mt-3 block">Review</Label>
-                    <Input
-                        value={reviewMsg}
-                        onChange={(e) => setReviewMsg(e.target.value)}
-                        placeholder="Share your experience"
-                    />
-
-                    <Button
-                        className="w-full mt-4"
-                        onClick={handleAddReview}
-                        disabled={!rating || reviewMsg.trim() === ""}
-                    >
-                        Submit Review
-                    </Button>
-
+                        </div>
+                    </div>
                 </div>
             </div>
+
+
+
+
         </div>
     );
 }
