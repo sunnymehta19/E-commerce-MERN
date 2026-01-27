@@ -126,7 +126,7 @@ const ShoppingCheckout = () => {
 
           //Clear Cart on successful order
           dispatch(clearCart());
-          navigate("/account")
+          navigate("/order-success");
           showToast.success("Payment successfully");
 
         } catch (error) {
@@ -169,7 +169,10 @@ const ShoppingCheckout = () => {
         />
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mt-5 p-5">
-        <ShopAddress setCurrentSelectedAddress={setCurrentSelectedAddress} />
+        <ShopAddress
+          selectedId={currentSelectedAddress}
+          setCurrentSelectedAddress={setCurrentSelectedAddress}
+        />
         <div className="flex flex-col gap-4">
           {
             cartItems && cartItems.items && cartItems.items.length > 0

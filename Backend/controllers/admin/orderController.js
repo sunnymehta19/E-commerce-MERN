@@ -65,6 +65,13 @@ const updateOrderStatus = async (req, res) => {
 
         const order = await orderModel.findById(id);
 
+        if (!orderStatus || typeof orderStatus !== "string") {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid order status"
+            });
+        }
+
         if (!order) {
             return res.status(404).json({
                 success: false,
@@ -72,7 +79,7 @@ const updateOrderStatus = async (req, res) => {
             });
         }
 
-        await orderModel.findByIdAndUpdate(id, { orderStatus }, {new: true});
+        await orderModel.findByIdAndUpdate(id, { orderStatus }, { new: true });
 
         res.status(200).json({
             success: true,

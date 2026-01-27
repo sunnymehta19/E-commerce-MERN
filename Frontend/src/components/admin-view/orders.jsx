@@ -11,10 +11,12 @@ import { Badge } from '../ui/badge'
 const AdminOrdersContent = () => {
 
     const [openDetailsDialog, setOpenDetailsDialog] = useState(false);
+    const [selectedOrderId, setSelectedOrderId] = useState(null);
     const { orderList, orderDetails } = useSelector((state) => state.adminOrder);
     const dispatch = useDispatch();
 
     const handleFetchOrderDetails = (getId) => {
+        setSelectedOrderId(getId);
         dispatch(getOrderDetailsForAdmin(getId));
     }
 
@@ -24,7 +26,7 @@ const AdminOrdersContent = () => {
     }, [dispatch])
 
     useEffect(() => {
-        if (orderDetails !== null) {
+        if (orderDetails) {
             setOpenDetailsDialog(true);
         }
     }, [orderDetails])
@@ -60,11 +62,12 @@ const AdminOrdersContent = () => {
                                                 </TableCell>
                                                 <TableCell>
                                                     <Badge
-                                                        className={`py-1 px-3 ${orderItem?.orderStatus === "confirmed"
-                                                            ? "bg-green-500"
-                                                            : orderItem?.orderStatus === "rejected"
-                                                                ? "bg-red-600"
-                                                                : "bg-black"
+                                                        className={`py-1 px-3 capitalize ${orderItem?.orderStatus === "pending" && "bg-yellow-600 text-white" ||
+                                                            orderItem?.orderStatus === "inProcess" && "bg-blue-800 text-white" ||
+                                                            orderItem?.orderStatus === "inShipping" && "bg-purple-800 text-white" ||
+                                                            orderItem?.orderStatus === "delivered" && "bg-green-500 text-white" ||
+                                                            orderItem?.orderStatus === "rejected" && "bg-red-600 text-white" ||
+                                                            "bg-black text-white"
                                                             }`}
                                                     >
                                                         {orderItem?.orderStatus}
@@ -72,22 +75,13 @@ const AdminOrdersContent = () => {
                                                 </TableCell>
                                                 <TableCell>{orderItem?.totalAmount}</TableCell>
                                                 <TableCell>
-                                                    <Dialog
-                                                        open={openDetailsDialog}
-                                                        onOpenChange={() => {
-                                                            setOpenDetailsDialog(false);
-                                                            dispatch(resetOrderDetails());
-                                                        }}
+                                                    <Button
+                                                        onClick={() =>
+                                                            handleFetchOrderDetails(orderItem?._id)
+                                                        }
                                                     >
-                                                        <Button
-                                                            onClick={() =>
-                                                                handleFetchOrderDetails(orderItem?._id)
-                                                            }
-                                                        >
-                                                            View details
-                                                        </Button>
-                                                        <AdminOrderDetails orderDetails={orderDetails} />
-                                                    </Dialog>
+                                                        View details
+                                                    </Button>
                                                 </TableCell>
                                             </TableRow>
                                         ))
@@ -104,6 +98,18 @@ const AdminOrdersContent = () => {
                             }
                         </TableBody>
                     </Table>
+                    <Dialog
+                        open={openDetailsDialog}
+                        onOpenChange={(open) => {
+                            if (!open) {
+                                setSelectedOrderId(null);
+                                setOpenDetailsDialog(false);
+                                dispatch(resetOrderDetails());
+                            }
+                        }}
+                    >
+                        <AdminOrderDetails orderDetails={orderDetails} />
+                    </Dialog>
                 </CardContent>
             </Card>
         </>

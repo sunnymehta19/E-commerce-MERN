@@ -6,7 +6,7 @@ import { FaEdit } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 
 
-const ShopAddressCard = ({ addressInfo, handleEditAddress, handleDeleteAddress, setCurrentSelectedAddress }) => {
+const ShopAddressCard = ({ addressInfo, handleEditAddress, handleDeleteAddress, setCurrentSelectedAddress, selectedId }) => {
     return (
         <>
             <Card
@@ -14,7 +14,12 @@ const ShopAddressCard = ({ addressInfo, handleEditAddress, handleDeleteAddress, 
                     () => setCurrentSelectedAddress(addressInfo)
                     : null
                 }
-                className="gap-4 p-4 flex flex-col h-full"
+                className={`gap-4 p-4 flex flex-col h-full cursor-pointer
+                    ${selectedId?._id === addressInfo?._id 
+                        ? "border-red-950 border-[4px]"
+                        : 'border-black'
+
+                    }`}
             >
                 <CardContent className="grid px-3 gap-3">
                     <Label>Address: {addressInfo?.address}</Label>

@@ -11,7 +11,7 @@ const ShopOrderDetails = ({ orderDetails }) => {
 
     return (
         <>
-            <DialogContent className="sm:max-w-[600px] max-h-[85vh] overflow-y-auto">
+            <DialogContent className="sm:max-w-[600px] max-h-[85vh] overflow-y-auto pill-scrollbar">
                 <DialogHeader>
                     <DialogTitle className="text-xl font-extrabold">Order Details</DialogTitle>
                 </DialogHeader>
@@ -41,11 +41,12 @@ const ShopOrderDetails = ({ orderDetails }) => {
                             <p className="font-medium">Order Status</p>
                             <Label>
                                 <Badge
-                                    className={`py-1 px-3 ${orderDetails?.orderStatus === "confirmed"
-                                        ? "bg-green-500"
-                                        : orderDetails?.orderStatus === "rejected"
-                                            ? "bg-red-600"
-                                            : "bg-black"
+                                    className={`py-1 px-3 capitalize ${orderDetails?.orderStatus === "pending" && "bg-yellow-600 text-white" ||
+                                        orderDetails?.orderStatus === "inProcess" && "bg-blue-800 text-white" ||
+                                        orderDetails?.orderStatus === "inShipping" && "bg-purple-800 text-white" ||
+                                        orderDetails?.orderStatus === "delivered" && "bg-green-500 text-white" ||
+                                        orderDetails?.orderStatus === "rejected" && "bg-red-600 text-white" ||
+                                        "bg-black text-white"
                                         }`}
                                 >
                                     {orderDetails?.orderStatus}

@@ -21,7 +21,7 @@ const initialAddressFormData = {
 
 
 
-const ShopAddress = ({ setCurrentSelectedAddress }) => {
+const ShopAddress = ({ setCurrentSelectedAddress, selectedId }) => {
 
     const dispatch = useDispatch();
     const { user } = useSelector((state) => state.auth);
@@ -111,6 +111,7 @@ const ShopAddress = ({ setCurrentSelectedAddress }) => {
                             ? addressList.map((addressItem) => (
                                 <ShopAddressCard
                                     key={addressItem._id}
+                                    selectedId={selectedId}
                                     addressInfo={addressItem}
                                     handleDeleteAddress={handleDeleteAddress}
                                     handleEditAddress={handleEditAddress}

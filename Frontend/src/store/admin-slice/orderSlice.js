@@ -73,11 +73,11 @@ const AdminOrderSlice = createSlice({
             })
             .addCase(getOrderDetailsForAdmin.fulfilled, (state, action) => {
                 state.isLoading = false;
-                state.orderList = action.payload.data;
+                state.orderDetails = action.payload.data;
             })
             .addCase(getOrderDetailsForAdmin.rejected, (state) => {
                 state.isLoading = false;
-                state.orderList = null;
+                state.orderDetails = null;
             })
     }
 });

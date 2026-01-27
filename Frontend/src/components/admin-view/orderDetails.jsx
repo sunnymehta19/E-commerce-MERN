@@ -2,36 +2,38 @@ import React from 'react'
 import { DialogContent, DialogHeader, DialogTitle } from '../ui/dialog'
 import { Label } from '../ui/label'
 import { Separator } from '../ui/separator'
-import OrderStatusForm from '../common/OrderStatusForm'
+import OrderStatusForm from './OrderStatusForm'
 import { Badge } from '../ui/badge'
 import { useDispatch, useSelector } from 'react-redux'
 import { getAllOrdersForAdmin, getOrderDetailsForAdmin, updateOrderStatus } from '@/store/admin-slice/orderSlice'
 import { showToast } from '@/utils/toast'
 
-const AdminOrderDetails = ({ orderDetails }) => {
+const AdminOrderDetails = ({ orderDetails, onClose }) => {
 
     const { user } = useSelector((state) => state.auth);
     const dispatch = useDispatch();
 
     const handleStatusUpdate = (data) => {
-        const { status } = data;
 
         dispatch(
             updateOrderStatus({
-                id: orderDetails?._id, orderStatus: data
+                id: orderDetails?._id,
+                orderStatus: data.orderStatus,
             })
         ).then((response) => {
             if (response?.payload?.success) {
                 dispatch(getOrderDetailsForAdmin(orderDetails?._id));
                 dispatch(getAllOrdersForAdmin());
                 showToast.success("Order status updated successfully");
+
+
             }
         });
     }
 
     return (
         <>
-            <DialogContent className="sm:max-w-[600px] max-h-[85vh] overflow-y-auto">
+            <DialogContent className="sm:max-w-[600px] max-h-[85vh] overflow-y-auto pill-scrollbar">
                 <DialogHeader>
                     <DialogTitle className="text-xl font-extrabold">Order Details</DialogTitle>
                 </DialogHeader>
@@ -61,11 +63,12 @@ const AdminOrderDetails = ({ orderDetails }) => {
                             <p className="font-medium">Order Status</p>
                             <Label>
                                 <Badge
-                                    className={`py-1 px-3 ${orderDetails?.orderStatus === "confirmed"
-                                        ? "bg-green-500"
-                                        : orderDetails?.orderStatus === "rejected"
-                                            ? "bg-red-600"
-                                            : "bg-black"
+                                    className={`py-1 px-3 capitalize ${orderDetails?.orderStatus === "pending" && "bg-yellow-600 text-white" ||
+                                        orderDetails?.orderStatus === "inProcess" && "bg-blue-800 text-white" ||
+                                        orderDetails?.orderStatus === "inShipping" && "bg-purple-800 text-white" ||
+                                        orderDetails?.orderStatus === "delivered" && "bg-green-500 text-white" ||
+                                        orderDetails?.orderStatus === "rejected" && "bg-red-600 text-white" ||
+                                        "bg-black text-white"
                                         }`}
                                 >
                                     {orderDetails?.orderStatus}
@@ -82,7 +85,8 @@ const AdminOrderDetails = ({ orderDetails }) => {
                                 {
                                     orderDetails?.cartItems && orderDetails?.cartItems.length > 0
                                         ? orderDetails?.cartItems.map((item) => (
-                                            <li className="flex items-center justify-between">
+
+                                            <li key={item._id} className="flex items-center justify-between">
                                                 <span>Title: {item.title}</span>
                                                 <span>Quantity: {item.quantity}</span>
                                                 <span>Price: ₹{item.price}</span>

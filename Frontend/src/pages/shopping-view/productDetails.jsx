@@ -47,6 +47,13 @@ const ProductDetailsPage = () => {
         productDetails.image
     ];
 
+
+    const averageReview =
+        reviews && reviews.length > 0
+            ? reviews.reduce((sum, reviewItem) => sum + reviewItem.reviewValue, 0) / reviews.length
+            : 0;
+
+
     const handleRatingChange = (getRating) => {
         setRating(getRating);
     }
@@ -177,9 +184,9 @@ const ProductDetailsPage = () => {
 
 
                         <div className="flex items-center gap-2">
-
+                            <StarRatingDisplayOnly rating={averageReview} />
                             <span className="text-sm text-muted-foreground">
-
+                            ({averageReview.toFixed(0) } ★)
                             </span>
                         </div>
                     </div>
@@ -258,7 +265,7 @@ const ProductDetailsPage = () => {
                                         </div>
 
                                     </div>
-                                        {/* STARS */}
+                                    {/* STARS */}
                                     <div className="flex gap-2 items-center">
                                         <div className="flex gap-1">
                                             <StarRatingDisplayOnly rating={reviewItem?.reviewValue} />
@@ -266,7 +273,7 @@ const ProductDetailsPage = () => {
                                         <div className="font-semibold">({reviewItem?.reviewValue} <span className="pl-0.1">★</span>)</div>
                                     </div>
 
-                                    
+
 
                                     {/* REVIEW TEXT */}
                                     <p className="text-sm leading-relaxed text-muted-foreground">

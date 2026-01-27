@@ -11,12 +11,14 @@ import { Badge } from '../ui/badge'
 const ShopOrders = () => {
 
   const [openDetailsDialog, setOpenDetailsDialog] = useState(false);
+  const [selectedOrderId, setSelectedOrderId] = useState(null);
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
   const { orderList, orderDetails } = useSelector((state) => state.shopOrder);
 
 
   const handleFetchOrderDetails = (getId) => {
+    setSelectedOrderId(getId);
     dispatch(getOrderDetails(getId));
   }
 
@@ -61,11 +63,12 @@ const ShopOrders = () => {
                         <TableCell>{orderItem?.orderDate.split("T")[0]}</TableCell>
                         <TableCell>
                           <Badge
-                            className={`py-1 px-3 ${orderItem?.orderStatus === "confirmed"
-                              ? "bg-green-500"
-                              : orderItem?.orderStatus === "rejected"
-                                ? "bg-red-600"
-                                : "bg-black"
+                            className={`py-1 px-3 capitalize ${orderItem?.orderStatus === "pending" && "bg-yellow-600 text-white" ||
+                              orderItem?.orderStatus === "inProcess" && "bg-blue-800 text-white" ||
+                              orderItem?.orderStatus === "inShipping" && "bg-purple-800 text-white" ||
+                              orderItem?.orderStatus === "delivered" && "bg-green-500 text-white" ||
+                              orderItem?.orderStatus === "rejected" && "bg-red-600 text-white" ||
+                              "bg-black text-white"
                               }`}
                           >
                             {orderItem?.orderStatus}
@@ -73,22 +76,11 @@ const ShopOrders = () => {
                         </TableCell>
                         <TableCell>{orderItem?.totalAmount}</TableCell>
                         <TableCell>
-                          <Dialog
-                            open={openDetailsDialog}
-                            onOpenChange={(open) => {
-                              if (!open) {
-                                setOpenDetailsDialog(false);
-                                dispatch(resetOrderDetails());
-                              }
-                            }}
+                          <Button
+                            onClick={() => handleFetchOrderDetails(orderItem?._id)}
                           >
-                            <Button
-                              onClick={() => handleFetchOrderDetails(orderItem?._id)}
-                            >
-                              View details
-                            </Button>
-                            <ShopOrderDetails orderDetails={orderDetails} />
-                          </Dialog>
+                            View details
+                          </Button>
                         </TableCell>
                       </TableRow>
                     ))
@@ -102,6 +94,18 @@ const ShopOrders = () => {
               }
             </TableBody>
           </Table>
+          <Dialog
+
+            open={openDetailsDialog}
+            onOpenChange={(open) => {
+              if (!open) {
+                setOpenDetailsDialog(false);
+                dispatch(resetOrderDetails());
+              }
+            }}
+          >
+            <ShopOrderDetails orderDetails={orderDetails} />
+          </Dialog>
         </CardContent>
       </Card>
     </>
