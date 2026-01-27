@@ -16,6 +16,8 @@ const shopOrderRouter = require("./routes/shop/orderRouter");
 const shopSearchRouter = require("./routes/shop/searchRouter");
 const shopReviewRouter = require("./routes/shop/reviewRouter");
 
+const commonFeatureRouter = require("./routes/common/featureRouter");
+
 const cookieParser = require("cookie-parser");
 app.use(cookieParser());
 app.use(express.json());
@@ -47,6 +49,7 @@ app.use("/api/shop/address", shopAddressRouter);
 app.use("/api/shop/order", shopOrderRouter);
 app.use("/api/shop/search", shopSearchRouter);
 app.use("/api/shop/review", shopReviewRouter);
+app.use("/api/common/feature", commonFeatureRouter);
 
 
 

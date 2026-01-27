@@ -123,12 +123,6 @@ const AdminProducts = () => {
     });
   }
 
-  
- 
-
-
-
-
   return (
     <>
       <Fragment >
