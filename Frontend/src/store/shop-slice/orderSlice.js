@@ -64,18 +64,30 @@ export const getOrderDetails = createAsyncThunk(
 );
 
 
+export const cancelOrder = createAsyncThunk(
+    "/order/cancelOrder",
+    async (orderId) => {
+        const response = await axios.put(
+            `http://localhost:3000/api/shop/order/cancel/${orderId}`
+        );
+        return response?.data;
+    }
+);
+
+
+
 
 const ShopOrderSlice = createSlice({
     name: "shopOrder",
     initialState,
     reducers: {
         resetOrderDetails: (state) => {
-          state.isLoading = false;
-          state.orderId = null;
-          state.razorpayOrder = null;
-          state.confirmedOrder = null;
-          state.error = null;
-          state.orderDetails = null;
+            state.isLoading = false;
+            state.orderId = null;
+            state.razorpayOrder = null;
+            state.confirmedOrder = null;
+            state.error = null;
+            state.orderDetails = null;
         },
     },
     extraReducers: (builder) => {
@@ -125,6 +137,25 @@ const ShopOrderSlice = createSlice({
             .addCase(getOrderDetails.rejected, (state) => {
                 state.isLoading = false;
                 state.orderDetails = null;
+            })
+            .addCase(cancelOrder.pending, (state) => {
+                state.isLoading = true;
+            })
+            .addCase(cancelOrder.fulfilled, (state) => {
+                state.isLoading = false;
+                if (state.orderDetails) {
+                    state.orderDetails.orderStatus = "cancelled";
+                }
+
+                state.orderList = state.orderList.map(order =>
+                    order._id === state.orderDetails?._id
+                        ? { ...order, orderStatus: "cancelled" }
+                        : order
+                );
+            })
+            .addCase(cancelOrder.rejected, (state, action) => {
+                state.isLoading = false;
+                state.error = action.payload?.message || "Failed to cancel order";
             })
 
     },

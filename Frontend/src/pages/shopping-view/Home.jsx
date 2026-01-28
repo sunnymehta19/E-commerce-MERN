@@ -1,7 +1,4 @@
 import { React, useEffect, useState } from 'react'
-import bannerOne from "../../assets/banner-1.webp";
-import bannerTwo from "../../assets/banner-2.webp";
-import bannerThree from "../../assets/banner-3.webp";
 import { Button } from '@/components/ui/button';
 import { BabyIcon, ChevronLeftIcon, ChevronRightIcon, CloudLightning, ShirtIcon, UmbrellaIcon, WatchIcon } from 'lucide-react';
 import { SiNike, SiAdidas, SiPuma, SiZara } from "react-icons/si";

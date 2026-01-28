@@ -104,7 +104,7 @@ const ShopAddress = ({ setCurrentSelectedAddress, selectedId }) => {
 
     return (
         <>
-            <Card className="py-3">
+            <Card className="py-3 ">
                 <div className="mb-5 p-3 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3  gap-2">
                     {
                         addressList && addressList.length > 0
@@ -128,7 +128,7 @@ const ShopAddress = ({ setCurrentSelectedAddress, selectedId }) => {
                     <Form {...form}>
                         <form
                             onSubmit={form.handleSubmit(onSubmit)}
-                            className="space-y-4"
+                            className="space-y-4 cursor-pointer"
                         >
                             {/* Address */}
                             <FormField

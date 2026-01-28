@@ -26,9 +26,27 @@ const handleImageUpload = async (req, res) => {
 //Adding a product
 const addProduct = async (req, res) => {
     try {
-        const { image, title, description, category, brand, price, salePrice, totalStock } = req.body;
+        const { image,
+            title,
+            description,
+            category,
+            brand,
+            price,
+            salePrice,
+            totalStock,
+            sizes
+        } = req.body;
+
         const createdProduct = new productModel({
-            image, title, description, category, brand, price, salePrice, totalStock
+            image,
+            title,
+            description,
+            category,
+            brand,
+            price,
+            salePrice,
+            totalStock,
+            sizes: sizes || [],
         });
 
         await createdProduct.save();
@@ -70,13 +88,25 @@ const fetchAllProduct = async (req, res) => {
 const editProduct = async (req, res) => {
     try {
         const { id } = req.params;
-        const { image, title, description, category, brand, price, salePrice, totalStock } = req.body;
+        const { image,
+            title,
+            description,
+            category,
+            brand,
+            price,
+            salePrice,
+            totalStock,
+            sizes,
+        } = req.body;
 
-        let findProduct = await productModel.findById( id );
-        if (!findProduct) return res.status(404).json({
-            success: false,
-            message: "Product not found"
-        });
+        let findProduct = await productModel.findById(id);
+
+        if (!findProduct) {
+            return res.status(404).json({
+                success: false,
+                message: "Product not found",
+            })
+        };
 
         findProduct.image = image || findProduct.image;
         findProduct.title = title || findProduct.title;
@@ -86,6 +116,11 @@ const editProduct = async (req, res) => {
         findProduct.price = price === "" ? 0 : price || findProduct.price;
         findProduct.salePrice = salePrice === "" ? 0 : salePrice || findProduct.salePrice;
         findProduct.totalStock = totalStock || findProduct.totalStock;
+
+        if (Array.isArray(sizes)) {
+            findProduct.sizes = sizes;
+        }
+
 
         await findProduct.save();
         res.status(200).json({
@@ -107,7 +142,7 @@ const editProduct = async (req, res) => {
 const deleteProduct = async (req, res) => {
     try {
         const { id } = req.params;
-        const product = await productModel.findByIdAndDelete( id );
+        const product = await productModel.findByIdAndDelete(id);
 
         if (!product) return res.status(404).json({
             success: false,

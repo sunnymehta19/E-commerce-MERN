@@ -15,7 +15,11 @@ const UserCartItemsContent = ({ cartItems }) => {
 
     const handleCartItemDelete = (getCartItem) => {
         dispatch(
-            deleteCartItem({ userId: user?.id, productId: getCartItem?.productId })
+            deleteCartItem({
+                userId: user?.id,
+                productId: getCartItem?.productId,
+                size: getCartItem?.size,
+            })
         ).then((data) => {
             if (data?.payload?.success) {
                 showToast.success("Product deleted successfully.");
@@ -37,7 +41,9 @@ const UserCartItemsContent = ({ cartItems }) => {
                     quantity:
                         typeOfAction === "plus"
                             ? getCartItem?.quantity + 1
-                            : getCartItem?.quantity - 1
+                            : getCartItem?.quantity - 1,
+                    size: getCartItem?.size,
+
                 }));
                 return;
             }
@@ -59,7 +65,8 @@ const UserCartItemsContent = ({ cartItems }) => {
             quantity:
                 typeOfAction === "plus"
                     ? getCartItem?.quantity + 1
-                    : getCartItem?.quantity - 1
+                    : getCartItem?.quantity - 1,
+            size: getCartItem?.size,
         })
         )
     }
@@ -76,6 +83,9 @@ const UserCartItemsContent = ({ cartItems }) => {
                 />
                 <div className="flex-1">
                     <h3 className="font-extrabold">{cartItems?.title}</h3>
+                    <p className="text-sm text-muted-foreground">
+                        Size: {cartItems?.size}
+                    </p>
                     <div className="flex items-center gap-2 mt-1">
                         <Button
                             variant='outline'

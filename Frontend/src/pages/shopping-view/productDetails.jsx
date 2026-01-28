@@ -14,6 +14,9 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import StarRatingDisplayOnly from "@/components/common/StarRatingDisplayOnly";
 
 
+const SIZE_ORDER = ["XS", "S", "M", "L", "XL", "XXL"];
+
+
 
 const ProductDetailsPage = () => {
     const { productId } = useParams();
@@ -23,6 +26,8 @@ const ProductDetailsPage = () => {
     const { user } = useSelector((state) => state.auth);
     const { cartItems } = useSelector((state) => state.shopCart);
     const { reviews } = useSelector((state) => state.shopReview);
+    const [selectedSize, setSelectedSize] = useState(null);
+
 
     const [rating, setRating] = useState(0);
     const [reviewMsg, setReviewMsg] = useState("");
@@ -32,6 +37,7 @@ const ProductDetailsPage = () => {
     useEffect(() => {
         dispatch(fetchProductDetails(productId));
         dispatch(getReviews(productId));
+        setSelectedSize(null);
     }, [dispatch, productId]);
 
 
@@ -85,11 +91,19 @@ const ProductDetailsPage = () => {
 
 
     const handleAddToCart = (getCurrentProductId, getTotalStock) => {
+
+        if (productDetails.sizes.length && !selectedSize) {
+            showToast.error("Please select a size");
+            return;
+        }
+
+
         let getCartItems = cartItems.items || [];
 
         if (getCartItems.length) {
             const indexOfCurrentItem = getCartItems.findIndex(
-                (item) => item.productId === getCurrentProductId
+                (item) => item.productId === getCurrentProductId &&
+                    item.size === selectedSize
             );
             if (indexOfCurrentItem > -1) {
                 const getQuantity = getCartItems[indexOfCurrentItem].quantity;
@@ -101,9 +115,13 @@ const ProductDetailsPage = () => {
         }
 
 
-        dispatch(addToCart({
-            userId: user?.id, productId: getCurrentProductId, quantity: 1
-        })
+        dispatch(
+            addToCart({
+                userId: user?.id,
+                productId: getCurrentProductId,
+                quantity: 1,
+                size: selectedSize,
+            })
         ).then((data) => {
             if (data?.payload?.success) {
                 dispatch(fetchCartItems(user.id));
@@ -113,6 +131,10 @@ const ProductDetailsPage = () => {
     }
 
     const handleBuyNow = (getCurrentProductId) => {
+        if (productDetails.sizes.length && !selectedSize) {
+            showToast.error("Please select a size");
+            return;
+        }
         let getCartItems = cartItems.items || [];
 
         const isAlreadyInCart = getCartItems.some(
@@ -126,7 +148,10 @@ const ProductDetailsPage = () => {
 
         dispatch(
             addToCart({
-                userId: user?.id, productId: getCurrentProductId, quantity: 1
+                userId: user?.id,
+                productId: getCurrentProductId,
+                quantity: 1,
+                size: selectedSize,
             })
         ).then((data) => {
             if (data?.payload?.success) {
@@ -186,7 +211,7 @@ const ProductDetailsPage = () => {
                         <div className="flex items-center gap-2">
                             <StarRatingDisplayOnly rating={averageReview} />
                             <span className="text-sm text-muted-foreground">
-                            ({averageReview.toFixed(0) } ★)
+                                ({averageReview.toFixed(0)} ★)
                             </span>
                         </div>
                     </div>
@@ -208,6 +233,28 @@ const ProductDetailsPage = () => {
                             </span>
                         )}
                     </div>
+
+                    {/* Size */}
+                    {productDetails?.sizes?.length > 0 && (
+                        <div className="flex flex-col gap-2">
+                            <p className="font-medium">Select Size</p>
+                            <div className="flex gap-2 flex-wrap">
+                                {[...productDetails.sizes]
+                                    .sort((a, b) => SIZE_ORDER.indexOf(a) - SIZE_ORDER.indexOf(b))
+                                    .map((size) => (
+                                        <Button
+                                            key={size}
+                                            size="sm"
+                                            variant={selectedSize === size ? "default" : "outline"}
+                                            onClick={() => setSelectedSize(size)}
+                                        >
+                                            {size}
+                                        </Button>
+                                    ))}
+                            </div>
+                        </div>
+                    )}
+
 
                     <div className="flex flex-col  gap-3 pt-4 md:absolute w-full bottom-0">
                         {productDetails?.totalStock === 0 ? (
@@ -315,7 +362,7 @@ const ProductDetailsPage = () => {
                                 <Button
                                     onClick={handleAddReview}
                                     disabled={reviewMsg.trim() === ""}
-                                    className="w-full"
+                                    className="w-full cursor-pointer"
                                 >
                                     Submit Review
                                 </Button>

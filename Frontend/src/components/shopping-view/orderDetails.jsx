@@ -3,11 +3,19 @@ import { DialogContent, DialogHeader, DialogTitle } from '../ui/dialog'
 import { Label } from '../ui/label'
 import { Separator } from '../ui/separator'
 import { Badge } from '../ui/badge'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { Button } from '../ui/button'
+import { cancelOrder } from '@/store/shop-slice/orderSlice'
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "../ui/alert-dialog";
+
 
 const ShopOrderDetails = ({ orderDetails }) => {
 
     const { user } = useSelector((state) => state.auth);
+    const { isLoading } = useSelector((state) => state.shopOrder);
+    const dispatch = useDispatch();
+    const CANCELLABLE_STATUSES = ["pending", "confirmed"];
+
 
     return (
         <>
@@ -46,6 +54,7 @@ const ShopOrderDetails = ({ orderDetails }) => {
                                         orderDetails?.orderStatus === "inShipping" && "bg-purple-800 text-white" ||
                                         orderDetails?.orderStatus === "delivered" && "bg-green-500 text-white" ||
                                         orderDetails?.orderStatus === "rejected" && "bg-red-600 text-white" ||
+                                        orderDetails?.orderStatus === "cancelled" && "bg-red-700 text-white" ||
                                         "bg-black text-white"
                                         }`}
                                 >
@@ -58,21 +67,38 @@ const ShopOrderDetails = ({ orderDetails }) => {
 
                     <div className="grid gap-4">
                         <div className="grid gap-2">
-                            <div className="font-medium">Order Details</div>
+                            <div className="font-medium pb-2">Product Details</div>
                             <ul className="grid gap-3">
                                 {
                                     orderDetails?.cartItems && orderDetails?.cartItems.length > 0
                                         ? orderDetails?.cartItems.map((item) => (
-                                            <li className="flex items-center justify-between">
-                                                <span>Title: {item.title}</span>
-                                                <span>Quantity: {item.quantity}</span>
-                                                <span>Price: ₹{item.price}</span>
-                                            </li>
+                                            <div key={item._id} className="flex items-center border p-2 rounded-lg justify-between">
+                                                <div className="flex gap-4 items-center  ">
+                                                    <img
+                                                        src={item.image}
+                                                        alt={item.title}
+                                                        className="w-16 h-16 object-cover rounded-md"
+                                                    />
+
+                                                    <div className="flex flex-col ">
+                                                        <p className="font-semibold">{item.title}</p>
+                                                        <p className="text-sm text-muted-foreground">
+                                                            Size: {item.size || "FREE"}
+                                                        </p>
+                                                        <p className="text-sm">Qty: {item.quantity}</p>
+                                                    </div>
+                                                </div>
+                                                <div className="">
+                                                    <p className="text-lg font-medium">₹{item.price}</p>
+
+                                                </div>
+                                            </div>
                                         )) : null
                                 }
                             </ul>
                         </div>
                     </div>
+                    <Separator />
                     <div className="grid gap-4">
                         <div className="grid gap-2">
                             <div className="font-medium">Shipping Info</div>
@@ -87,6 +113,41 @@ const ShopOrderDetails = ({ orderDetails }) => {
                             </div>
                         </div>
                     </div>
+                    {CANCELLABLE_STATUSES.includes(orderDetails?.orderStatus) && (
+                        <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                                <Button variant="destructive" className="cursor-pointer">
+                                    Cancel Order
+                                </Button>
+                            </AlertDialogTrigger>
+
+                            <AlertDialogContent>
+                                <AlertDialogHeader>
+                                    <AlertDialogTitle>
+                                        Are you sure you want to cancel this order?
+                                    </AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                        Orders cannot be cancelled once they are shipped.
+                                    </AlertDialogDescription>
+                                </AlertDialogHeader>
+
+                                <AlertDialogFooter>
+                                    <AlertDialogCancel className="cursor-pointer">
+                                        No, keep order
+                                    </AlertDialogCancel>
+
+                                    <AlertDialogAction
+                                        className="bg-red-600 hover:bg-red-700 cursor-pointer"
+                                        disabled={isLoading}
+                                        onClick={() => dispatch(cancelOrder(orderDetails._id))}
+                                    >
+                                        {isLoading ? "Cancelling..." : "Yes, cancel order"}
+                                    </AlertDialogAction>
+                                </AlertDialogFooter>
+                            </AlertDialogContent>
+                        </AlertDialog>
+                    )}
+
                 </div>
             </DialogContent>
         </>

@@ -4,8 +4,19 @@ import { Badge } from '../ui/badge'
 import { Button } from '../ui/button'
 import { useNavigate } from 'react-router-dom'
 
-const ShoppingProductTile = ({ product, handleGetProductDetails, handleAddToCart }) => {
+const sizeOrder = ["XS", "S", "M", "L", "XL", "XXL"];
+
+const ShoppingProductTile = ({ product, handleAddToCart }) => {
     const navigate = useNavigate();
+
+
+    const defaultSize =
+        product?.sizes?.length > 0
+            ? [...product.sizes].sort(
+                (a, b) => sizeOrder.indexOf(a) - sizeOrder.indexOf(b)
+            )[0]
+            : "M";
+
 
     return (
         <Card className="w-full max-w-sm mx-auto p-0 h-fit cursor-pointer" >
@@ -64,7 +75,7 @@ const ShoppingProductTile = ({ product, handleGetProductDetails, handleAddToCart
                             <Button
                                 onClick={(e) => {
                                     e.stopPropagation();
-                                    handleAddToCart(product._id, product?.totalStock);
+                                    handleAddToCart(product._id, product?.totalStock, defaultSize);
                                 }}
                                 className="w-full cursor-pointer"
                             >

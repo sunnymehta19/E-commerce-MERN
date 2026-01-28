@@ -24,6 +24,7 @@ const initialFormValues = {
   averageReview: 0,
   customCategory: "",
   customBrand: "",
+  sizes: [],
 };
 
 const AdminProducts = () => {
@@ -321,6 +322,35 @@ const AdminProducts = () => {
                         )}
 
                         <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  {/* Sizes */}
+                  <FormField
+                    control={form.control}
+                    name="sizes"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Available Sizes</FormLabel>
+                        <div className="flex gap-2 flex-wrap">
+                          {["XS", "S", "M", "L", "XL", "XXL","Free size"].map((size) => (
+                            <Button
+                              type="button"
+                              key={size}
+                              variant={field.value.includes(size) ? "default" : "outline"}
+                              size="sm"
+                              onClick={() => {
+                                const updatedSizes = field.value.includes(size)
+                                  ? field.value.filter((s) => s !== size)
+                                  : [...field.value, size];
+                                field.onChange(updatedSizes);
+                              }}
+                            >
+                              {size}
+                            </Button>
+                          ))}
+                        </div>
                       </FormItem>
                     )}
                   />

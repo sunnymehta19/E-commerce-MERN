@@ -82,7 +82,7 @@ const ShoppingListing = () => {
     dispatch(fetchProductDetails(getCurrentProductId));
   }
 
-  const handleAddToCart = (getCurrentProductId, getTotalStock) => {
+  const handleAddToCart = (getCurrentProductId, getTotalStock, size) => {
 
     let getCartItems = cartItems.items || [];
 
@@ -99,9 +99,13 @@ const ShoppingListing = () => {
       }
     }
 
-    dispatch(addToCart({
-      userId: user?.id, productId: getCurrentProductId, quantity: 1
-    })
+    dispatch(
+      addToCart({
+        userId: user?.id,
+        productId: getCurrentProductId,
+        quantity: 1,
+        size: size,
+      })
     ).then((data) => {
       if (data?.payload?.success) {
         dispatch(fetchCartItems(user.id));

@@ -9,17 +9,11 @@ const createOrder = async (req, res) => {
 
         const {
             userId,
+            username,
             cartItems,
             addressInfo,
             totalAmount,
             cartId,
-            orderStatus,
-            paymentMethod,
-            paymentStatus,
-            orderDate,
-            orderUpdateDate,
-            paymentId,
-            payerId,
         } = req.body;
 
         const razorpayOrder = await razorpay.orders.create({
@@ -30,6 +24,7 @@ const createOrder = async (req, res) => {
 
         const newlyCreatedOrder = await orderModel({
             userId,
+            username,
             cartId,
             cartItems,
             addressInfo,
@@ -193,5 +188,45 @@ const getOrderDetails = async (req, res) => {
 };
 
 
+const cancelOrderByUser = async (req, res) => {
+    try {
+        const { id } = req.params;
 
-module.exports = { createOrder, captureOrder, getAllOrdersByUser, getOrderDetails };
+        const order = await orderModel.findById(id);
+
+        if (!order) {
+            return res.status(404).json({
+                success: false,
+                message: "Order not found",
+            });
+        }
+
+        if (!["pending", "confirmed"].includes(order.orderStatus)) {
+            return res.status(400).json({
+                success: false,
+                message: "Order cannot be cancelled",
+            });
+        }
+
+        order.orderStatus = "cancelled";
+        order.orderUpdateDate = new Date();
+        await order.save();
+
+        res.status(200).json({
+            success: true,
+            message: "Order cancelled successfully",
+        });
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            success: false,
+            message: "Failed to cancel order",
+        });
+    }
+};
+
+
+
+
+module.exports = { createOrder, captureOrder, getAllOrdersByUser, getOrderDetails, cancelOrderByUser };

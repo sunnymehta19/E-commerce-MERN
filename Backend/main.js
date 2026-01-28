@@ -52,8 +52,6 @@ app.use("/api/shop/review", shopReviewRouter);
 app.use("/api/common/feature", commonFeatureRouter);
 
 
-
-
 app.listen(PORT, () => {
     console.log(`server is running on port ${PORT}`);
 })

@@ -3,7 +3,7 @@ const productModel = require("../../models/product");
 
 const addToCart = async (req, res) => {
     try {
-        const { userId, productId, quantity } = req.body;
+        const { userId, productId, quantity, size } = req.body;
 
         if (!userId || !productId || quantity <= 0) {
             return res.status(400).json({
@@ -11,6 +11,14 @@ const addToCart = async (req, res) => {
                 message: "Invalid data provided!"
             });
         }
+
+        if (!size) {
+            return res.status(400).json({
+                success: false,
+                message: "Product size is required!"
+            });
+        }
+
         const product = await productModel.findById(productId);
 
         if (!product) {
@@ -26,10 +34,13 @@ const addToCart = async (req, res) => {
             cart = new cartModel({ userId, items: [] });
         }
 
-        const findCurrentProductIndex = cart.items.findIndex((item) => item.productId.toString() === productId);
+        const findCurrentProductIndex = cart.items.findIndex(
+            (item) => item.productId.toString() === productId &&
+                item.size === size
+        );
 
         if (findCurrentProductIndex === -1) {
-            cart.items.push({ productId, quantity });
+            cart.items.push({ productId, quantity, size });
         } else {
             cart.items[findCurrentProductIndex].quantity += quantity;
         }
@@ -87,6 +98,7 @@ const fetchCartItems = async (req, res) => {
             price: item.productId.price,
             salePrice: item.productId.salePrice,
             quantity: item.quantity,
+            size: item.size,
 
         }));
 
@@ -110,7 +122,7 @@ const fetchCartItems = async (req, res) => {
 
 const updateCartItems = async (req, res) => {
     try {
-        const { userId, productId, quantity } = req.body;
+        const { userId, productId, quantity, size } = req.body;
 
         if (!userId || !productId || quantity <= 0) {
             return res.status(400).json({
@@ -128,7 +140,10 @@ const updateCartItems = async (req, res) => {
             });
         }
 
-        const findCurrentProductIndex = cart.items.findIndex((item) => item.productId.toString() === productId);
+        const findCurrentProductIndex = cart.items.findIndex(
+            (item) => item.productId.toString() === productId &&
+                item.size === size
+        );
 
         if (findCurrentProductIndex === -1) {
             return res.status(404).json({
@@ -153,6 +168,7 @@ const updateCartItems = async (req, res) => {
             price: item.productId ? item.productId.price : null,
             salePrice: item.productId ? item.productId.salePrice : null,
             quantity: item.quantity,
+            size: item.size,
 
         }));
 
@@ -177,7 +193,7 @@ const updateCartItems = async (req, res) => {
 
 const deleteCartItem = async (req, res) => {
     try {
-        const { userId, productId } = req.params;
+        const { userId, productId, size } = req.params;
 
         if (!userId || !productId) {
             return res.status(400).json({
@@ -198,7 +214,10 @@ const deleteCartItem = async (req, res) => {
             });
         }
 
-        cart.items = cart.items.filter((item) => item.productId._id.toString() !== productId);
+        cart.items = cart.items.filter(
+            (item) => !(item.productId._id.toString() === productId &&
+                item.size === size)
+        );
 
         await cart.save();
 
@@ -214,6 +233,7 @@ const deleteCartItem = async (req, res) => {
             price: item.productId ? item.productId.price : null,
             salePrice: item.productId ? item.productId.salePrice : null,
             quantity: item.quantity,
+            size: item.size,
 
         }));
 

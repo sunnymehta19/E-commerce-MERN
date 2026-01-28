@@ -30,7 +30,6 @@ const AdminOrderDetails = ({ orderDetails, onClose }) => {
             }
         });
     }
-
     return (
         <>
             <DialogContent className="sm:max-w-[600px] max-h-[85vh] overflow-y-auto pill-scrollbar">
@@ -68,6 +67,7 @@ const AdminOrderDetails = ({ orderDetails, onClose }) => {
                                         orderDetails?.orderStatus === "inShipping" && "bg-purple-800 text-white" ||
                                         orderDetails?.orderStatus === "delivered" && "bg-green-500 text-white" ||
                                         orderDetails?.orderStatus === "rejected" && "bg-red-600 text-white" ||
+                                        orderDetails?.orderStatus === "cancelled" && "bg-red-700 text-white" ||
                                         "bg-black text-white"
                                         }`}
                                 >
@@ -80,17 +80,32 @@ const AdminOrderDetails = ({ orderDetails, onClose }) => {
 
                     <div className="grid gap-4">
                         <div className="grid gap-2">
-                            <div className="font-medium">Order Details</div>
+                            <div className="font-medium">Product Details</div>
                             <ul className="grid gap-3">
                                 {
                                     orderDetails?.cartItems && orderDetails?.cartItems.length > 0
                                         ? orderDetails?.cartItems.map((item) => (
+                                            <div key={item?._id} className="flex items-center border p-2 rounded-lg justify-between">
+                                                <div className="flex gap-4 items-center  ">
+                                                    <img
+                                                        src={item.image}
+                                                        alt={item.title}
+                                                        className="w-16 h-16 object-cover rounded-md"
+                                                    />
 
-                                            <li key={item._id} className="flex items-center justify-between">
-                                                <span>Title: {item.title}</span>
-                                                <span>Quantity: {item.quantity}</span>
-                                                <span>Price: ₹{item.price}</span>
-                                            </li>
+                                                    <div className="flex flex-col ">
+                                                        <p className="font-semibold">{item.title}</p>
+                                                        <p className="text-sm text-muted-foreground">
+                                                            Size: {item.size || "FREE"}
+                                                        </p>
+                                                        <p className="text-sm">Qty: {item.quantity}</p>
+                                                    </div>
+                                                </div>
+                                                <div className="">
+                                                    <p className="text-lg font-medium">₹{item.price}</p>
+
+                                                </div>
+                                            </div>
                                         )) : null
                                 }
                             </ul>
@@ -99,13 +114,13 @@ const AdminOrderDetails = ({ orderDetails, onClose }) => {
                     <div className="grid gap-4">
                         <div className="grid gap-2">
                             <div className="font-medium">Shipping Info</div>
-                            <div className="grid gap-0.5 text-muted-foreground">
-                                <span>{user.username}</span>
+                            <div className="grid  text-muted-foreground">
+                                <span className='font-bold capitalize'>{orderDetails?.username}</span>
                                 <span>{orderDetails?.addressInfo?.address}</span>
                                 <span>{orderDetails?.addressInfo?.city}</span>
                                 <span>{orderDetails?.addressInfo?.pincode}</span>
                                 <span>{orderDetails?.addressInfo?.phone}</span>
-                                <span>{orderDetails?.addressInfo?.notes}</span>
+                                <span>Landmark: {orderDetails?.addressInfo?.notes}</span>
 
                             </div>
                         </div>

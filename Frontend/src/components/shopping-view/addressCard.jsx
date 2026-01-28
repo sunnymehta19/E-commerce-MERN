@@ -21,7 +21,7 @@ const ShopAddressCard = ({ addressInfo, handleEditAddress, handleDeleteAddress, 
 
                     }`}
             >
-                <CardContent className="grid px-3 gap-3">
+                <CardContent className="grid px-3 gap-3 ">
                     <Label>Address: {addressInfo?.address}</Label>
                     <Label>City: {addressInfo?.city}</Label>
                     <Label>Pincode: {addressInfo?.pincode}</Label>

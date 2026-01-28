@@ -68,6 +68,7 @@ const ShopOrders = () => {
                               orderItem?.orderStatus === "inShipping" && "bg-purple-800 text-white" ||
                               orderItem?.orderStatus === "delivered" && "bg-green-500 text-white" ||
                               orderItem?.orderStatus === "rejected" && "bg-red-600 text-white" ||
+                              orderItem?.orderStatus === "cancelled" && "bg-red-700 text-white" ||
                               "bg-black text-white"
                               }`}
                           >
@@ -77,6 +78,7 @@ const ShopOrders = () => {
                         <TableCell>{orderItem?.totalAmount}</TableCell>
                         <TableCell>
                           <Button
+                            className="cursor-pointer"
                             onClick={() => handleFetchOrderDetails(orderItem?._id)}
                           >
                             View details
