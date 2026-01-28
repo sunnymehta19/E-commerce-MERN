@@ -26,6 +26,8 @@ import { checkAuth } from "./store/auth-slice/authSlice"
 import { Skeleton } from "./components/ui/skeleton"
 import ShopSearchProducts from "./pages/shopping-view/Search"
 import OrderSuccess from "./pages/shopping-view/OrderSuccess"
+import Footer from "./pages/common/Footer"
+import ShopWishlist from "./pages/shopping-view/Wishlist"
 
 
 function App() {
@@ -55,6 +57,7 @@ function App() {
           <Route path="/products/:productId" element={<ProductDetailsPage />} />
           <Route path='search' element={<ShopSearchProducts />} />
           <Route path='order-success' element={<OrderSuccess />} />
+          <Route path='wishlist' element={<ShopWishlist />} />
 
           <Route
             path='checkout'
@@ -82,6 +85,13 @@ function App() {
           <Route path='features' element={<AdminFeatures />} />
           <Route path='orders' element={<AdminOrders />} />
           <Route path='products' element={<AdminProducts />} />
+        </Route>
+
+        <Route
+          path="/footer"
+          element={<Footer />}
+        >
+
         </Route>
 
         {/* 404 routes */}

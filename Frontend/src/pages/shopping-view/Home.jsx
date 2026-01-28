@@ -14,6 +14,7 @@ import { useNavigate } from 'react-router-dom';
 import { addToCart, fetchCartItems } from '@/store/shop-slice/cartSlice';
 import { showToast } from '@/utils/toast';
 import { getFeatureImage } from '@/store/common/featureSlice';
+import Footer from '../common/Footer';
 
 const categoriesWithIcon = [
   { id: "men", label: "Men", icon: ShirtIcon },
@@ -40,6 +41,8 @@ const ShoppingHome = () => {
   const dispatch = useDispatch();
   const { productList } = useSelector((state) => state.shopProducts);
   const { featureImageList } = useSelector((state) => state.commonFeature);
+    const { cartItems } = useSelector((state) => state.shopCart);
+  
   const { user } = useSelector((state) => state.auth);
   const [currentSlide, setCurrentSlide] = useState(0);
   const navigate = useNavigate();
@@ -56,12 +59,30 @@ const ShoppingHome = () => {
     navigate("/listing");
   }
 
-  const handleAddToCart = (getCurrentProductId) => {
-    console.log(getCurrentProductId);
+  const handleAddToCart = (getCurrentProductId,getTotalStock, size) => {
+    
+    let getCartItems = cartItems.items || [];
+    
+        if (getCartItems.length) {
+          const indexOfCurrentItem = getCartItems.findIndex(
+            (item) => item.productId === getCurrentProductId
+          );
+          if (indexOfCurrentItem > -1) {
+            const getQuantity = getCartItems[indexOfCurrentItem].quantity;
+            if (getQuantity + 1 > getTotalStock) {
+              showToast.error(`Only ${getQuantity} items available in stock`);
+              return;
+            }
+          }
+        }
 
-    dispatch(addToCart({
-      userId: user?.id, productId: getCurrentProductId, quantity: 1
-    })
+    dispatch(
+      addToCart({
+        userId: user?.id,
+        productId: getCurrentProductId,
+        quantity: 1,
+        size: size,
+      })
     ).then((data) => {
       if (data?.payload?.success) {
         dispatch(fetchCartItems(user.id));
@@ -197,7 +218,7 @@ const ShoppingHome = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
               {
                 productList && productList.length > 0
-                  ? productList.map((productItem) => (
+                  ? productList.slice(0, 8).map((productItem) => (
                     <ShoppingProductTile
                       key={productItem._id}
                       product={productItem}
@@ -208,6 +229,10 @@ const ShoppingHome = () => {
               }
             </div>
           </div>
+        </section>
+
+        <section>
+          <Footer />
         </section>
       </div>
     </>

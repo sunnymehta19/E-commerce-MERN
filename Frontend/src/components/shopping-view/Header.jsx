@@ -1,4 +1,4 @@
-import { HousePlug, LogOut, Menu, ShoppingCart, UserCog } from 'lucide-react'
+import { Heart, HousePlug, LogOut, Menu, ShoppingCart, UserCog } from 'lucide-react'
 import { React, useEffect, useState } from 'react'
 import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import { Sheet, SheetContent, SheetTrigger } from '../ui/sheet'
@@ -176,6 +176,10 @@ const HeaderRightContent = () => {
             <DropdownMenuItem onClick={() => navigate("/account")}>
               <UserCog className="mr-2 h-4 w-4" />
               Account
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => navigate("/wishlist")}>
+              <Heart className="mr-2 h-4 w-4" />
+              Wishlist
             </DropdownMenuItem>
             <DropdownMenuSeparator />
 

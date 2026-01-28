@@ -15,6 +15,7 @@ const shopAddressRouter = require("./routes/shop/addressRouter");
 const shopOrderRouter = require("./routes/shop/orderRouter");
 const shopSearchRouter = require("./routes/shop/searchRouter");
 const shopReviewRouter = require("./routes/shop/reviewRouter");
+const shopWishlistRouter = require("./routes/shop/wishlistRouter");
 
 const commonFeatureRouter = require("./routes/common/featureRouter");
 
@@ -49,6 +50,7 @@ app.use("/api/shop/address", shopAddressRouter);
 app.use("/api/shop/order", shopOrderRouter);
 app.use("/api/shop/search", shopSearchRouter);
 app.use("/api/shop/review", shopReviewRouter);
+app.use("/api/shop/wishlist", shopWishlistRouter);
 app.use("/api/common/feature", commonFeatureRouter);
 
 

@@ -3,12 +3,18 @@ import { Card, CardContent, CardFooter } from '../ui/card'
 import { Badge } from '../ui/badge'
 import { Button } from '../ui/button'
 import { useNavigate } from 'react-router-dom'
+import { Heart } from 'lucide-react'
+import { addWishlist, removeWishlist } from '@/store/shop-slice/wishlistSlice'
+import { useDispatch, useSelector } from 'react-redux'
 
 const sizeOrder = ["XS", "S", "M", "L", "XL", "XXL"];
 
 const ShoppingProductTile = ({ product, handleAddToCart }) => {
-    const navigate = useNavigate();
 
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const { user } = useSelector((state) => state.auth);
+    const { wishlist } = useSelector((state) => state.shopWishlist);
 
     const defaultSize =
         product?.sizes?.length > 0
@@ -16,6 +22,24 @@ const ShoppingProductTile = ({ product, handleAddToCart }) => {
                 (a, b) => sizeOrder.indexOf(a) - sizeOrder.indexOf(b)
             )[0]
             : "M";
+
+    const isWishlisted = wishlist?.some(
+        (item) =>
+            item.productId === product._id ||
+            item.productId?._id === product._id
+    );
+
+    const handleWishlist = (e) => {
+        e.stopPropagation();
+
+        if (!user) return;
+
+        if (isWishlisted) {
+            dispatch(removeWishlist({ userId: user.id, productId: product._id }));
+        } else {
+            dispatch(addWishlist({ userId: user.id, productId: product._id }));
+        }
+    };
 
 
     return (
@@ -27,6 +51,17 @@ const ShoppingProductTile = ({ product, handleAddToCart }) => {
                         alt={product.id}
                         className='w-full h-[300px] object-cover rounded-t-lg'
                     />
+                    <Heart
+                        onClick={handleWishlist}
+                        className={`absolute top-3 right-3 w-5 h-5 cursor-pointer transition
+                            ${isWishlisted
+                                ? "fill-red-500 text-red-500"
+                                : "text-white hover:text-red-500"
+                            }`
+                        }
+                    />
+
+
                     {
                         product?.totalStock === 0 ? (
                             <Badge className="absolute top-2 left-2 bg-red-500 hover:bg-red-600">
