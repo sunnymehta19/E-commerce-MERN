@@ -60,6 +60,11 @@ const ShoppingHome = () => {
   }
 
   const handleAddToCart = (getCurrentProductId,getTotalStock, size) => {
+
+    if (!user) {
+            showToast.error("Please log in to add items to your cart.")
+            return;
+        }
     
     let getCartItems = cartItems.items || [];
     

@@ -1,4 +1,4 @@
-import { Heart, HousePlug, LogOut, Menu, ShoppingCart, UserCog } from 'lucide-react'
+import { Heart, HousePlug, LayoutDashboard, LogOut, Menu, ShoppingCart, UserCog } from 'lucide-react'
 import { React, useEffect, useState } from 'react'
 import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import { Sheet, SheetContent, SheetTrigger } from '../ui/sheet'
@@ -119,6 +119,7 @@ const HeaderRightContent = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { cartItems } = useSelector((state) => state.shopCart);
+  const { wishlist } = useSelector((state) => state.shopWishlist);
   const [openCartSheet, setOpenCartSheet] = useState(false);
 
 
@@ -173,14 +174,32 @@ const HeaderRightContent = () => {
               Logged in as <span className="capitalize">{user?.username}</span>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => navigate("/account")}>
+
+            {/* Admin Dashboard */}
+            {user?.role === "admin" && (
+              <>
+                <DropdownMenuItem className="cursor-pointer" onClick={() => navigate("/admin/dashboard")}>
+                  <LayoutDashboard className="mr-2 h-4 w-4" />
+                  Admin Dashboard
+                </DropdownMenuItem>
+              </>
+            )}
+
+            <DropdownMenuItem className="cursor-pointer" onClick={() => navigate("/account")}>
               <UserCog className="mr-2 h-4 w-4" />
               Account
             </DropdownMenuItem>
+
             <DropdownMenuItem onClick={() => navigate("/wishlist")}>
               <Heart className="mr-2 h-4 w-4" />
-              Wishlist
+              <div className="flex items-center justify-between w-full cursor-pointer">
+                <div className="">Wishlist</div>
+                <div className=" flex items-center justify-center min-w-[28px] h-6 px-2 rounded-full bg-muted text-sm font-medium text-muted-foreground">
+                  {wishlist?.length || 0}
+                </div>
+              </div>
             </DropdownMenuItem>
+
             <DropdownMenuSeparator />
 
             <AlertDialog>

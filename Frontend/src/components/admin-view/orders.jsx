@@ -34,7 +34,7 @@ const AdminOrdersContent = () => {
 
     return (
         <>
-            <Card>
+            <Card className="h-[85vh] overflow-y-scroll no-scrollbar">
                 <CardHeader>
                     <CardTitle>All Orders</CardTitle>
                 </CardHeader>

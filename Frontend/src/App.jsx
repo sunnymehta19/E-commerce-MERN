@@ -57,7 +57,6 @@ function App() {
           <Route path="/products/:productId" element={<ProductDetailsPage />} />
           <Route path='search' element={<ShopSearchProducts />} />
           <Route path='order-success' element={<OrderSuccess />} />
-          <Route path='wishlist' element={<ShopWishlist />} />
 
           <Route
             path='checkout'
@@ -70,6 +69,12 @@ function App() {
             element={
               <ProtectedRoute isAuthenticated={isAuthenticated}>
                 <ShoppingAccount />
+              </ProtectedRoute>} />
+          <Route
+            path='wishlist'
+            element={
+              <ProtectedRoute isAuthenticated={isAuthenticated}>
+                <ShopWishlist />
               </ProtectedRoute>} />
 
         </Route>

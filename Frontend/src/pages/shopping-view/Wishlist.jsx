@@ -1,103 +1,94 @@
-import React, { useEffect } from "react";
-import { HeartOff } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchWishlist, removeWishlist } from "@/store/shop-slice/wishlistSlice";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
+import { HeartOff } from "lucide-react";
+import { showToast } from "@/utils/toast";
 
 const ShopWishlist = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const { user } = useSelector((state) => state.auth);
-  const { wishlist, isLoading } = useSelector(
-    (state) => state.shopWishlist
-  );
+  const { wishlist } = useSelector((state) => state.shopWishlist);
 
-  // 🔹 Fetch wishlist on mount / user change
   useEffect(() => {
     if (user?.id) {
       dispatch(fetchWishlist(user.id));
     }
-  }, [user?.id]);
+  }, [dispatch, user]);
 
- 
+  const handleRemove = (e, productId) => {
+    e.stopPropagation();
 
+    dispatch(
+      removeWishlist({
+        userId: user.id,
+        productId,
+      })
+    );
+    showToast.success("Product removed successfully to the wishlist");
 
+  };
+
+  if (!wishlist || wishlist.length === 0) {
+    return (
+      <div className="flex justify-center items-center min-h-[60vh]">
+        <h2 className="text-xl font-semibold text-muted-foreground">
+          No items in your wishlist
+        </h2>
+      </div>
+    );
+  }
 
   return (
-   <div className="max-w-7xl mx-auto px-6 py-10">
-  <h1 className="text-2xl font-bold mb-8">My Wishlist</h1>
+    <div className="container mx-auto px-4 py-10 mt-5">
+      <h1 className="text-3xl font-bold mb-6">My Wishlist</h1>
 
-  {isLoading && (
-    <p className="text-center text-muted-foreground mb-6">
-      Updating wishlist...
-    </p>
-  )}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        {wishlist.map((item) => {
+          const product = item.productId;
 
-  {wishlist.length === 0 ? (
-    <div className="text-center text-muted-foreground mt-20">
-      <p>Your wishlist is empty.</p>
-    </div>
-  ) : (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-      {wishlist.map((item) => {
-        const product = item?.productId;
-        if (!product) return null;
-
-        return (
-          <div
-            key={product._id}
-            className="border rounded-lg p-3 hover:shadow transition cursor-pointer"
-            onClick={() => navigate(`/products/${product._id}`)}
-          >
-            <img
-              src={product.image}
-              alt={product.title}
-              className="w-full h-48 object-cover rounded-md"
-            />
-
-            <div className="mt-3 flex justify-between items-start">
-              <div>
-                <p className="font-semibold line-clamp-1">
-                  {product.title}
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  ₹{product.salePrice > 0 ? product.salePrice : product.price}
-                </p>
-              </div>
-
-              <HeartOff
-                className="w-5 h-5 text-red-500 cursor-pointer"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  dispatch(
-                    removeWishlist({
-                      userId: user.id,
-                      productId: product._id,
-                    })
-                  );
-                }}
-              />
-            </div>
-
-            <Button
-              variant="outline"
-              className="w-full mt-3"
-              onClick={(e) => {
-                e.stopPropagation();
-                navigate(`/products/${product._id}`);
-              }}
+          return (
+            <Card
+              key={product._id}
+              onClick={() => navigate(`/products/${product._id}`)}
+              className="cursor-pointer hover:shadow-lg transition-shadow py-0 gap-0"
             >
-              View Product
-            </Button>
-          </div>
-        );
-      })}
-    </div>
-  )}
-</div>
+              <img
+                src={product.image}
+                alt={product.title}
+                className="w-full h-[280px] object-cover rounded-t-lg"
+              />
 
+              <CardContent className="p-3">
+                <h2 className="font-semibold text-lg capitalize truncate">
+                  {product.title}
+                </h2>
+
+                <div className="flex justify-between items-center">
+                  <span className="font-bold text-primary">
+                    ₹{product.salePrice > 0
+                      ? product.salePrice
+                      : product.price}
+                  </span>
+
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    onClick={(e) => handleRemove(e, product._id)}
+                  >
+                    <HeartOff className="w-5 h-5 text-red-500" />
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          );
+        })}
+      </div>
+    </div>
   );
 };
 

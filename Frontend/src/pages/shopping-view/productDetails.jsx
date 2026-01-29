@@ -12,6 +12,8 @@ import StarRatingComponent from "@/components/common/StarRatingComponent";
 import { addReviews, getReviews } from "@/store/shop-slice/reviewSlice";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import StarRatingDisplayOnly from "@/components/common/StarRatingDisplayOnly";
+import { addWishlist, fetchWishlist, removeWishlist } from "@/store/shop-slice/wishlistSlice";
+import { Heart } from "lucide-react";
 
 
 const SIZE_ORDER = ["XS", "S", "M", "L", "XL", "XXL"];
@@ -23,11 +25,12 @@ const ProductDetailsPage = () => {
     const dispatch = useDispatch();
 
     const { productDetails, isLoading } = useSelector((state) => state.shopProducts);
-    const { user } = useSelector((state) => state.auth);
+    const { user, isAuthenticated } = useSelector((state) => state.auth);
     const { cartItems } = useSelector((state) => state.shopCart);
     const { reviews } = useSelector((state) => state.shopReview);
     const [selectedSize, setSelectedSize] = useState(null);
-
+    const { wishlist } = useSelector((state) => state.shopWishlist);
+    
 
     const [rating, setRating] = useState(0);
     const [reviewMsg, setReviewMsg] = useState("");
@@ -41,12 +44,48 @@ const ProductDetailsPage = () => {
     }, [dispatch, productId]);
 
 
+            const isWishlisted = wishlist?.some(
+            (item) =>
+                typeof item.productId === "string"
+                    ? item.productId === productDetails._id
+                    : item.productId._id === productDetails._id
+        );
+    
+    
+        const handleWishlist = (e) => {
+            e.stopPropagation();
+    
+            if (!user) {
+                showToast.error("Please login to use wishlist");
+                return;
+            }
+    
+            if (isWishlisted) {
+                dispatch(
+                    removeWishlist({
+                        userId: user.id,
+                        productId: productDetails._id,
+                    })
+                );
+                showToast.success("Product removed successfully to the wishlist");
+            } else {
+                dispatch(
+                    addWishlist({
+                        userId: user.id,
+                        productId: productDetails._id,
+                    })
+                );
+                showToast.success("Product added successfully to the wishlist");
+    
+            }
+        };
 
     if (isLoading || !productDetails) {
         return <div className="p-6">
             <Skeleton className="h-[20px] w-[100px] rounded-full" />
         </div>;
     }
+
     const images = [
         productDetails.image,
         productDetails.image,
@@ -88,9 +127,12 @@ const ProductDetailsPage = () => {
     }
 
 
-
-
     const handleAddToCart = (getCurrentProductId, getTotalStock) => {
+
+        if (!user) {
+            showToast.error("Please log in to add items to your cart.")
+            return;
+        }
 
         if (productDetails.sizes.length && !selectedSize) {
             showToast.error("Please select a size");
@@ -131,6 +173,12 @@ const ProductDetailsPage = () => {
     }
 
     const handleBuyNow = (getCurrentProductId) => {
+
+        if (!user) {
+            showToast.error("Please log in to continue with your purchase.")
+            return;
+        }
+
         if (productDetails.sizes.length && !selectedSize) {
             showToast.error("Please select a size");
             return;
@@ -161,6 +209,9 @@ const ProductDetailsPage = () => {
         });
     }
 
+
+
+
     return (
         <div className="max-w-7xl mx-auto px-4 py-6">
             {/* TOP SECTION */}
@@ -174,6 +225,15 @@ const ProductDetailsPage = () => {
                             alt={productDetails.title}
                             className="w-full aspect-square object-cover"
                         />
+                        <Heart
+                        onClick={handleWishlist}
+                        className={`absolute top-5 right-5 w-8 h-8 cursor-pointer transition
+                            ${isWishlisted
+                                ? "fill-red-500 text-red-500"
+                                : "text-white hover:text-red-500"
+                            }`
+                        }
+                    />
                         {
                             productDetails?.totalStock === 0 ? (
                                 <Badge className="absolute top-2 left-2 bg-red-500 hover:bg-red-600">

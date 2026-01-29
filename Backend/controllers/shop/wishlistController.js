@@ -45,7 +45,7 @@ const removeFromWishlist = async (req, res) => {
     try {
         const { userId, productId } = req.body;
 
-        const wishlist = await wishlistModel.findOne({ userId });
+        const wishlist = await wishlistModel.findOne({ userId }).populate("items.productId");
 
         if (!wishlist) {
             return res.status(404).json({
@@ -55,7 +55,7 @@ const removeFromWishlist = async (req, res) => {
         }
 
         wishlist.items = wishlist.items.filter(
-            (item) => item.productId.toString() !== productId
+            (item) => item.productId._id.toString() !== productId
         );
 
         await wishlist.save();

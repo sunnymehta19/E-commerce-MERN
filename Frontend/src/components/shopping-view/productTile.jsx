@@ -1,11 +1,12 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Card, CardContent, CardFooter } from '../ui/card'
 import { Badge } from '../ui/badge'
 import { Button } from '../ui/button'
 import { useNavigate } from 'react-router-dom'
 import { Heart } from 'lucide-react'
-import { addWishlist, removeWishlist } from '@/store/shop-slice/wishlistSlice'
+import { addWishlist, fetchWishlist, removeWishlist } from '@/store/shop-slice/wishlistSlice'
 import { useDispatch, useSelector } from 'react-redux'
+import { showToast } from '@/utils/toast'
 
 const sizeOrder = ["XS", "S", "M", "L", "XL", "XXL"];
 
@@ -13,7 +14,7 @@ const ShoppingProductTile = ({ product, handleAddToCart }) => {
 
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const { user } = useSelector((state) => state.auth);
+    const { user, isAuthenticated } = useSelector((state) => state.auth);
     const { wishlist } = useSelector((state) => state.shopWishlist);
 
     const defaultSize =
@@ -25,25 +26,49 @@ const ShoppingProductTile = ({ product, handleAddToCart }) => {
 
     const isWishlisted = wishlist?.some(
         (item) =>
-            item.productId === product._id ||
-            item.productId?._id === product._id
+            typeof item.productId === "string"
+                ? item.productId === product._id
+                : item.productId._id === product._id
     );
+
 
     const handleWishlist = (e) => {
         e.stopPropagation();
 
-        if (!user) return;
+        if (!user) {
+            showToast.error("Please login to use wishlist");
+            return;
+        }
 
         if (isWishlisted) {
-            dispatch(removeWishlist({ userId: user.id, productId: product._id }));
+            dispatch(
+                removeWishlist({
+                    userId: user.id,
+                    productId: product._id,
+                })
+            );
+            showToast.success("Product removed successfully to the wishlist");
         } else {
-            dispatch(addWishlist({ userId: user.id, productId: product._id }));
+            dispatch(
+                addWishlist({
+                    userId: user.id,
+                    productId: product._id,
+                })
+            );
+            showToast.success("Product added successfully to the wishlist");
+
         }
     };
 
+    useEffect(() => {
+        if (isAuthenticated && user?.id) {
+            dispatch(fetchWishlist(user.id));
+        }
+    }, [dispatch, isAuthenticated, user]);
+
 
     return (
-        <Card className="w-full max-w-sm mx-auto p-0 h-fit cursor-pointer" >
+        <Card className="w-full max-w-sm mx-auto p-0 h-fit cursor-pointer hover:shadow-lg transition-shadow" >
             <div onClick={() => navigate(`/products/${product._id}`)}>
                 <div className="relative">
                     <img

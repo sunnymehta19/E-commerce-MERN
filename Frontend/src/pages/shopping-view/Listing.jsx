@@ -52,7 +52,6 @@ const ShoppingListing = () => {
   }
 
   const handleFilter = (getSectionId, getCurrentOption) => {
-    console.log(getSectionId, getCurrentOption)
 
     let copyFilter = { ...filters }
     const indexOfCurrentSection = Object.keys(copyFilter).indexOf(getSectionId);
@@ -83,6 +82,11 @@ const ShoppingListing = () => {
   }
 
   const handleAddToCart = (getCurrentProductId, getTotalStock, size) => {
+
+    if (!user) {
+      showToast.error("Please log in to add items to your cart.")
+      return;
+    }
 
     let getCartItems = cartItems.items || [];
 
@@ -133,8 +137,6 @@ const ShoppingListing = () => {
       dispatch(fetchAllFilteredProducts({ filterParams: filters, sortParams: sort }));
     }
   }, [dispatch, sort, filters])
-
-  console.log("productList", productList);
 
 
   return (
