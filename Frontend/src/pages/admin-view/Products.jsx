@@ -11,7 +11,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { addNewProduct, deleteProduct, editProduct, fetchAllProduct } from '@/store/admin-slice/productSlice'
 import { showToast } from '@/utils/toast'
 import AdminProductTile from '@/components/admin-view/productTile'
-import { ChartNoAxesColumnDecreasing } from 'lucide-react'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const initialFormValues = {
   title: "",
@@ -46,6 +46,23 @@ const AdminProducts = () => {
 
   const dispatch = useDispatch();
   const { productList } = useSelector((state) => state.adminProducts);
+
+
+  const featuredProducts = productList?.filter(
+    (product) => product.isFeatured
+  );
+
+  const outOfStockProducts = productList?.filter(
+    (product) => product.totalStock === 0
+  );
+
+  const lowStockProducts = productList?.filter(
+    (product) => product.totalStock > 0 && product.totalStock < 10
+  );
+
+  const onSaleProducts = productList?.filter(
+    (product) => product.salePrice > 0
+  );
 
 
   //Editing Product
@@ -124,6 +141,29 @@ const AdminProducts = () => {
     });
   }
 
+
+  const renderProducts = (products) => {
+    if (!products || products.length === 0) {
+      return (
+        <div className="col-span-full text-center text-muted-foreground py-10">
+          No products found
+        </div>
+      );
+    }
+
+    return products.map((productItem) => (
+      <AdminProductTile
+        key={productItem._id}
+        setCurrentEditedId={setCurrentEditedId}
+        setCreateProductDialog={setCreateProductDialog}
+        setSelectedProduct={setSelectedProduct}
+        product={productItem}
+        handleDelete={handleDelete}
+      />
+    ));
+  };
+
+
   return (
     <>
       <Fragment >
@@ -132,20 +172,60 @@ const AdminProducts = () => {
             Add New Product
           </Button>
         </div>
-        <div className="grid gap-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-4 h-[85vh] md:h-[80vh] overflow-y-auto no-scrollbar">
-          {productList && productList.length > 0
-            ? productList.map((productItem) => (
-              <AdminProductTile
-                key={productItem._id}
-                setCurrentEditedId={setCurrentEditedId}
-                setCreateProductDialog={setCreateProductDialog}
-                setSelectedProduct={setSelectedProduct}
-                product={productItem}
-                handleDelete={handleDelete}
 
-              />
-            )) : null}
-        </div>
+        <Tabs defaultValue="all" className="w-full">
+          <TabsList className="mb-4">
+            <TabsTrigger className="cursor-pointer" value="all">All Products</TabsTrigger>
+            <TabsTrigger className="cursor-pointer" value="featured">Featured</TabsTrigger>
+            <TabsTrigger className="cursor-pointer" value="outofstock">Out of Stock</TabsTrigger>
+            <TabsTrigger className="cursor-pointer" value="lowstock">Low Stock</TabsTrigger>
+            <TabsTrigger className="cursor-pointer" value="onsale">On Sale</TabsTrigger>
+          </TabsList>
+
+          {/* All Products */}
+          <TabsContent value="all">
+            <div className="grid gap-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-4 items-start h-[85vh] md:h-[80vh] overflow-y-auto no-scrollbar">
+              {productList && productList.length > 0
+                ? productList.map((productItem) => (
+                  <AdminProductTile
+                    key={productItem._id}
+                    setCurrentEditedId={setCurrentEditedId}
+                    setCreateProductDialog={setCreateProductDialog}
+                    setSelectedProduct={setSelectedProduct}
+                    product={productItem}
+                    handleDelete={handleDelete}
+                  />
+                ))
+                : null}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="featured">
+            <div className="grid gap-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-4 items-start h-[85vh] md:h-[80vh] overflow-y-auto no-scrollbar">
+              {renderProducts(featuredProducts)}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="outofstock">
+            <div className="grid gap-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-4 items-start h-[85vh] md:h-[80vh] overflow-y-auto no-scrollbar">
+              {renderProducts(outOfStockProducts)}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="lowstock">
+            <div className="grid gap-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-4 items-start h-[85vh] md:h-[80vh] overflow-y-auto no-scrollbar">
+              {renderProducts(lowStockProducts)}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="onsale">
+            <div className="grid gap-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-4 items-start h-[85vh] md:h-[80vh] overflow-y-auto no-scrollbar">
+              {renderProducts(onSaleProducts)}
+            </div>
+          </TabsContent>
+
+        </Tabs>
+
         <Sheet
           open={createProductDialog}
           onOpenChange={() => {
@@ -334,7 +414,7 @@ const AdminProducts = () => {
                       <FormItem>
                         <FormLabel>Available Sizes</FormLabel>
                         <div className="flex gap-2 flex-wrap">
-                          {["XS", "S", "M", "L", "XL", "XXL","Free size"].map((size) => (
+                          {["XS", "S", "M", "L", "XL", "XXL", "Free size"].map((size) => (
                             <Button
                               type="button"
                               key={size}

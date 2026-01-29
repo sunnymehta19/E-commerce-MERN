@@ -6,7 +6,7 @@ import { PiDress } from "react-icons/pi";
 import { GiConverseShoe } from "react-icons/gi";
 import { Card, CardContent } from '@/components/ui/card';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchAllFilteredProducts, fetchFeaturedProducts } from '@/store/shop-slice/productSlice';
+import { fetchFeaturedProducts } from '@/store/shop-slice/productSlice';
 import ShoppingProductTile from '@/components/shopping-view/productTile';
 import LeviLogo from "../../assets/levi.png";
 import HmLogo from "../../assets/HmLogo.png";
@@ -39,7 +39,7 @@ const brandsWithIcon = [
 const ShoppingHome = () => {
 
   const dispatch = useDispatch();
-  const { productList, featuredProducts } = useSelector((state) => state.shopProducts);
+  const { featuredProducts } = useSelector((state) => state.shopProducts);
   const { featureImageList } = useSelector((state) => state.commonFeature);
   const { cartItems } = useSelector((state) => state.shopCart);
 

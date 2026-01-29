@@ -33,7 +33,7 @@ const AdminProductTile = ({
 
     return (
         <>
-            <Card className="w-full max-w-sm mx-auto p-0 ">
+            <Card className="w-full max-w-sm mx-auto p-0  hover:shadow-xl transition-shadow">
                 <div>
                     <div className="relative ">
                         <img
