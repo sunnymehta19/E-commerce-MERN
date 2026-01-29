@@ -76,6 +76,25 @@ const getProductDetails = async (req, res) => {
 }
 
 
+const getFeaturedProducts = async (req, res) => {
+    try {
+        const products = await productModel
+            .find({ isFeatured: true })
+            .sort({ updatedAt: -1 });
+
+        res.status(200).json({
+            success: true,
+            data: products,
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            success: false,
+            message: "Some error occurred while fetching featured products.",
+        });
+    }
+};
 
 
-module.exports = { getFilteredProducts, getProductDetails };
+
+module.exports = { getFilteredProducts, getProductDetails, getFeaturedProducts };

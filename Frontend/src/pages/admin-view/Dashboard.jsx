@@ -40,8 +40,6 @@ const AdminDashboard = () => {
   }, [dispatch])
 
 
-  console.log("featureImageList", featureImageList);
-
 
 
   return (

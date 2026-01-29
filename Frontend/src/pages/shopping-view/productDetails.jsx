@@ -30,7 +30,7 @@ const ProductDetailsPage = () => {
     const { reviews } = useSelector((state) => state.shopReview);
     const [selectedSize, setSelectedSize] = useState(null);
     const { wishlist } = useSelector((state) => state.shopWishlist);
-    
+
 
     const [rating, setRating] = useState(0);
     const [reviewMsg, setReviewMsg] = useState("");
@@ -44,41 +44,47 @@ const ProductDetailsPage = () => {
     }, [dispatch, productId]);
 
 
-            const isWishlisted = wishlist?.some(
-            (item) =>
-                typeof item.productId === "string"
-                    ? item.productId === productDetails._id
-                    : item.productId._id === productDetails._id
-        );
-    
-    
-        const handleWishlist = (e) => {
-            e.stopPropagation();
-    
-            if (!user) {
-                showToast.error("Please login to use wishlist");
-                return;
-            }
-    
-            if (isWishlisted) {
-                dispatch(
-                    removeWishlist({
-                        userId: user.id,
-                        productId: productDetails._id,
-                    })
-                );
-                showToast.success("Product removed successfully to the wishlist");
-            } else {
-                dispatch(
-                    addWishlist({
-                        userId: user.id,
-                        productId: productDetails._id,
-                    })
-                );
-                showToast.success("Product added successfully to the wishlist");
-    
-            }
-        };
+    const isWishlisted =
+        productDetails &&
+        wishlist?.some((item) => {
+            if (!item?.productId) return false;
+
+            return typeof item.productId === "string"
+                ? item.productId === productDetails._id
+                : item.productId?._id === productDetails._id;
+        });
+
+
+
+    const handleWishlist = (e) => {
+        e.stopPropagation();
+
+        if (!productDetails?._id) return;
+
+        if (!user) {
+            showToast.error("Please login to use wishlist");
+            return;
+        }
+
+        if (isWishlisted) {
+            dispatch(
+                removeWishlist({
+                    userId: user.id,
+                    productId: productDetails._id,
+                })
+            );
+            showToast.success("Removed from wishlist");
+        } else {
+            dispatch(
+                addWishlist({
+                    userId: user.id,
+                    productId: productDetails._id,
+                })
+            );
+            showToast.success("Added to wishlist");
+
+        }
+    };
 
     if (isLoading || !productDetails) {
         return <div className="p-6">
@@ -226,14 +232,14 @@ const ProductDetailsPage = () => {
                             className="w-full aspect-square object-cover"
                         />
                         <Heart
-                        onClick={handleWishlist}
-                        className={`absolute top-5 right-5 w-8 h-8 cursor-pointer transition
+                            onClick={handleWishlist}
+                            className={`absolute top-5 right-5 w-8 h-8 cursor-pointer transition
                             ${isWishlisted
-                                ? "fill-red-500 text-red-500"
-                                : "text-white hover:text-red-500"
-                            }`
-                        }
-                    />
+                                    ? "fill-red-500 text-red-500"
+                                    : "text-white hover:text-red-500"
+                                }`
+                            }
+                        />
                         {
                             productDetails?.totalStock === 0 ? (
                                 <Badge className="absolute top-2 left-2 bg-red-500 hover:bg-red-600">

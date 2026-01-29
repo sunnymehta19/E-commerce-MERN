@@ -29,7 +29,7 @@ const ShopWishlist = () => {
         productId,
       })
     );
-    showToast.success("Product removed successfully to the wishlist");
+    showToast.success("Removed from wishlist");
 
   };
 
@@ -78,6 +78,7 @@ const ShopWishlist = () => {
                   <Button
                     size="icon"
                     variant="ghost"
+                    className="cursor-pointer"
                     onClick={(e) => handleRemove(e, product._id)}
                   >
                     <HeartOff className="w-5 h-5 text-red-500" />

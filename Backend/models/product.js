@@ -14,6 +14,10 @@ const productSchema = new mongoose.Schema({
         default: [],
     },
     averageReview: Number,
+    isFeatured: {
+        type: Boolean,
+        default: false,
+    },
 }, { timestamps: true })
 
 module.exports = mongoose.model("product", productSchema);

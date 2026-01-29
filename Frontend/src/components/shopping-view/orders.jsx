@@ -26,7 +26,6 @@ const ShopOrders = () => {
     dispatch(getAllOrdersByUser(user?.id));
   }, [dispatch])
 
-  console.log("orderList:", orderList);
 
   useEffect(() => {
     if (orderDetails) {

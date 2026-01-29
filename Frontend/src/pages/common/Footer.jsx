@@ -5,6 +5,7 @@ import { Instagram, Facebook, Twitter } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 
 const Footer = () => {
   return (
@@ -21,12 +22,12 @@ const Footer = () => {
         {/* Shop */}
         <div>
           <h3 className="text-white font-semibold mb-4">Shop</h3>
-          <ul className="space-y-2">
-            <li>Men</li>
-            <li>Women</li>
-            <li>Kids</li>
-            <li>Footwear</li>
-            <li>Accessories</li>
+          <ul className="flex flex-col">
+            <Link to="/listing?category=men">Men</Link>
+            <Link to="/listing?category=women">Women</Link>
+            <Link to="/listing?category=kids">Kids</Link>
+            <Link to="/listing?category=footwear">Footwear</Link>
+            <Link to="/listing?category=accessories">Accessories</Link>
           </ul>
         </div>
 

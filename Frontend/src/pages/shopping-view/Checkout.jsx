@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
-import accountBanner from "../../assets/account.jpg"
+import accountBanner from "../../assets/CheckoutBanner.png"
+import accountBanner1 from "../../assets/account.jpg"
 import ShopAddress from '@/components/shopping-view/address'
 import UserCartItemsContent from '@/components/shopping-view/cartItemsContent'
 import { useDispatch, useSelector } from 'react-redux'
@@ -163,7 +164,7 @@ const ShoppingCheckout = () => {
 
   return (
     <div className='flex flex-col'>
-      <div className="relative h-[300px] w-full overflow-hidden">
+      <div className="relative h-[250px] w-full overflow-hidden">
         <img
           src={accountBanner}
           className='h-full w-full object-cover object-center'

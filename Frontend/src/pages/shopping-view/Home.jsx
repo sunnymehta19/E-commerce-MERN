@@ -6,7 +6,7 @@ import { PiDress } from "react-icons/pi";
 import { GiConverseShoe } from "react-icons/gi";
 import { Card, CardContent } from '@/components/ui/card';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchAllFilteredProducts } from '@/store/shop-slice/productSlice';
+import { fetchAllFilteredProducts, fetchFeaturedProducts } from '@/store/shop-slice/productSlice';
 import ShoppingProductTile from '@/components/shopping-view/productTile';
 import LeviLogo from "../../assets/levi.png";
 import HmLogo from "../../assets/HmLogo.png";
@@ -39,10 +39,10 @@ const brandsWithIcon = [
 const ShoppingHome = () => {
 
   const dispatch = useDispatch();
-  const { productList } = useSelector((state) => state.shopProducts);
+  const { productList, featuredProducts } = useSelector((state) => state.shopProducts);
   const { featureImageList } = useSelector((state) => state.commonFeature);
-    const { cartItems } = useSelector((state) => state.shopCart);
-  
+  const { cartItems } = useSelector((state) => state.shopCart);
+
   const { user } = useSelector((state) => state.auth);
   const [currentSlide, setCurrentSlide] = useState(0);
   const navigate = useNavigate();
@@ -59,27 +59,27 @@ const ShoppingHome = () => {
     navigate("/listing");
   }
 
-  const handleAddToCart = (getCurrentProductId,getTotalStock, size) => {
+  const handleAddToCart = (getCurrentProductId, getTotalStock, size) => {
 
     if (!user) {
-            showToast.error("Please log in to add items to your cart.")
-            return;
-        }
-    
+      showToast.error("Please log in to add items to your cart.")
+      return;
+    }
+
     let getCartItems = cartItems.items || [];
-    
-        if (getCartItems.length) {
-          const indexOfCurrentItem = getCartItems.findIndex(
-            (item) => item.productId === getCurrentProductId
-          );
-          if (indexOfCurrentItem > -1) {
-            const getQuantity = getCartItems[indexOfCurrentItem].quantity;
-            if (getQuantity + 1 > getTotalStock) {
-              showToast.error(`Only ${getQuantity} items available in stock`);
-              return;
-            }
-          }
+
+    if (getCartItems.length) {
+      const indexOfCurrentItem = getCartItems.findIndex(
+        (item) => item.productId === getCurrentProductId
+      );
+      if (indexOfCurrentItem > -1) {
+        const getQuantity = getCartItems[indexOfCurrentItem].quantity;
+        if (getQuantity + 1 > getTotalStock) {
+          showToast.error(`Only ${getQuantity} items available in stock`);
+          return;
         }
+      }
+    }
 
     dispatch(
       addToCart({
@@ -106,14 +106,11 @@ const ShoppingHome = () => {
     return () => clearInterval(timer)
   }, [featureImageList])
 
+
   useEffect(() => {
-    dispatch(
-      fetchAllFilteredProducts({
-        filterParams: {},
-        sortParams: "price-lowtohigh"
-      })
-    );
-  }, [dispatch])
+    dispatch(fetchFeaturedProducts());
+  }, [dispatch]);
+
 
   useEffect(() => {
     dispatch(getFeatureImage());
@@ -222,16 +219,21 @@ const ShoppingHome = () => {
             <h2 className="text-3xl font-bold text-center mb-8">Feature Products</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
               {
-                productList && productList.length > 0
-                  ? productList.slice(0, 8).map((productItem) => (
+                featuredProducts && featuredProducts.length > 0
+                  ? featuredProducts.map((productItem) => (
                     <ShoppingProductTile
                       key={productItem._id}
                       product={productItem}
                       handleAddToCart={handleAddToCart}
-
                     />
-                  )) : null
+                  ))
+                  : (
+                    <p className="col-span-full text-center text-muted-foreground">
+                      No featured products available
+                    </p>
+                  )
               }
+
             </div>
           </div>
         </section>

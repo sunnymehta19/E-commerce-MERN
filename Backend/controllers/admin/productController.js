@@ -97,6 +97,7 @@ const editProduct = async (req, res) => {
             salePrice,
             totalStock,
             sizes,
+            isFeatured,
         } = req.body;
 
         let findProduct = await productModel.findById(id);
@@ -121,6 +122,9 @@ const editProduct = async (req, res) => {
             findProduct.sizes = sizes;
         }
 
+        if (typeof isFeatured === "boolean") {
+            findProduct.isFeatured = isFeatured;
+        }
 
         await findProduct.save();
         res.status(200).json({

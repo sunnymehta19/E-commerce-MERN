@@ -47,7 +47,7 @@ const ShoppingProductTile = ({ product, handleAddToCart }) => {
                     productId: product._id,
                 })
             );
-            showToast.success("Product removed successfully to the wishlist");
+            showToast.success("Removed from wishlist");
         } else {
             dispatch(
                 addWishlist({
@@ -55,7 +55,7 @@ const ShoppingProductTile = ({ product, handleAddToCart }) => {
                     productId: product._id,
                 })
             );
-            showToast.success("Product added successfully to the wishlist");
+            showToast.success("Added to wishlist");
 
         }
     };

@@ -3,6 +3,8 @@ import { Card, CardContent, CardFooter } from '../ui/card'
 import { AlertDialog, AlertDialogTrigger, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogFooter, AlertDialogCancel, AlertDialogAction } from "../ui/alert-dialog";
 import { Button } from '../ui/button'
 import { Badge } from '../ui/badge';
+import { editProduct, fetchAllProduct } from '@/store/admin-slice/productSlice';
+import { useDispatch } from 'react-redux';
 
 const AdminProductTile = ({
     product,
@@ -11,6 +13,24 @@ const AdminProductTile = ({
     setSelectedProduct,
     handleDelete,
 }) => {
+
+    const dispatch = useDispatch();
+
+    const handleToggleFeatured = () => {
+        dispatch(
+            editProduct({
+                id: product._id,
+                formData: {
+                    isFeatured: !product.isFeatured,
+                },
+            })
+        ).then((data) => {
+            if (data?.payload?.success) {
+                dispatch(fetchAllProduct());
+            }
+        });
+    };
+
     return (
         <>
             <Card className="w-full max-w-sm mx-auto p-0 ">
@@ -53,7 +73,7 @@ const AdminProductTile = ({
                                 ) : null}
                             </div>
                         </CardContent>
-                        <CardFooter className="flex justify-between items-center pb-3 px-3">
+                        <CardFooter className="flex flex-wrap gap-2 justify-between items-center pb-3 px-3">
                             <Button
                                 size='sm'
                                 className="cursor-pointer"
@@ -65,6 +85,16 @@ const AdminProductTile = ({
                             >
                                 Edit
                             </Button>
+                            
+                            <Button
+                                size="sm"
+                                variant={product?.isFeatured ? "default" : "outline"}
+                                className="cursor-pointer"
+                                onClick={handleToggleFeatured}
+                            >
+                                {product?.isFeatured ? "Featured" : "Make Featured"}
+                            </Button>
+
                             <AlertDialog>
                                 <AlertDialogTrigger asChild>
                                     <Button
