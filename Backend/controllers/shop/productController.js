@@ -2,7 +2,7 @@ const productModel = require("../../models/product");
 
 const getFilteredProducts = async (req, res) => {
     try {
-        const { category = [], brand = [], sortBy = "price-lowtohigh" } = req.query;
+        const { category = [], brand = [], sortBy = "price-lowtohigh", page = 1, limit = 20 } = req.query;
 
         let filters = {};
 
@@ -36,13 +36,27 @@ const getFilteredProducts = async (req, res) => {
                 break;
         }
 
+        const skip = (Number(page) - 1) * Number(limit);
 
-        const product = await productModel.find(filters).sort(sort);
+        const [products, totalProducts] = await Promise.all([
+            productModel
+                .find(filters)
+                .sort(sort)
+                .skip(skip)
+                .limit(Number(limit)),
+            productModel.countDocuments(filters),
+        ]);
 
         res.status(200).json({
             success: true,
-            data: product,
-        })
+            data: products,
+            pagination: {
+                totalProducts,
+                totalPages: Math.ceil(totalProducts / limit),
+                currentPage: Number(page),
+            },
+        });
+
     } catch (error) {
         console.log(error);
         res.status(500).json({

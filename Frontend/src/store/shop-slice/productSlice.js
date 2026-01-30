@@ -8,14 +8,20 @@ const initialState = {
     productList: [],
     featuredProducts: [],
     productDetails: null,
+
+    currentPage: 1,
+    totalPages: 1,
+    totalProducts: 0,
 }
 
 export const fetchAllFilteredProducts = createAsyncThunk(
     "/products/fetchAllProducts",
-    async ({ filterParams, sortParams }) => {
+    async ({ filterParams, sortParams, page = 1 }) => {
         const query = new URLSearchParams({
             ...filterParams,
             sortBy: sortParams,
+            page,
+            limit: 20,
         })
 
         const result = await axios.get(
@@ -60,10 +66,19 @@ const ShopProductSlice = createSlice({
             .addCase(fetchAllFilteredProducts.fulfilled, (state, action) => {
                 state.isLoading = false;
                 state.productList = action.payload.data;
+
+                state.currentPage = action.payload.pagination.currentPage;
+                state.totalPages = action.payload.pagination.totalPages;
+                state.totalProducts = action.payload.pagination.totalProducts;
+
             })
             .addCase(fetchAllFilteredProducts.rejected, (state, action) => {
                 state.isLoading = false;
                 state.productList = [];
+                state.currentPage = 1;
+                state.totalPages = 1;
+                state.totalProducts = 0;
+
             })
             .addCase(fetchProductDetails.pending, (state, action) => {
                 state.isLoading = true;

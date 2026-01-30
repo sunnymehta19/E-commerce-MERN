@@ -38,14 +38,14 @@ const ShoppingListing = () => {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
   const { cartItems } = useSelector((state) => state.shopCart);
-  const { productList, productDetails } = useSelector(state => state.shopProducts)
+  const { productList, isLoading, currentPage, totalPages } = useSelector(state => state.shopProducts)
   const [filters, setFilters] = useState({});
   const [sort, setSort] = useState(null);
   const [searchParams, setSearchParams] = useSearchParams();
+  const [page, setPage] = useState(1);
+
 
   const categorySearchParam = searchParams.get("category");
-
-
 
   const handleSort = (value) => {
     setSort(value);
@@ -134,9 +134,18 @@ const ShoppingListing = () => {
 
   useEffect(() => {
     if (filters !== null && sort !== null) {
-      dispatch(fetchAllFilteredProducts({ filterParams: filters, sortParams: sort }));
+      dispatch(fetchAllFilteredProducts({
+        filterParams: filters,
+        sortParams: sort,
+        page,
+      }));
     }
-  }, [dispatch, sort, filters])
+  }, [dispatch, sort, filters, page])
+
+
+  useEffect(() => {
+    setPage(1);
+  }, [filters, sort]);
 
 
   return (
@@ -183,6 +192,31 @@ const ShoppingListing = () => {
                 handleAddToCart={handleAddToCart}
               />
             )) : null}
+        </div>
+        <div className="mb-5">
+          {totalPages > 1 && (
+            <div className="flex items-center justify-center gap-4 mt-8">
+              <button
+                className="px-4 py-2 border rounded-md text-sm disabled:opacity-50"
+                disabled={page === 1}
+                onClick={() => setPage((prev) => prev - 1)}
+              >
+                Previous
+              </button>
+
+              <span className="text-sm text-muted-foreground">
+                Page {currentPage} of {totalPages}
+              </span>
+
+              <button
+                className="px-4 py-2 border rounded-md text-sm disabled:opacity-50"
+                disabled={page === totalPages}
+                onClick={() => setPage((prev) => prev + 1)}
+              >
+                Next
+              </button>
+            </div>
+          )}
         </div>
 
       </div>

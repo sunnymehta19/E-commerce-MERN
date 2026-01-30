@@ -36,12 +36,14 @@ const AdminProductTile = ({
             <Card className="w-full max-w-sm mx-auto p-0  hover:shadow-xl transition-shadow">
                 <div>
                     <div className="relative ">
-                        <img
-                            src={product?.image}
-                            alt={product?.title}
-                            className='w-full h-[240px] md:h-[280px] object-cover rounded-t-lg'
-                        // className='w-full h-[180px] md:h-[220px] object-center rounded-t-lg'
-                        />
+                        
+                            <img
+                                src={product?.image}
+                                alt={product?.title}
+                                className="w-full h-[240px] md:h-[300px] object-cover rounded-t-lg"
+                            // className='w-full h-[180px] md:h-[220px] object-center rounded-t-lg'
+                            />
+                        
                         {
                             product?.totalStock === 0 ? (
                                 <Badge className="absolute top-2 left-2 bg-red-500 hover:bg-red-600">
@@ -85,7 +87,7 @@ const AdminProductTile = ({
                             >
                                 Edit
                             </Button>
-                            
+
                             <Button
                                 size="sm"
                                 variant={product?.isFeatured ? "default" : "outline"}

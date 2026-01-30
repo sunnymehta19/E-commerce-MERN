@@ -77,6 +77,7 @@ const AdminProducts = () => {
       price: selectedProduct.price,
       salePrice: selectedProduct.salePrice,
       totalStock: selectedProduct.totalStock,
+      sizes: selectedProduct.sizes || [],
     });
 
   }, [selectedProduct, form])
@@ -168,9 +169,22 @@ const AdminProducts = () => {
     <>
       <Fragment >
         <div className="mb-2 flex w-full justify-end">
-          <Button className="cursor-pointer " onClick={() => { setCreateProductDialog(true) }} >
+          <Button
+            className="cursor-pointer"
+            onClick={() => {
+              setCurrentEditedId(null);  
+              setSelectedProduct(null); 
+              setIsCustomCategory(false);
+              setIsCustomBrand(false);
+              setUploadImageUrl("");
+              setImageFile(null);
+              form.reset(initialFormValues);
+              setCreateProductDialog(true);
+            }}
+          >
             Add New Product
           </Button>
+
         </div>
 
         <Tabs defaultValue="all" className="w-full">
@@ -184,7 +198,7 @@ const AdminProducts = () => {
 
           {/* All Products */}
           <TabsContent value="all">
-            <div className="grid gap-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-4 items-start h-[85vh] md:h-[80vh] overflow-y-auto no-scrollbar">
+            <div className="grid gap-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-4 items-start h-[85vh] md:h-[80vh] overflow-y-auto no-scrollbar py-4">
               {productList && productList.length > 0
                 ? productList.map((productItem) => (
                   <AdminProductTile
@@ -196,30 +210,34 @@ const AdminProducts = () => {
                     handleDelete={handleDelete}
                   />
                 ))
-                : null}
+                : (
+                  <div className="col-span-full text-center text-muted-foreground py-10">
+                    No products found
+                  </div>
+                )}
             </div>
           </TabsContent>
 
           <TabsContent value="featured">
-            <div className="grid gap-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-4 items-start h-[85vh] md:h-[80vh] overflow-y-auto no-scrollbar">
+            <div className="grid gap-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-4 items-start h-[85vh] md:h-[80vh] overflow-y-auto no-scrollbar py-4">
               {renderProducts(featuredProducts)}
             </div>
           </TabsContent>
 
           <TabsContent value="outofstock">
-            <div className="grid gap-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-4 items-start h-[85vh] md:h-[80vh] overflow-y-auto no-scrollbar">
+            <div className="grid gap-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-4 items-start h-[85vh] md:h-[80vh] overflow-y-auto no-scrollbar py-4">
               {renderProducts(outOfStockProducts)}
             </div>
           </TabsContent>
 
           <TabsContent value="lowstock">
-            <div className="grid gap-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-4 items-start h-[85vh] md:h-[80vh] overflow-y-auto no-scrollbar">
+            <div className="grid gap-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-4 items-start h-[85vh] md:h-[80vh] overflow-y-auto no-scrollbar py-4">
               {renderProducts(lowStockProducts)}
             </div>
           </TabsContent>
 
           <TabsContent value="onsale">
-            <div className="grid gap-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-4 items-start h-[85vh] md:h-[80vh] overflow-y-auto no-scrollbar">
+            <div className="grid gap-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-4 items-start h-[85vh] md:h-[80vh] overflow-y-auto no-scrollbar py-4">
               {renderProducts(onSaleProducts)}
             </div>
           </TabsContent>
