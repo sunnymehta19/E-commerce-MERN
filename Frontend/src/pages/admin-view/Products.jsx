@@ -24,8 +24,17 @@ const initialFormValues = {
   averageReview: 0,
   customCategory: "",
   customBrand: "",
+  sizeType: "",
   sizes: [],
 };
+
+
+const SIZE_OPTIONS = {
+  upper: ["XS", "S", "M", "L", "XL", "XXL", "Free size"],
+  lower: ["28", "30", "32", "34", "36", "38"],
+  footwear: ["6", "7", "8", "9", "10", "11"],
+};
+
 
 const AdminProducts = () => {
 
@@ -77,6 +86,7 @@ const AdminProducts = () => {
       price: selectedProduct.price,
       salePrice: selectedProduct.salePrice,
       totalStock: selectedProduct.totalStock,
+      sizeType: selectedProduct.sizeType || "",
       sizes: selectedProduct.sizes || [],
     });
 
@@ -172,8 +182,8 @@ const AdminProducts = () => {
           <Button
             className="cursor-pointer"
             onClick={() => {
-              setCurrentEditedId(null);  
-              setSelectedProduct(null); 
+              setCurrentEditedId(null);
+              setSelectedProduct(null);
               setIsCustomCategory(false);
               setIsCustomBrand(false);
               setUploadImageUrl("");
@@ -328,18 +338,18 @@ const AdminProducts = () => {
                           }}
                         >
                           <FormControl>
-                            <SelectTrigger className='w-full'>
+                            <SelectTrigger className='w-full cursor-pointer'>
                               <SelectValue placeholder="Select category" />
                             </SelectTrigger>
                           </FormControl>
 
                           <SelectContent>
-                            <SelectItem value="men">Men</SelectItem>
-                            <SelectItem value="women">Women</SelectItem>
-                            <SelectItem value="kids">Kids</SelectItem>
-                            <SelectItem value="accessories">Accessories</SelectItem>
-                            <SelectItem value="footwear">Footwear</SelectItem>
-                            <SelectItem value="other">Other</SelectItem>
+                            <SelectItem className="cursor-pointer" value="men">Men</SelectItem>
+                            <SelectItem className="cursor-pointer" value="women">Women</SelectItem>
+                            <SelectItem className="cursor-pointer" value="kids">Kids</SelectItem>
+                            <SelectItem className="cursor-pointer" value="accessories">Accessories</SelectItem>
+                            <SelectItem className="cursor-pointer" value="footwear">Footwear</SelectItem>
+                            <SelectItem className="cursor-pointer" value="other">Other</SelectItem>
                           </SelectContent>
                         </Select>
 
@@ -385,19 +395,19 @@ const AdminProducts = () => {
                           }}
                         >
                           <FormControl>
-                            <SelectTrigger className="w-full">
+                            <SelectTrigger className="w-full cursor-pointer">
                               <SelectValue placeholder="Select Brand" />
                             </SelectTrigger>
                           </FormControl>
 
                           <SelectContent>
-                            <SelectItem value="nike">Nike</SelectItem>
-                            <SelectItem value="adidas">Adidas</SelectItem>
-                            <SelectItem value="puma">Puma</SelectItem>
-                            <SelectItem value="levi">Levi's</SelectItem>
-                            <SelectItem value="zara">Zara</SelectItem>
-                            <SelectItem value="h&m">H&M</SelectItem>
-                            <SelectItem value="other">Other</SelectItem>
+                            <SelectItem className="cursor-pointer" value="nike">Nike</SelectItem>
+                            <SelectItem className="cursor-pointer" value="adidas">Adidas</SelectItem>
+                            <SelectItem className="cursor-pointer" value="puma">Puma</SelectItem>
+                            <SelectItem className="cursor-pointer" value="levi">Levi's</SelectItem>
+                            <SelectItem className="cursor-pointer" value="zara">Zara</SelectItem>
+                            <SelectItem className="cursor-pointer" value="h&m">H&M</SelectItem>
+                            <SelectItem className="cursor-pointer" value="other">Other</SelectItem>
                           </SelectContent>
                         </Select>
 
@@ -425,33 +435,71 @@ const AdminProducts = () => {
                   />
 
                   {/* Sizes */}
-                  <FormField
-                    control={form.control}
-                    name="sizes"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Available Sizes</FormLabel>
-                        <div className="flex gap-2 flex-wrap">
-                          {["XS", "S", "M", "L", "XL", "XXL", "Free size"].map((size) => (
-                            <Button
-                              type="button"
-                              key={size}
-                              variant={field.value.includes(size) ? "default" : "outline"}
-                              size="sm"
-                              onClick={() => {
-                                const updatedSizes = field.value.includes(size)
+                    <FormField
+                control={form.control}
+                name="sizeType"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Size Type</FormLabel>
+                    <Select
+                      value={field.value}
+                      onValueChange={(value) => {
+                        field.onChange(value);
+                        form.setValue("sizes", []);
+                      }}
+                    >
+                      <FormControl>
+                        <SelectTrigger className="w-full cursor-pointer">
+                          <SelectValue placeholder="Select size type" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem className="cursor-pointer" value="upper">Upper Wear</SelectItem>
+                        <SelectItem className="cursor-pointer" value="lower">Lower Wear</SelectItem>
+                        <SelectItem className="cursor-pointer" value="footwear">Footwear</SelectItem>
+                        <SelectItem className="cursor-pointer" value="none">No Size</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </FormItem>
+                )}
+              />
+
+              {/* Available Sizes */}
+              <FormField
+                control={form.control}
+                name="sizes"
+                render={({ field }) => {
+                  const sizeType = form.watch("sizeType");
+                  if (!sizeType || sizeType === "none") return null;
+
+                  return (
+                    <FormItem>
+                      <FormLabel>Available Sizes</FormLabel>
+                      <div className="flex gap-2 flex-wrap">
+                        {SIZE_OPTIONS[sizeType].map((size) => (
+                          <Button
+                          className="cursor-pointer"
+                            key={size}
+                            type="button"
+                            size="sm"
+                            variant={field.value.includes(size) ? "default" : "outline"}
+                            onClick={() => {
+                              field.onChange(
+                                field.value.includes(size)
                                   ? field.value.filter((s) => s !== size)
-                                  : [...field.value, size];
-                                field.onChange(updatedSizes);
-                              }}
-                            >
-                              {size}
-                            </Button>
-                          ))}
-                        </div>
-                      </FormItem>
-                    )}
-                  />
+                                  : [...field.value, size]
+                              );
+                            }}
+                          >
+                            {size}
+                          </Button>
+                        ))}
+                      </div>
+                    </FormItem>
+                  );
+                }}
+              />
+
 
                   {/* Price */}
                   <FormField

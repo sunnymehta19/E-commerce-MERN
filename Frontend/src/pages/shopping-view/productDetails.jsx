@@ -16,8 +16,11 @@ import { addWishlist, fetchWishlist, removeWishlist } from "@/store/shop-slice/w
 import { Heart } from "lucide-react";
 
 
-const SIZE_ORDER = ["XS", "S", "M", "L", "XL", "XXL"];
-
+const SIZE_ORDER_MAP = {
+    upper: ["XS", "S", "M", "L", "XL", "XXL", "Free size"],
+    lower: ["28", "30", "32", "34", "36", "38"],
+    footwear: ["6", "7", "8", "9", "10", "11"],
+};
 
 
 const ProductDetailsPage = () => {
@@ -306,7 +309,11 @@ const ProductDetailsPage = () => {
                             <p className="font-medium">Select Size</p>
                             <div className="flex gap-2 flex-wrap">
                                 {[...productDetails.sizes]
-                                    .sort((a, b) => SIZE_ORDER.indexOf(a) - SIZE_ORDER.indexOf(b))
+                                    .sort((a, b) => {
+                                        const order =
+                                            SIZE_ORDER_MAP[productDetails.sizeType] || [];
+                                        return order.indexOf(a) - order.indexOf(b);
+                                    })
                                     .map((size) => (
                                         <Button
                                             key={size}
@@ -320,8 +327,6 @@ const ProductDetailsPage = () => {
                             </div>
                         </div>
                     )}
-
-
                     <div className="flex flex-col  gap-3 pt-4 md:absolute w-full bottom-0">
                         {productDetails?.totalStock === 0 ? (
                             <Button className="h-12 text-base flex-1 opacity-60 cursor-not-allowed">

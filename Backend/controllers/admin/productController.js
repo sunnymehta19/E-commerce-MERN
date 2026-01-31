@@ -34,7 +34,8 @@ const addProduct = async (req, res) => {
             price,
             salePrice,
             totalStock,
-            sizes
+            sizes,
+            sizeType
         } = req.body;
 
         const createdProduct = new productModel({
@@ -46,6 +47,7 @@ const addProduct = async (req, res) => {
             price,
             salePrice,
             totalStock,
+            sizeType: sizeType || "none",
             sizes: sizes || [],
         });
 
@@ -97,6 +99,7 @@ const editProduct = async (req, res) => {
             salePrice,
             totalStock,
             sizes,
+            sizeType,
             isFeatured,
         } = req.body;
 
@@ -117,6 +120,10 @@ const editProduct = async (req, res) => {
         findProduct.price = price === "" ? 0 : price || findProduct.price;
         findProduct.salePrice = salePrice === "" ? 0 : salePrice || findProduct.salePrice;
         findProduct.totalStock = totalStock || findProduct.totalStock;
+
+        if (typeof sizeType === "string") {
+            findProduct.sizeType = sizeType;
+        }
 
         if (Array.isArray(sizes)) {
             findProduct.sizes = sizes;

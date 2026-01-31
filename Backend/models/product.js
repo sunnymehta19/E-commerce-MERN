@@ -9,6 +9,11 @@ const productSchema = new mongoose.Schema({
     price: Number,
     salePrice: Number,
     totalStock: Number,
+    sizeType: {
+        type: String,
+        enum: ["upper", "lower", "footwear", "none"],
+        default: "none",
+    },
     sizes: {
         type: [String],
         default: [],
