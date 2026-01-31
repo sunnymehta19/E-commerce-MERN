@@ -182,22 +182,31 @@ const ShoppingListing = () => {
             </DropdownMenu>
           </div>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4 h-[78vh] overflow-y-auto no-scrollbar">
-          {productList && productList.length > 0
-            ? productList.map((productItem) => (
-              <ShoppingProductTile
-                handleGetProductDetails={handleGetProductDetails}
-                key={productItem._id}
-                product={productItem}
-                handleAddToCart={handleAddToCart}
-              />
-            )) : null}
-        </div>
-        <div className="mb-5">
-          {totalPages > 1 && (
-            <div className="flex items-center justify-center gap-4 mt-8">
+
+        <div className="h-[78vh] overflow-y-auto no-scrollbar p-4">
+          <div className="flex flex-col min-h-full">
+
+            {/* PRODUCTS GRID */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {productList &&
+                productList.length > 0 &&
+                productList.map((productItem) => (
+                  <ShoppingProductTile
+                    key={productItem._id}
+                    product={productItem}
+                    handleGetProductDetails={handleGetProductDetails}
+                    handleAddToCart={handleAddToCart}
+                  />
+                ))}
+            </div>
+
+            {/* SPACER (THIS IS THE MAGIC) */}
+            <div className="flex-grow" />
+
+            {/* PAGINATION (NATURAL FLOW, ALWAYS AT END) */}
+            <div className="mt-6 mb-2 flex items-center justify-center gap-4">
               <button
-                className="px-4 py-2 border rounded-md text-sm disabled:opacity-50"
+                className="px-4 py-2 border rounded-md text-sm disabled:opacity-50 cursor-pointer"
                 disabled={page === 1}
                 onClick={() => setPage((prev) => prev - 1)}
               >
@@ -205,19 +214,21 @@ const ShoppingListing = () => {
               </button>
 
               <span className="text-sm text-muted-foreground">
-                Page {currentPage} of {totalPages}
+                Page {currentPage || 1} of {totalPages || 1}
               </span>
 
               <button
-                className="px-4 py-2 border rounded-md text-sm disabled:opacity-50"
+                className="px-4 py-2 border rounded-md text-sm disabled:opacity-50 cursor-pointer"
                 disabled={page === totalPages}
                 onClick={() => setPage((prev) => prev + 1)}
               >
                 Next
               </button>
             </div>
-          )}
+
+          </div>
         </div>
+
 
       </div>
     </div>

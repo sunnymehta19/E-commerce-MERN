@@ -17,9 +17,10 @@ import { Heart } from "lucide-react";
 
 
 const SIZE_ORDER_MAP = {
-    upper: ["XS", "S", "M", "L", "XL", "XXL", "Free size"],
-    lower: ["28", "30", "32", "34", "36", "38"],
-    footwear: ["6", "7", "8", "9", "10", "11"],
+    upper: ["XS", "S", "M", "L", "XL", "XXL"],
+    lower: ["26", "28", "30", "32", "34", "36", "38", "40", "42"],
+    footwear: ["5","6", "7", "8", "9", "10", "11", "12", "13"],
+    kids: ["3Y","4Y","5Y","6Y","8Y","10Y","12Y","14Y"],
 };
 
 
@@ -40,11 +41,22 @@ const ProductDetailsPage = () => {
     const [activeImage, setActiveImage] = useState(0);
     const navigate = useNavigate();
 
+    const isSizeRequired =
+        productDetails?.sizeType &&
+        productDetails.sizeType !== "none";
+
+
     useEffect(() => {
         dispatch(fetchProductDetails(productId));
         dispatch(getReviews(productId));
         setSelectedSize(null);
     }, [dispatch, productId]);
+
+    useEffect(() => {
+        if (productDetails?.sizeType === "none") {
+            setSelectedSize(null);
+        }
+    }, [productDetails?.sizeType]);
 
 
     const isWishlisted =
@@ -143,7 +155,7 @@ const ProductDetailsPage = () => {
             return;
         }
 
-        if (productDetails.sizes.length && !selectedSize) {
+        if (isSizeRequired && !selectedSize) {
             showToast.error("Please select a size");
             return;
         }
@@ -188,7 +200,7 @@ const ProductDetailsPage = () => {
             return;
         }
 
-        if (productDetails.sizes.length && !selectedSize) {
+        if (isSizeRequired && !selectedSize) {
             showToast.error("Please select a size");
             return;
         }
@@ -248,7 +260,7 @@ const ProductDetailsPage = () => {
                                 <Badge className="absolute top-2 left-2 bg-red-500 hover:bg-red-600">
                                     Out Of Stock
                                 </Badge>
-                            ) : productDetails?.totalStock < 10 ? (
+                            ) : productDetails?.totalStock <= 10 ? (
                                 <Badge className="absolute top-2 left-2 bg-red-500 hover:bg-red-600">
                                     {`Only ${productDetails?.totalStock} items left`}
                                 </Badge>
@@ -306,7 +318,7 @@ const ProductDetailsPage = () => {
                     {/* Size */}
                     {productDetails?.sizes?.length > 0 && (
                         <div className="flex flex-col gap-2">
-                            <p className="font-medium">Select Size</p>
+                            <p className="font-medium">Available Sizes</p>
                             <div className="flex gap-2 flex-wrap">
                                 {[...productDetails.sizes]
                                     .sort((a, b) => {

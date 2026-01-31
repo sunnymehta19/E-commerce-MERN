@@ -30,9 +30,10 @@ const initialFormValues = {
 
 
 const SIZE_OPTIONS = {
-  upper: ["XS", "S", "M", "L", "XL", "XXL", "Free size"],
-  lower: ["28", "30", "32", "34", "36", "38"],
-  footwear: ["6", "7", "8", "9", "10", "11"],
+  upper: ["XS", "S", "M", "L", "XL", "XXL"],
+  lower: ["26", "28", "30", "32", "34", "36", "38", "40", "42"],
+  footwear: ["5", "6", "7", "8", "9", "10", "11", "12", "13"],
+  kids: ["3Y","4Y","5Y","6Y","8Y","10Y","12Y","14Y"],
 };
 
 
@@ -66,7 +67,7 @@ const AdminProducts = () => {
   );
 
   const lowStockProducts = productList?.filter(
-    (product) => product.totalStock > 0 && product.totalStock < 10
+    (product) => product.totalStock > 0 && product.totalStock <= 10
   );
 
   const onSaleProducts = productList?.filter(
@@ -435,70 +436,71 @@ const AdminProducts = () => {
                   />
 
                   {/* Sizes */}
-                    <FormField
-                control={form.control}
-                name="sizeType"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Size Type</FormLabel>
-                    <Select
-                      value={field.value}
-                      onValueChange={(value) => {
-                        field.onChange(value);
-                        form.setValue("sizes", []);
-                      }}
-                    >
-                      <FormControl>
-                        <SelectTrigger className="w-full cursor-pointer">
-                          <SelectValue placeholder="Select size type" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem className="cursor-pointer" value="upper">Upper Wear</SelectItem>
-                        <SelectItem className="cursor-pointer" value="lower">Lower Wear</SelectItem>
-                        <SelectItem className="cursor-pointer" value="footwear">Footwear</SelectItem>
-                        <SelectItem className="cursor-pointer" value="none">No Size</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </FormItem>
-                )}
-              />
+                  <FormField
+                    control={form.control}
+                    name="sizeType"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Size Type</FormLabel>
+                        <Select
+                          value={field.value}
+                          onValueChange={(value) => {
+                            field.onChange(value);
+                            form.setValue("sizes", []);
+                          }}
+                        >
+                          <FormControl>
+                            <SelectTrigger className="w-full cursor-pointer">
+                              <SelectValue placeholder="Select size type" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem className="cursor-pointer" value="upper">Upper Wear</SelectItem>
+                            <SelectItem className="cursor-pointer" value="lower">Lower Wear</SelectItem>
+                            <SelectItem className="cursor-pointer" value="kids">Kids Wear</SelectItem>
+                            <SelectItem className="cursor-pointer" value="footwear">Footwear</SelectItem>
+                            <SelectItem className="cursor-pointer" value="none">No Size</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </FormItem>
+                    )}
+                  />
 
-              {/* Available Sizes */}
-              <FormField
-                control={form.control}
-                name="sizes"
-                render={({ field }) => {
-                  const sizeType = form.watch("sizeType");
-                  if (!sizeType || sizeType === "none") return null;
+                  {/* Available Sizes */}
+                  <FormField
+                    control={form.control}
+                    name="sizes"
+                    render={({ field }) => {
+                      const sizeType = form.watch("sizeType");
+                      if (!sizeType || sizeType === "none") return null;
 
-                  return (
-                    <FormItem>
-                      <FormLabel>Available Sizes</FormLabel>
-                      <div className="flex gap-2 flex-wrap">
-                        {SIZE_OPTIONS[sizeType].map((size) => (
-                          <Button
-                          className="cursor-pointer"
-                            key={size}
-                            type="button"
-                            size="sm"
-                            variant={field.value.includes(size) ? "default" : "outline"}
-                            onClick={() => {
-                              field.onChange(
-                                field.value.includes(size)
-                                  ? field.value.filter((s) => s !== size)
-                                  : [...field.value, size]
-                              );
-                            }}
-                          >
-                            {size}
-                          </Button>
-                        ))}
-                      </div>
-                    </FormItem>
-                  );
-                }}
-              />
+                      return (
+                        <FormItem>
+                          <FormLabel>Available Sizes</FormLabel>
+                          <div className="flex gap-2 flex-wrap">
+                            {SIZE_OPTIONS[sizeType].map((size) => (
+                              <Button
+                                className="cursor-pointer"
+                                key={size}
+                                type="button"
+                                size="sm"
+                                variant={field.value.includes(size) ? "default" : "outline"}
+                                onClick={() => {
+                                  field.onChange(
+                                    field.value.includes(size)
+                                      ? field.value.filter((s) => s !== size)
+                                      : [...field.value, size]
+                                  );
+                                }}
+                              >
+                                {size}
+                              </Button>
+                            ))}
+                          </div>
+                        </FormItem>
+                      );
+                    }}
+                  />
 
 
                   {/* Price */}

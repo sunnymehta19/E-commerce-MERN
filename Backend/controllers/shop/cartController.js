@@ -12,19 +12,19 @@ const addToCart = async (req, res) => {
             });
         }
 
-        if (!size) {
-            return res.status(400).json({
-                success: false,
-                message: "Product size is required!"
-            });
-        }
-
         const product = await productModel.findById(productId);
 
         if (!product) {
             return res.status(404).json({
                 success: false,
                 message: "Product not found!"
+            });
+        }
+
+        if (product.sizeType !== "none" && !size) {
+            return res.status(400).json({
+                success: false,
+                message: "Product size is required!"
             });
         }
 
@@ -36,7 +36,7 @@ const addToCart = async (req, res) => {
 
         const findCurrentProductIndex = cart.items.findIndex(
             (item) => item.productId.toString() === productId &&
-                item.size === size
+                (product.sizeType === "none" || item.size === size)
         );
 
         if (findCurrentProductIndex === -1) {

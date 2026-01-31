@@ -14,9 +14,9 @@
   }
 }
 
-
+/*For hiding scrollbar all over the app*/
 /* Hide scrollbar for Chrome, Safari, Edge */
-/* ::-webkit-scrollbar {
+::-webkit-scrollbar {
   display: none;
 }
 
@@ -26,7 +26,7 @@
 
 * {
   -ms-overflow-style: none;
-} */
+}
 
 
 /* hide scrollbar but allow scroll */
