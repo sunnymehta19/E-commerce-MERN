@@ -19,8 +19,8 @@ import { Heart } from "lucide-react";
 const SIZE_ORDER_MAP = {
     upper: ["XS", "S", "M", "L", "XL", "XXL"],
     lower: ["26", "28", "30", "32", "34", "36", "38", "40", "42"],
-    footwear: ["5","6", "7", "8", "9", "10", "11", "12", "13"],
-    kids: ["3Y","4Y","5Y","6Y","8Y","10Y","12Y","14Y"],
+    footwear: ["5", "6", "7", "8", "9", "10", "11", "12", "13"],
+    kids: ["3Y", "4Y", "5Y", "6Y", "8Y", "10Y", "12Y", "14Y"],
 };
 
 
@@ -328,6 +328,7 @@ const ProductDetailsPage = () => {
                                     })
                                     .map((size) => (
                                         <Button
+                                            className="cursor-pointer"
                                             key={size}
                                             size="sm"
                                             variant={selectedSize === size ? "default" : "outline"}

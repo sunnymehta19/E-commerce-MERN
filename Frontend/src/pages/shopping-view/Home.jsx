@@ -1,4 +1,4 @@
-import { React, useEffect, useState } from 'react'
+import { React, useEffect, useRef, useState } from 'react'
 import { Button } from '@/components/ui/button';
 import { BabyIcon, ChevronLeftIcon, ChevronRightIcon, CloudLightning, ShirtIcon, UmbrellaIcon, WatchIcon } from 'lucide-react';
 import { SiNike, SiAdidas, SiPuma, SiZara } from "react-icons/si";
@@ -46,6 +46,7 @@ const ShoppingHome = () => {
   const { user } = useSelector((state) => state.auth);
   const [currentSlide, setCurrentSlide] = useState(0);
   const navigate = useNavigate();
+  const topRef = useRef(null);
 
 
 
@@ -118,7 +119,7 @@ const ShoppingHome = () => {
 
   return (
     <>
-      <div className="flex flex-col min-h-screen">
+      <div className="flex flex-col min-h-screen" ref={topRef}>
         <div className="relative w-full h-[600px] overflow-hidden">
           {
             featureImageList && featureImageList.length > 0 ?
@@ -235,6 +236,15 @@ const ShoppingHome = () => {
               }
 
             </div>
+          </div>
+        </section>
+
+        <section className="pt-20 bg-gray-50">
+          <div
+            onClick={() => topRef.current?.scrollIntoView({ behavior: "smooth" })}
+            className=" flex items-center justify-center bg-gray-600 text-white cursor-pointer font-thin">
+            <div className=" py-3 text-sm font-semibold"> Back to top</div>
+            {/* <div className="text-sm" size="sm"><ArrowBigUp /></div> */}
           </div>
         </section>
 

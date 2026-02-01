@@ -94,7 +94,7 @@ const getFeaturedProducts = async (req, res) => {
     try {
         const products = await productModel
             .find({ isFeatured: true })
-            .sort({ updatedAt: -1 });
+            .sort({ createdAt: 1 });
 
         res.status(200).json({
             success: true,

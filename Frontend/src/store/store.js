@@ -2,6 +2,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import authReducer from "./auth-slice/authSlice";
 import AdminProductSlice from "./admin-slice/productSlice"
 import AdminOrderSlice from "./admin-slice/orderSlice"
+import AdminDashboardSlice from "./admin-slice/dashboardSlice"
 import ShopProductSlice from "./shop-slice/productSlice"
 import ShopCartSlice from "./shop-slice/cartSlice"
 import ShopAddressSlice from "./shop-slice/addressSlice"
@@ -17,6 +18,7 @@ const store = configureStore({
         auth: authReducer,
         adminProducts: AdminProductSlice,
         adminOrder: AdminOrderSlice,
+        adminDashboard: AdminDashboardSlice,
         shopProducts: ShopProductSlice,
         shopCart: ShopCartSlice,
         shopAddress: ShopAddressSlice,

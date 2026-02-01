@@ -8,6 +8,7 @@ const database = require("./config/mongooseConnection");
 const authRouter = require("./routes/auth/authRouter");
 const adminProductRouter = require("./routes/admin/productRouter");
 const adminOrderRouter = require("./routes/admin/orderRouter");
+const adminDashboardRouter = require("./routes/admin/dashboardRouter");
 
 const shopProductRouter = require("./routes/shop/productRouter");
 const shopCartRouter = require("./routes/shop/cartRouter");
@@ -43,6 +44,7 @@ app.use(
 app.use("/api/auth", authRouter);
 app.use("/api/admin/products", adminProductRouter);
 app.use("/api/admin/orders", adminOrderRouter);
+app.use("/api/admin/dashboard", adminDashboardRouter);
 
 app.use("/api/shop/products", shopProductRouter);
 app.use("/api/shop/cart", shopCartRouter);

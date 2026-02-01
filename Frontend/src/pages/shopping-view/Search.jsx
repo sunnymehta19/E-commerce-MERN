@@ -17,6 +17,8 @@ const ShopSearchProducts = () => {
     const { user } = useSelector((state) => state.auth);
     const { cartItems } = useSelector((state) => state.shopCart);
     const [isSearching, setIsSearching] = useState(false);
+    const [selectedSize, setSelectedSize] = useState(null);
+
 
 
 
@@ -57,6 +59,11 @@ const ShopSearchProducts = () => {
 
     //Handle Add to Cart
     const handleAddToCart = (getCurrentProductId, getTotalStock) => {
+
+         if ( !selectedSize) {
+            showToast.error("Please select a size");
+            return;
+        }
 
         let getCartItems = cartItems.items || [];
 

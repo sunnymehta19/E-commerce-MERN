@@ -33,7 +33,7 @@ const SIZE_OPTIONS = {
   upper: ["XS", "S", "M", "L", "XL", "XXL"],
   lower: ["26", "28", "30", "32", "34", "36", "38", "40", "42"],
   footwear: ["5", "6", "7", "8", "9", "10", "11", "12", "13"],
-  kids: ["3Y","4Y","5Y","6Y","8Y","10Y","12Y","14Y"],
+  kids: ["3Y", "4Y", "5Y", "6Y", "8Y", "10Y", "12Y", "14Y"],
 };
 
 
@@ -79,11 +79,25 @@ const AdminProducts = () => {
   useEffect(() => {
     if (!selectedProduct) return;
 
+    const predefinedCategories = ["men", "women", "kids", "accessories", "footwear"];
+    const predefinedBrands = ["nike", "adidas", "puma", "levi", "zara", "h&m"];
+
+    const isCategoryCustom = !predefinedCategories.includes(selectedProduct.category);
+    const isBrandCustom = !predefinedBrands.includes(selectedProduct.brand);
+
+    setIsCustomCategory(isCategoryCustom);
+    setIsCustomBrand(isBrandCustom);
+
     form.reset({
       title: selectedProduct.title,
       description: selectedProduct.description,
-      category: selectedProduct.category,
-      brand: selectedProduct.brand,
+
+      category: isCategoryCustom ? "other" : selectedProduct.category,
+      customCategory: isCategoryCustom ? selectedProduct.category : "",
+
+      brand: isBrandCustom ? "other" : selectedProduct.brand,
+      customBrand: isBrandCustom ? selectedProduct.brand : "",
+
       price: selectedProduct.price,
       salePrice: selectedProduct.salePrice,
       totalStock: selectedProduct.totalStock,
@@ -91,7 +105,8 @@ const AdminProducts = () => {
       sizes: selectedProduct.sizes || [],
     });
 
-  }, [selectedProduct, form])
+  }, [selectedProduct, form]);
+
 
   //Fetching Product
   useEffect(() => {
@@ -260,6 +275,8 @@ const AdminProducts = () => {
           onOpenChange={() => {
             setCreateProductDialog(false);
             setSelectedProduct(null);
+            setIsCustomCategory(false);
+            setIsCustomBrand(false);
             form.reset(initialFormValues);
 
           }}
