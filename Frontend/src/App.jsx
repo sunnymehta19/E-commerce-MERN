@@ -28,6 +28,13 @@ import ShopSearchProducts from "./pages/shopping-view/Search"
 import OrderSuccess from "./pages/shopping-view/OrderSuccess"
 import Footer from "./pages/common/Footer"
 import ShopWishlist from "./pages/shopping-view/Wishlist"
+import About from "./pages/shopping-view/About"
+import PrivacyPolicy from "./pages/shopping-view/PrivacyPolicy"
+import Contact from "./pages/shopping-view/Contact"
+import ShippingPolicy from "./pages/shopping-view/ShippingPolicy"
+import CancellationAndReturns from "./pages/shopping-view/CancellationAndReturns"
+import RefundPolicy from "./pages/shopping-view/RefundPolicy"
+import TermsAndConditions from "./pages/shopping-view/TermsAndConditions"
 
 
 function App() {
@@ -57,6 +64,13 @@ function App() {
           <Route path="/products/:productId" element={<ProductDetailsPage />} />
           <Route path='search' element={<ShopSearchProducts />} />
           <Route path='order-success' element={<OrderSuccess />} />
+          <Route path='about' element={<About />} />
+          <Route path='privacy-policy' element={<PrivacyPolicy />} />
+          <Route path='contact' element={<Contact />} />
+          <Route path='shipping-policy' element={<ShippingPolicy />} />
+          <Route path='refund-policy' element={<RefundPolicy />} />
+          <Route path='cancellatin-and-returns-policy' element={<CancellationAndReturns />} />
+          <Route path='terms-and-conditions' element={<TermsAndConditions />} />
 
           <Route
             path='checkout'
@@ -92,12 +106,12 @@ function App() {
           <Route path='products' element={<AdminProducts />} />
         </Route>
 
-        <Route
-          path="/footer"
-          element={<Footer />}
-        >
-
-        </Route>
+        {/* <Route path="/footer" element={<Footer />}>
+            <Route path="about" element={<About/>}   />
+            <Route path="contact"  />
+            <Route path="privacy-policy"  />
+            <Route path="terms-and-conditions"  />
+        </Route> */}
 
         {/* 404 routes */}
         <Route path='*' element={<NotFound />}></Route>

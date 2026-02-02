@@ -9,7 +9,7 @@ const AuthLayout = () => {
                       bg-gradient-to-br from-black via-zinc-900 to-zinc-800 text-white">
                 <h1 className="text-5xl font-extrabold leading-tight">
                     Welcome to <br />
-                    <span className="text-amber-400">E-Commerce</span>
+                    <span className="text-amber-400">UniDrobe</span>
                 </h1>
 
                 <p className="mt-6 text-lg text-zinc-300 max-w-md">

@@ -74,7 +74,7 @@ const ShoppingProductTile = ({ product, handleAddToCart }) => {
                     <img
                         src={product?.image}
                         alt={product.id}
-                        className='w-full h-[300px] object-cover rounded-t-lg'
+                        className='w-full h-[240px] md:h-[300px] object-cover rounded-t-lg'
                     />
                     <Heart
                         onClick={handleWishlist}
@@ -105,7 +105,7 @@ const ShoppingProductTile = ({ product, handleAddToCart }) => {
                 </div>
 
                 <CardContent className="p-2">
-                    <h2 className="text-xl font-bold mb-0 capitalize truncate">{product?.title}</h2>
+                    <h2 className="text-lg md:text-xl font-bold mb-0 capitalize truncate">{product?.title}</h2>
                     <div className="flex justify-between items-center mb-1">
                         <span className="text-[16px] text-muted-foreground capitalize">
                             {product?.category}

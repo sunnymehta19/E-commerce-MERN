@@ -1,20 +1,20 @@
 import { React, useEffect, useRef, useState } from 'react'
-import { Button } from '@/components/ui/button';
-import { BabyIcon, ChevronLeftIcon, ChevronRightIcon, CloudLightning, ShirtIcon, UmbrellaIcon, WatchIcon } from 'lucide-react';
-import { SiNike, SiAdidas, SiPuma, SiZara } from "react-icons/si";
-import { PiDress } from "react-icons/pi";
-import { GiConverseShoe } from "react-icons/gi";
-import { Card, CardContent } from '@/components/ui/card';
-import { useDispatch, useSelector } from 'react-redux';
-import { fetchFeaturedProducts } from '@/store/shop-slice/productSlice';
-import ShoppingProductTile from '@/components/shopping-view/productTile';
-import LeviLogo from "../../assets/levi.png";
-import HmLogo from "../../assets/HmLogo.png";
-import { useNavigate } from 'react-router-dom';
-import { addToCart, fetchCartItems } from '@/store/shop-slice/cartSlice';
-import { showToast } from '@/utils/toast';
-import { getFeatureImage } from '@/store/common/featureSlice';
-import Footer from '../common/Footer';
+import { Button } from '@/components/ui/button'
+import { BabyIcon, ChevronLeftIcon, ChevronRightIcon, ShirtIcon, WatchIcon } from 'lucide-react'
+import { SiNike, SiAdidas, SiPuma, SiZara } from "react-icons/si"
+import { PiDress } from "react-icons/pi"
+import { GiConverseShoe } from "react-icons/gi"
+import { Card, CardContent } from '@/components/ui/card'
+import { useDispatch, useSelector } from 'react-redux'
+import { fetchFeaturedProducts } from '@/store/shop-slice/productSlice'
+import ShoppingProductTile from '@/components/shopping-view/productTile'
+import LeviLogo from "../../assets/levi.png"
+import HmLogo from "../../assets/HmLogo.png"
+import { useNavigate } from 'react-router-dom'
+import { addToCart, fetchCartItems } from '@/store/shop-slice/cartSlice'
+import { showToast } from '@/utils/toast'
+import { getFeatureImage } from '@/store/common/featureSlice'
+import Footer from '../common/Footer'
 
 const categoriesWithIcon = [
   { id: "men", label: "Men", icon: ShirtIcon },
@@ -22,8 +22,7 @@ const categoriesWithIcon = [
   { id: "kids", label: "Kids", icon: BabyIcon },
   { id: "accessories", label: "Accessories", icon: WatchIcon },
   { id: "footwear", label: "Footwear", icon: GiConverseShoe },
-];
-
+]
 
 const brandsWithIcon = [
   { id: "nike", label: "Nike", icon: SiNike, type: "icon" },
@@ -32,227 +31,189 @@ const brandsWithIcon = [
   { id: "levi", label: "Levi", icon: LeviLogo, type: "image" },
   { id: "zara", label: "Zara", icon: SiZara, type: "icon" },
   { id: "h&m", label: "H&M", icon: HmLogo, type: "image" },
-];
-
-
+]
 
 const ShoppingHome = () => {
+  const dispatch = useDispatch()
+  const { featuredProducts } = useSelector((state) => state.shopProducts)
+  const { featureImageList } = useSelector((state) => state.commonFeature)
+  const { cartItems } = useSelector((state) => state.shopCart)
+  const { user } = useSelector((state) => state.auth)
 
-  const dispatch = useDispatch();
-  const { featuredProducts } = useSelector((state) => state.shopProducts);
-  const { featureImageList } = useSelector((state) => state.commonFeature);
-  const { cartItems } = useSelector((state) => state.shopCart);
-
-  const { user } = useSelector((state) => state.auth);
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const navigate = useNavigate();
-  const topRef = useRef(null);
-
-
+  const [currentSlide, setCurrentSlide] = useState(0)
+  const navigate = useNavigate()
+  const topRef = useRef(null)
 
   const handleNavigateToListing = (getCurrentItem, section) => {
-    sessionStorage.removeItem("filters");
-    const currentFilters = {
-      [section]: [getCurrentItem.id],
-    };
-
-    sessionStorage.setItem("filters", JSON.stringify(currentFilters));
-    navigate("/listing");
+    sessionStorage.removeItem("filters")
+    sessionStorage.setItem("filters", JSON.stringify({ [section]: [getCurrentItem.id] }))
+    navigate("/listing")
   }
 
   const handleAddToCart = (getCurrentProductId, getTotalStock, size) => {
-
     if (!user) {
       showToast.error("Please log in to add items to your cart.")
-      return;
+      return
     }
 
-    let getCartItems = cartItems.items || [];
+    const items = cartItems.items || []
+    const existing = items.find(i => i.productId === getCurrentProductId)
 
-    if (getCartItems.length) {
-      const indexOfCurrentItem = getCartItems.findIndex(
-        (item) => item.productId === getCurrentProductId
-      );
-      if (indexOfCurrentItem > -1) {
-        const getQuantity = getCartItems[indexOfCurrentItem].quantity;
-        if (getQuantity + 1 > getTotalStock) {
-          showToast.error(`Only ${getQuantity} items available in stock`);
-          return;
-        }
-      }
+    if (existing && existing.quantity + 1 > getTotalStock) {
+      showToast.error(`Only ${existing.quantity} items available in stock`)
+      return
     }
 
-    dispatch(
-      addToCart({
-        userId: user?.id,
-        productId: getCurrentProductId,
-        quantity: 1,
-        size: size,
-      })
-    ).then((data) => {
+    dispatch(addToCart({
+      userId: user.id,
+      productId: getCurrentProductId,
+      quantity: 1,
+      size
+    })).then((data) => {
       if (data?.payload?.success) {
-        dispatch(fetchCartItems(user.id));
+        dispatch(fetchCartItems(user.id))
         showToast.success("Added to Cart")
       }
     })
   }
 
-
-
   useEffect(() => {
+    if (!featureImageList.length) return
     const timer = setInterval(() => {
-      setCurrentSlide((prevSlide) => (prevSlide + 1) % featureImageList.length)
-    }, 3000);
-
+      setCurrentSlide(prev => (prev + 1) % featureImageList.length)
+    }, 3000)
     return () => clearInterval(timer)
   }, [featureImageList])
 
-
   useEffect(() => {
-    dispatch(fetchFeaturedProducts());
-  }, [dispatch]);
-
-
-  useEffect(() => {
-    dispatch(getFeatureImage());
+    dispatch(fetchFeaturedProducts())
+    dispatch(getFeatureImage())
   }, [dispatch])
 
   return (
-    <>
-      <div className="flex flex-col min-h-screen" ref={topRef}>
-        <div className="relative w-full h-[600px] overflow-hidden">
-          {
-            featureImageList && featureImageList.length > 0 ?
-              featureImageList.map((slide, index) => (
-                <img
-                  src={slide?.image}
-                  key={index}
-                  className={` ${index === currentSlide ? "opacity-100" : "opacity-0"} 
-                absolute top-0 left-0 w-full h-full object-cover transition-opacity duration-1000`}
-                />
-              )) : null
-          }
-          <Button
-            variant='outline'
-            size='icon'
-            className="absolute top-1/2 left-4 transform -translate-y-1/2 bg-white/80 cursor-pointer"
-            onClick={() => setCurrentSlide((prevSlide) => (prevSlide - 1 + featureImageList.length) % featureImageList.length)}
-          >
-            <ChevronLeftIcon className='w-4 h-4' />
-          </Button>
-          <Button
-            variant='outline'
-            size='icon'
-            className="absolute top-1/2 right-4 transform -translate-y-1/2 bg-white/80 cursor-pointer"
-            onClick={() => setCurrentSlide((prevSlide) => (prevSlide + 1) % featureImageList.length)}
+    <div className="flex flex-col min-h-screen" ref={topRef}>
 
-          >
-            <ChevronRightIcon className='w-4 h-4' />
-          </Button>
-        </div>
+      {/* Slider */}
+      <div className="relative w-full h-[200px] sm:h-[260px] md:h-[420px] lg:h-[600px] overflow-hidden">
+        {featureImageList.map((slide, index) => (
+          <img
+            key={index}
+            src={slide.image}
+            className={`${index === currentSlide ? "opacity-100" : "opacity-0"}
+              absolute top-0 left-0 w-full h-full object-cover transition-opacity duration-1000`}
+          />
+        ))}
 
-        {/* Shop by Category */}
-        <section className="py-12 bg-gray-50">
-          <div className="container mx-auto px-4">
-            <h2 className="text-3xl font-bold text-center mb-8">
-              Shop by Category
-            </h2>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-              {
-                categoriesWithIcon.map((categoryItem) => (
-                  <Card
-                    onClick={() => handleNavigateToListing(categoryItem, "category")}
-                    key={categoryItem.id}
-                    className="cursor-pointer hover:shadow-lg transition-shadow"
-                  >
-                    <CardContent
-                      className="flex flex-col items-center justify-center p-6"
-                    >
-                      {<categoryItem.icon className='w-12 h-12 mb-4 text-primary' />}
-                      <span className="font-bold">{categoryItem.label}</span>
-                    </CardContent>
-                  </Card>
-                ))
-              }
-            </div>
-          </div>
-        </section>
+        <Button
+          variant="outline"
+          size="icon"
+          className="absolute top-1/2 left-2 sm:left-4 -translate-y-1/2 bg-white/40 md:bg-white/80"
+          onClick={() => setCurrentSlide((prev) => (prev - 1 + featureImageList.length) % featureImageList.length)}
+        >
+          <ChevronLeftIcon className="w-4 h-4" />
+        </Button>
 
-        {/* Shop by Brand */}
-        <section className="py-12 bg-gray-50">
-          <div className="container mx-auto px-4">
-            <h2 className="text-3xl font-bold text-center mb-8">
-              Shop by Brand
-            </h2>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-              {
-                brandsWithIcon.map((brandItem) => (
-                  <Card
-                    onClick={() => handleNavigateToListing(brandItem, "brand")}
-
-                    key={brandItem.id}
-                    className="cursor-pointer hover:shadow-lg transition-shadow"
-                  >
-                    <CardContent
-                      className="flex flex-col items-center justify-center p-6"
-                    >
-                      {brandItem.type === "icon" ? (
-                        <brandItem.icon className="w-12 h-12 mb-4 text-primary" />
-                      ) : (
-                        <img
-                          src={brandItem.icon}
-                          alt={brandItem.label}
-                          className="w-12 h-12 mb-4 object-contain"
-                        />
-                      )}
-                      <span className="font-bold">{brandItem.label}</span>
-                    </CardContent>
-                  </Card>
-                ))
-              }
-            </div>
-          </div>
-        </section>
-
-        {/* Feature Products */}
-        <section className="py-12 bg-gray-50">
-          <div className="container mx-auto px-4">
-            <h2 className="text-3xl font-bold text-center mb-8">Feature Products</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-              {
-                featuredProducts && featuredProducts.length > 0
-                  ? featuredProducts.map((productItem) => (
-                    <ShoppingProductTile
-                      key={productItem._id}
-                      product={productItem}
-                      handleAddToCart={handleAddToCart}
-                    />
-                  ))
-                  : (
-                    <p className="col-span-full text-center text-muted-foreground">
-                      No featured products available
-                    </p>
-                  )
-              }
-
-            </div>
-          </div>
-        </section>
-
-        <section className="pt-20 bg-gray-50">
-          <div
-            onClick={() => topRef.current?.scrollIntoView({ behavior: "smooth" })}
-            className=" flex items-center justify-center bg-gray-600 text-white cursor-pointer font-thin">
-            <div className=" py-3 text-sm font-semibold"> Back to top</div>
-            {/* <div className="text-sm" size="sm"><ArrowBigUp /></div> */}
-          </div>
-        </section>
-
-        <section>
-          <Footer />
-        </section>
+        <Button
+          variant="outline"
+          size="icon"
+          className="absolute top-1/2 right-2 sm:right-4 -translate-y-1/2 bg-white/40 md:bg-white/80"
+          onClick={() => setCurrentSlide((prev) => (prev + 1) % featureImageList.length)}
+        >
+          <ChevronRightIcon className="w-4 h-4" />
+        </Button>
       </div>
-    </>
+
+      {/* Categories */}
+      <section className="py-12 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4">
+          <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-center mb-6 md:mb-8">
+            Shop by Category
+          </h2>
+          <div className="grid grid-cols-6 lg:grid-cols-5 gap-3 justify-items-center">
+            {categoriesWithIcon.map((item, index) => (
+              <Card
+                key={item.id}
+                onClick={() => handleNavigateToListing(item, "category")}
+                className={`cursor-pointer hover:shadow-lg transition-shadow w-full max-w-[110px] sm:max-w-none col-span-2 ${index === 3 ? "col-start-2" : ""} ${index === 4 ? "col-start-4" : ""} lg:col-span-1 lg:col-start-auto `}
+              >
+                <CardContent className="flex flex-col items-center justify-center p-4 sm:p-6">
+                  <item.icon className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 mb-2 sm:mb-4 text-primary" />
+                  <span className="font-bold">{item.label}</span>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+
+
+      {/* Brands */}
+      <section className="py-6 md:py-12 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4">
+          <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-center mb-6 md:mb-8">
+            Shop by Brand
+          </h2>
+
+          <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+            {brandsWithIcon.map(item => (
+              <Card
+                key={item.id}
+                onClick={() => handleNavigateToListing(item, "brand")}
+                className="cursor-pointer hover:shadow-lg transition-shadow"
+              >
+                <CardContent className="flex flex-col items-center justify-center p-4 sm:p-6">
+                  {item.type === "icon"
+                    ? <item.icon className="w-10 h-10 mb-3 text-primary" />
+                    : <img src={item.icon} className="w-10 h-10 mb-3 object-contain" />
+                  }
+                  <span className="font-bold">{item.label}</span>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Featured Products */}
+      <section className="py-12 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4">
+          <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-center mb-6 md:mb-8">
+            Feature Products
+          </h2>
+
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-4 md:gap-6">
+            {featuredProducts.length ? featuredProducts.map(product => (
+              <ShoppingProductTile
+                key={product._id}
+                product={product}
+                handleAddToCart={handleAddToCart}
+              />
+            )) : (
+              <p className="col-span-full text-center text-muted-foreground">
+                No featured products available
+              </p>
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* Back to top */}
+      <section className="pt-10 md:pt-20 bg-gray-50">
+        <div
+          onClick={() => topRef.current?.scrollIntoView({ behavior: "smooth" })}
+          className="flex items-center justify-center bg-gray-600 text-white cursor-pointer"
+        >
+          <div className="py-2 md:py-3 text-xs sm:text-sm font-semibold">
+            Back to top
+          </div>
+        </div>
+      </section>
+
+      <section >
+        <Footer />
+      </section>
+    </div>
   )
 }
 

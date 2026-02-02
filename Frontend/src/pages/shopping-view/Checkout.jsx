@@ -111,7 +111,7 @@ const ShoppingCheckout = () => {
       key: import.meta.env.VITE_RAZORPAY_KEY_ID,
       amount: razorpayOrder.amount,
       currency: "INR",
-      name: "Ecommerce",
+      name: "UniDrobe",
       description: "Order Payment",
       order_id: razorpayOrder.id,
 
