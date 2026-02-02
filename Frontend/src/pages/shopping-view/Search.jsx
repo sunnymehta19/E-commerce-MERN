@@ -135,7 +135,7 @@ const ShopSearchProducts = () => {
                 {/* Loading Screen */}
                 {
                     (loading || isSearching) && (
-                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+                        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
                             {Array.from({ length: 4 }).map((_, i) => (
                                 <Skeleton key={i} className="h-[300px] w-full rounded-lg" />
                             ))}
@@ -145,7 +145,7 @@ const ShopSearchProducts = () => {
 
                 {
                     !loading && searchResults.length > 0 && (
-                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+                        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-5">
                             {searchResults.map((item) => (
                                 <div key={item._id}>
                                     <ShoppingProductTile

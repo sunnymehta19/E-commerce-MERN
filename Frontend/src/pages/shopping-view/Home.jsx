@@ -107,7 +107,7 @@ const ShoppingHome = () => {
         <Button
           variant="outline"
           size="icon"
-          className="absolute top-1/2 left-2 sm:left-4 -translate-y-1/2 bg-white/40 md:bg-white/80"
+          className="absolute cursor-pointer top-1/2 left-2 sm:left-4 -translate-y-1/2 bg-white/40 md:bg-white/80"
           onClick={() => setCurrentSlide((prev) => (prev - 1 + featureImageList.length) % featureImageList.length)}
         >
           <ChevronLeftIcon className="w-4 h-4" />
@@ -116,7 +116,7 @@ const ShoppingHome = () => {
         <Button
           variant="outline"
           size="icon"
-          className="absolute top-1/2 right-2 sm:right-4 -translate-y-1/2 bg-white/40 md:bg-white/80"
+          className="absolute cursor-pointer top-1/2 right-2 sm:right-4 -translate-y-1/2 bg-white/40 md:bg-white/80"
           onClick={() => setCurrentSlide((prev) => (prev + 1) % featureImageList.length)}
         >
           <ChevronRightIcon className="w-4 h-4" />

@@ -44,10 +44,10 @@ const ShopWishlist = () => {
   }
 
   return (
-    <div className="container mx-auto px-4 py-10 mt-5">
+    <div className="container mx-auto px-4 py-10 my-8">
       <h1 className="text-3xl font-bold mb-6">My Wishlist</h1>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6">
         {wishlist.map((item) => {
           const product = item.productId;
 
@@ -55,7 +55,7 @@ const ShopWishlist = () => {
             <Card
               key={product._id}
               onClick={() => navigate(`/products/${product._id}`)}
-              className="cursor-pointer hover:shadow-lg transition-shadow py-0 gap-0"
+              className="cursor-pointer hover:shadow-lg transition-shadow py-0 gap-0 "
             >
               <img
                 src={product.image}

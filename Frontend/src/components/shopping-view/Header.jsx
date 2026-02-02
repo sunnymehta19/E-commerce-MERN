@@ -63,7 +63,7 @@ const shoppingHeaderMenuItems = [
 ]
 
 
-const MenuItems = () => {
+const MenuItems = ({ onItemClick }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -88,13 +88,14 @@ const MenuItems = () => {
         new URLSearchParams(`?category=${getCurrentMenuItem.id}`)
       ) : navigate(getCurrentMenuItem.path);
 
+    onItemClick?.();
 
   }
 
 
   return (
     <>
-      <nav className={`${isAuthenticated ? "" : "pl-24"} flex flex-col mb-3 lg:mb-0 lg:items-center gap-6 lg:flex-row`}>
+      <nav className={`${isAuthenticated ? "" : "pl-24"} flex flex-col mb-3 lg:mb-0 lg:items-center p-4 gap-4 md:gap-6 lg:flex-row`}>
         {
           shoppingHeaderMenuItems.map((items) => (
             <Label
@@ -134,7 +135,7 @@ const HeaderRightContent = () => {
 
 
   return (
-    <div className="flex lg:items-center lg:flex-row flex-col gap-4">
+    <div className="flex items-center gap-4">
       <Sheet open={openCartSheet} onOpenChange={setOpenCartSheet}>
         <Button
           className="cursor-pointer  relative"
@@ -248,34 +249,42 @@ const HeaderRightContent = () => {
 
 
 const ShoppingHeader = () => {
+  const [openMenu, setOpenMenu] = useState(false);
   const { isAuthenticated, user } = useSelector((state) => state.auth);
 
   return (
     <header className='sticky top-0 z-40 w-full border-b bg-background'>
       <div className="flex h-16 items-center justify-between px-4 md:px-6">
+
         <Link to="/" className='flex items-center gap-2'>
           <HousePlug className='h-6 w-6' />
           <span className="font-bold">UniDrobe</span>
         </Link>
-        <Sheet>
-          <SheetTrigger asChild>
-            <Button size='icon' className='lg:hidden bg-white text-black h-10'>
-              <Menu size={30} className='h-6 w-6' />
-              <span className="sr-only">Toggle header menu</span>
-            </Button>
-          </SheetTrigger>
-          <SheetContent side="left" className="w-full max-w-xs p-4" >
-            <MenuItems />
-            <HeaderRightContent />
-          </SheetContent>
-        </Sheet>
 
-        <div className="hidden lg:block">
+        <div className="flex items-center gap-2 lg:hidden">
+        <HeaderRightContent />
+
+          <Sheet open={openMenu} onOpenChange={setOpenMenu}>
+            <SheetTrigger asChild>
+              <Button size='icon' className='lg:hidden bg-white text-black h-10'>
+                <Menu size={30} className='h-6 w-6' />
+                <span className="sr-only">Toggle header menu</span>
+              </Button>
+            </SheetTrigger>
+
+            <SheetContent side="left" className="w-full max-w-xs p-4" >
+              <MenuItems onItemClick={() => setOpenMenu(false)} />
+            </SheetContent>
+          </Sheet>
+        </div>
+
+        <div className="hidden lg:flex absolute left-1/2 -translate-x-1/2">
           <MenuItems />
         </div>
-        <div className="hidden lg:block">
+        <div className="hidden lg:flex items-center gap-6">
           <HeaderRightContent />
         </div>
+        
       </div>
     </header>
   )

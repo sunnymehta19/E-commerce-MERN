@@ -22,43 +22,50 @@ const UserCartWrapper = ({ cartItems, setOpenCartSheet }) => {
 
     return (
         <>
+  <SheetHeader className="px-4">
+    <SheetTitle className="text-2xl font-bold">
+      Your Cart
+    </SheetTitle>
+  </SheetHeader>
 
-            <SheetHeader>
-                <SheetTitle className='text-2xl font-bold'>Your Cart</SheetTitle>
-            </SheetHeader>
-            <div className="px-4 overflow-y-scroll  relative ">
-                <div className="space-y-4 md:h-[80vh] ">
-                    {cartItems && cartItems.length > 0 ? (
-                        cartItems.map((item) => (
-                            <UserCartItemsContent
-                                key={item.productId}
-                                cartItems={item}
-                            />
-                        ))
-                    ) : (
-                        <p className="text-sm text-muted-foreground">
-                            Your cart is empty
-                        </p>
-                    )}
+  {/* Full-height layout */}
+  <div className="flex flex-col h-[calc(100vh-64px)]">
 
-                </div>
-                <div className="sticky bottom-0 border-t px-4 py-4 space-y-4 bg-background">
-                    <div className="flex justify-between">
-                        <span className="font-bold">Total</span>
-                        <span className="font-bold">₹{TotalCartAmount}</span>
-                    </div>
-                    <Button
-                        onClick={() => handleCheckOut()}
+    {/* Scrollable cart items */}
+    <div className="flex-1 overflow-y-auto px-4 space-y-4">
+      {cartItems && cartItems.length > 0 ? (
+        cartItems.map((item) => (
+          <UserCartItemsContent
+            key={item.productId}
+            cartItems={item}
+          />
+        ))
+      ) : (
+        <p className="text-sm text-muted-foreground">
+          Your cart is empty
+        </p>
+      )}
+    </div>
 
-                        className="w-full mt-3 cursor-pointer"
-                    >
-                        Checkout
-                    </Button>
-                </div>
+    {/* Fixed bottom checkout */}
+    <div className="border-t px-4 py-6 bg-background shrink-0">
+      <div className="flex justify-between mb-3">
+        <span className="font-bold">Total</span>
+        <span className="font-bold">₹{TotalCartAmount}</span>
+      </div>
 
-            </div>
+      <Button
+        onClick={handleCheckOut}
+        className="w-full mb-3"
+      >
+        Checkout
+      </Button>
+    </div>
 
-        </>
+  </div>
+</>
+
+
     )
 }
 

@@ -14,18 +14,18 @@ const ShopAddressCard = ({ addressInfo, handleEditAddress, handleDeleteAddress, 
                     () => setCurrentSelectedAddress(addressInfo)
                     : null
                 }
-                className={`gap-4 p-4 flex flex-col h-full cursor-pointer
-                    ${selectedId?._id === addressInfo?._id 
+                className={`gap-4 px-2 py-3 flex flex-col h-full cursor-pointer
+                    ${selectedId?._id === addressInfo?._id
                         ? "border-red-950 border-[4px]"
-                        : 'border-black'
+                        : 'border-muted-foreground'
 
                     }`}
             >
-                <CardContent className="grid px-3 gap-3 ">
-                    <Label>Address: {addressInfo?.address}</Label>
-                    <Label>City: {addressInfo?.city}</Label>
-                    <Label>Pincode: {addressInfo?.pincode}</Label>
-                    <Label>Phone No.: {addressInfo?.phone}</Label>
+                <CardContent className="grid px-3 gap-2 ">
+                    <Label className="leading-4 capitalize">
+                        {addressInfo?.address}, {addressInfo?.city}, {addressInfo?.pincode}
+                    </Label>
+                    <Label>{addressInfo?.phone}</Label>
                     {addressInfo?.notes && (
                         <Label>Landmark: {addressInfo.notes}</Label>
                     )}

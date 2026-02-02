@@ -240,11 +240,12 @@ const ProductDetailsPage = () => {
                 {/* IMAGE SECTION */}
                 <div className="flex flex-col gap-4">
                     {/* MAIN IMAGE */}
-                    <div className="w-full max-w-md mx-auto lg:mx-0 border rounded-2xl overflow-hidden bg-muted relative">
+                    <div className="w-full max-w-[380px] mx-auto border rounded-2xl overflow-hidden  relative aspect-[3/4]">
+
                         <img
                             src={images[activeImage]}
                             alt={productDetails.title}
-                            className="w-full aspect-square object-cover"
+                            className="w-full h-[510px] object-cover"
                         />
                         <Heart
                             onClick={handleWishlist}

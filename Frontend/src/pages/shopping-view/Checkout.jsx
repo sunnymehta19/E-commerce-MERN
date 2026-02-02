@@ -164,47 +164,58 @@ const ShoppingCheckout = () => {
 
   return (
     <div className='flex flex-col'>
-      <div className="relative h-[250px] w-full overflow-hidden">
+      <div className="relative h-[250px] w-full overflow-hidden hidden md:block">
         <img
           src={accountBanner}
-          className='h-full w-full object-cover object-center'
+          className="h-full w-full object-cover object-center"
         />
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mt-5 p-5">
+
+      <h2 className="text-2xl font-extrabold tracking-widest text-center uppercase px-5 mt-4 md:hidden">
+        Checkout
+      </h2>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 mt-5 p-5">
         <ShopAddress
           selectedId={currentSelectedAddress}
           setCurrentSelectedAddress={setCurrentSelectedAddress}
         />
-        <div className="flex flex-col gap-4">
-          {
-            cartItems && cartItems.items && cartItems.items.length > 0
-              ? cartItems.items.map((item) => (
+        <div className="relative">
+          <div className="lg:sticky lg:top-24 flex flex-col gap-4">
+
+            {cartItems && cartItems.items && cartItems.items.length > 0 ? (
+              cartItems.items.map((item) => (
                 <UserCartItemsContent
                   key={item.productId}
                   cartItems={item}
                 />
-              )) : (
-                <div className="font-bold p-4 text-2xl">
-                  Cart is empty
-                </div>
-              )
-          }
-          <div className="mt-4 space-y-4">
-            <div className="flex justify-between">
-              <span className="font-bold">Total</span>
-              <span className="font-bold">₹{TotalCartAmount}</span>
+              ))
+            ) : (
+              <div className="font-bold p-4 text-2xl">
+                Cart is empty
+              </div>
+            )}
+
+            <div className="mt-4 space-y-4">
+              <div className="flex justify-between">
+                <span className="font-bold">Total</span>
+                <span className="font-bold">₹{TotalCartAmount}</span>
+              </div>
             </div>
-          </div>
-          <div className="mt-2 w-full">
-            <Button
-              className="w-full"
-              onClick={handlePlaceOrder}
-              disabled={isPaymentStart}
-            >
-              {isPaymentStart ? "Processing Payment..." : "Place Order"}
-            </Button>
+
+            <div className="mt-2 w-full">
+              <Button
+                className="w-full"
+                onClick={handlePlaceOrder}
+                disabled={isPaymentStart}
+              >
+                {isPaymentStart ? "Processing Payment..." : "Place Order"}
+              </Button>
+            </div>
+
           </div>
         </div>
+
       </div>
     </div>
   )

@@ -68,13 +68,13 @@ const ShoppingProductTile = ({ product, handleAddToCart }) => {
 
 
     return (
-        <Card className="w-full max-w-sm mx-auto p-0 h-fit cursor-pointer hover:shadow-lg transition-shadow" >
+        <Card className="w-full  mx-auto p-0 h-fit cursor-pointer hover:shadow-lg transition-shadow" >
             <div onClick={() => navigate(`/products/${product._id}`)}>
                 <div className="relative">
                     <img
                         src={product?.image}
                         alt={product.id}
-                        className='w-full h-[240px] md:h-[300px] object-cover rounded-t-lg'
+                        className='w-full h-[220px] md:h-[300px] object-cover rounded-t-lg'
                     />
                     <Heart
                         onClick={handleWishlist}
