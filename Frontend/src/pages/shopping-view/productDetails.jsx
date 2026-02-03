@@ -235,11 +235,8 @@ const ProductDetailsPage = () => {
 
     return (
         <div className="max-w-7xl mx-auto px-4 py-6">
-            {/* TOP SECTION */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-10">
-                {/* IMAGE SECTION */}
                 <div className="flex flex-col gap-4">
-                    {/* MAIN IMAGE */}
                     <div className="w-full max-w-[380px] mx-auto border rounded-2xl overflow-hidden  relative aspect-[3/4]">
 
                         <img
@@ -278,13 +275,11 @@ const ProductDetailsPage = () => {
 
                 {/* PRODUCT INFO */}
                 <div className="flex flex-col gap-6 md:relative">
-                    {/* TITLE + RATING */}
                     <div className="space-y-2">
                         <h1 className="text-2xl md:text-3xl md:pt-5 font-bold leading-tight">
                             {productDetails.title}
                         </h1>
 
-                        {/* DESCRIPTION */}
                         <p className="text-sm md:text-base text-muted-foreground leading-relaxed max-w-xl">
                             {productDetails.description}
                         </p>
@@ -341,7 +336,7 @@ const ProductDetailsPage = () => {
                             </div>
                         </div>
                     )}
-                    <div className="flex flex-col  gap-3 pt-4 md:absolute w-full bottom-0">
+                    <div className="flex flex-col  gap-3 pt-4 lg:absolute w-full lg:bottom-0">
                         {productDetails?.totalStock === 0 ? (
                             <Button className="h-12 text-base flex-1 opacity-60 cursor-not-allowed">
                                 Out Of Stock
@@ -372,7 +367,6 @@ const ProductDetailsPage = () => {
 
             <div className="max-w-5xl mx-auto">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-                    {/* LEFT: REVIEWS (REFERENCE STYLE) */}
                     <div className="space-y-6 md:h-[60vh] overflow-y-scroll pill-scrollbar">
                         <h3 className="text-xl font-semibold">Ratings & Reviews</h3>
 
@@ -405,9 +399,6 @@ const ProductDetailsPage = () => {
                                         <div className="font-semibold">({reviewItem?.reviewValue} <span className="pl-0.1">★</span>)</div>
                                     </div>
 
-
-
-                                    {/* REVIEW TEXT */}
                                     <p className="text-sm leading-relaxed text-muted-foreground">
                                         {reviewItem?.reviewMessage}
                                     </p>
@@ -420,13 +411,11 @@ const ProductDetailsPage = () => {
                         )}
                     </div>
 
-                    {/* RIGHT: WRITE REVIEW FORM */}
                     <div className="space-y-6">
                         <h3 className="text-xl font-semibold">Write a review</h3>
 
                         <div className="border rounded-xl p-6 space-y-5">
 
-                            {/* REVIEW MESSAGE */}
                             <div>
                                 <div className="mb-3">
                                     <p className="text-sm font-medium mb-2">Your Rating</p>
@@ -443,7 +432,6 @@ const ProductDetailsPage = () => {
                                     placeholder="Write your experience with this product..."
                                     className="w-full min-h-[110px] resize-none border rounded-md p-3 mb-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
                                 />
-                                {/* SUBMIT */}
                                 <Button
                                     onClick={handleAddReview}
                                     disabled={reviewMsg.trim() === ""}

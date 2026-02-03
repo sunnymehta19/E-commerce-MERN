@@ -149,15 +149,39 @@ const ShoppingListing = () => {
 
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-[200px_1fr] gap-6 p-4 ">
-      <ProductFilter filters={filters} handleFilter={handleFilter} />
+    <div className="grid grid-cols-1 lg:grid-cols-[200px_1fr] gap-6 py-4 px-2 lg:p-4">
+      <div className="hidden lg:block">
+        <ProductFilter filters={filters} handleFilter={handleFilter} />
+      </div>
       <div className="bg-background w-full rounded-lg shadow-sm">
         <div className="p-4 border-b flex items-center justify-between">
-          <h2 className="text-lg font-extrabold">All Products</h2>
-          <div className="flex items-center gap-3">
-            <span className="text-muted-foreground">
+          <h2 className="md:text-lg font-bold md:font-extrabold">All Products</h2>
+          <div className="flex items-center gap-2">
+            <span className="text-muted-foreground text-sm md:text-base">
               {productList?.length} Products
             </span>
+
+            {/* FILTER BUTTON – MOBILE & TABLET */}
+            <div className="lg:hidden">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" size="sm">
+                    Filters
+                  </Button>
+                </DropdownMenuTrigger>
+
+                <DropdownMenuContent
+                  align="bottom"
+                  className="w-[260px] max-h-[80vh] overflow-y-auto"
+                >
+                  <ProductFilter
+                    filters={filters}
+                    handleFilter={handleFilter}
+                  />
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant='outline' size='sm' className='flex items-center gap-1 cursor-pointer'>
@@ -183,11 +207,11 @@ const ShoppingListing = () => {
           </div>
         </div>
 
-        <div className="h-[78vh] overflow-y-auto no-scrollbar p-4">
-          <div className="flex flex-col min-h-full">
+        <div className="h-full lg:h-[78vh] overflow-y-auto no-scrollbar py-2 px-1.5 lg:p-4">
+          <div className="flex flex-col ">
 
             {/* PRODUCTS GRID */}
-            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-4">
               {productList &&
                 productList.length > 0 &&
                 productList.map((productItem) => (
@@ -200,10 +224,9 @@ const ShoppingListing = () => {
                 ))}
             </div>
 
-            {/* SPACER (THIS IS THE MAGIC) */}
-            <div className="flex-grow" />
+            <div className="hidden lg:flex-grow" />
 
-            {/* PAGINATION (NATURAL FLOW, ALWAYS AT END) */}
+            {/* Pagination */}
             <div className="mt-6 mb-2 flex items-center justify-center gap-4">
               <button
                 className="px-4 py-2 border rounded-md text-sm disabled:opacity-50 cursor-pointer"

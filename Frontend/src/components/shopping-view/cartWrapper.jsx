@@ -32,7 +32,7 @@ const UserCartWrapper = ({ cartItems, setOpenCartSheet }) => {
   <div className="flex flex-col h-[calc(100vh-64px)]">
 
     {/* Scrollable cart items */}
-    <div className="flex-1 overflow-y-auto px-4 space-y-4">
+    <div className="flex-1 overflow-y-auto px-4 space-y-4 mb-2">
       {cartItems && cartItems.length > 0 ? (
         cartItems.map((item) => (
           <UserCartItemsContent

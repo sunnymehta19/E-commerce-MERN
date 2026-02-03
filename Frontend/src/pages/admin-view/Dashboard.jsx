@@ -55,7 +55,7 @@ const AdminDashboard = () => {
           Loading dashboard data...
         </div>
       ) : stats ? (
-        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-5">
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2 md:gap-3">
           <DashboardStatCard
             title="Total Products"
             value={stats.totalProducts}
@@ -116,7 +116,7 @@ const AdminDashboard = () => {
           >
             <img
               src={featureItem.image}
-              className="w-full h-[250px] object-cover"
+              className="w-full h-[200px] object-cover"
             />
 
             <div className="p-3 flex justify-center">

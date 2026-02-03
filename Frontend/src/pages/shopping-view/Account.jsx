@@ -16,7 +16,7 @@ const ShoppingAccount = () => {
         <div className="container mx-auto pt-6 mt-5">
           <div className="flex items-center gap-4 rounded-xl border bg-background p-6 shadow-sm">
 
-            {/* Avatar with initial */}
+            {/* Avatar with initial */} 
             <Avatar className="h-16 w-16 bg-primary">
               <AvatarFallback className="bg-primary text-white text-2xl font-bold">
                 {user?.username?.[0]?.toUpperCase()}

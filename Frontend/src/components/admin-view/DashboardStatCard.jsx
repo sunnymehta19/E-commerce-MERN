@@ -10,7 +10,7 @@ const DashboardStatCard = ({ title, value, icon, bgColor }) => {
         <h2 className="text-2xl font-bold mt-1">{value}</h2>
       </div>
 
-      <div className="text-3xl opacity-80">
+      <div className="text-3xl opacity-80"> 
         {icon}
       </div>
     </div>

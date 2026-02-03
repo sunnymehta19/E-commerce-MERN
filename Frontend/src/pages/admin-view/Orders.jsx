@@ -4,7 +4,7 @@ import React from 'react'
 const AdminOrders = () => {
   return (
     <>
-      <AdminOrdersContent />
+      <AdminOrdersContent  />
     </>
   )
 }

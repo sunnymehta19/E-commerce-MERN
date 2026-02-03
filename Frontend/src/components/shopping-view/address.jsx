@@ -124,7 +124,7 @@ const ShopAddress = ({ setCurrentSelectedAddress, selectedId }) => {
                 <CardHeader>
                     <CardTitle className="text-lg font-bold">{currentEditedId !== null ? "Edit Address" : "Add New Address"}</CardTitle>
                 </CardHeader>
-                <CardContent >
+                <CardContent>
                     <Form {...form}>
                         <form
                             onSubmit={form.handleSubmit(onSubmit)}

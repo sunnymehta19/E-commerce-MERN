@@ -5,6 +5,8 @@ import { Button } from '../ui/button'
 import { Badge } from '../ui/badge';
 import { editProduct, fetchAllProduct } from '@/store/admin-slice/productSlice';
 import { useDispatch } from 'react-redux';
+import { FaEdit } from "react-icons/fa";
+import { MdDelete } from "react-icons/md";
 
 const AdminProductTile = ({
     product,
@@ -36,14 +38,13 @@ const AdminProductTile = ({
             <Card className="w-full max-w-sm mx-auto p-0  hover:shadow-xl transition-shadow">
                 <div>
                     <div className="relative ">
-                        
-                            <img
-                                src={product?.image}
-                                alt={product?.title}
-                                className="w-full h-[240px] md:h-[300px] object-cover rounded-t-lg"
-                            // className='w-full h-[180px] md:h-[220px] object-center rounded-t-lg'
-                            />
-                        
+
+                        <img
+                            src={product?.image}
+                            alt={product?.title}
+                            className="w-full h-[240px] md:h-[300px] object-cover rounded-t-lg"
+                        />
+
                         {
                             product?.totalStock === 0 ? (
                                 <Badge className="absolute top-2 left-2 bg-red-500 hover:bg-red-600">
@@ -75,7 +76,9 @@ const AdminProductTile = ({
                                 ) : null}
                             </div>
                         </CardContent>
-                        <CardFooter className="flex flex-wrap gap-2 justify-between items-center pb-3 px-3">
+                        <CardFooter className="flex flex-nowrap gap-2 justify-between items-center pb-3 px-3">
+
+
                             <Button
                                 size='sm'
                                 className="cursor-pointer"
@@ -85,48 +88,54 @@ const AdminProductTile = ({
                                     setSelectedProduct(product);
                                 }}
                             >
-                                Edit
+                                <FaEdit />
                             </Button>
 
                             <Button
                                 size="sm"
                                 variant={product?.isFeatured ? "default" : "outline"}
-                                className="cursor-pointer"
-                                onClick={handleToggleFeatured}
+                                className="cursor-pointer text-xs sm:text-sm px-2 sm:px-3 whitespace-nowrap"
                             >
-                                {product?.isFeatured ? "Featured" : "Make Featured"}
+                                <span className="sm:hidden">
+                                    {product?.isFeatured ? "Feat." : "Feature"}
+                                </span>
+                                <span className="hidden sm:inline">
+                                    {product?.isFeatured ? "Featured" : "Make Featured"}
+                                </span>
                             </Button>
 
-                            <AlertDialog>
-                                <AlertDialogTrigger asChild>
-                                    <Button
-                                        size='sm'
-                                        className="cursor-pointer">
-                                        Delete
-                                    </Button>
-                                </AlertDialogTrigger>
+                            <div className="">
+                                <AlertDialog>
+                                    <AlertDialogTrigger asChild>
+                                        <Button
+                                            size='sm'
+                                            className="cursor-pointer">
+                                            <MdDelete />
+                                        </Button>
+                                    </AlertDialogTrigger>
 
-                                <AlertDialogContent>
-                                    <AlertDialogHeader>
-                                        <AlertDialogTitle>
-                                            Are you absolutely sure?
-                                        </AlertDialogTitle>
-                                        <AlertDialogDescription>
-                                            This action cannot be undone. This will permanently delete
-                                            this product.
-                                        </AlertDialogDescription>
-                                    </AlertDialogHeader>
+                                    <AlertDialogContent>
+                                        <AlertDialogHeader>
+                                            <AlertDialogTitle>
+                                                Are you absolutely sure?
+                                            </AlertDialogTitle>
+                                            <AlertDialogDescription>
+                                                This action cannot be undone. This will permanently delete
+                                                this product.
+                                            </AlertDialogDescription>
+                                        </AlertDialogHeader>
 
-                                    <AlertDialogFooter>
-                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                        <AlertDialogAction
-                                            onClick={() => handleDelete(product._id)}
-                                        >
-                                            Yes, Delete
-                                        </AlertDialogAction>
-                                    </AlertDialogFooter>
-                                </AlertDialogContent>
-                            </AlertDialog>
+                                        <AlertDialogFooter>
+                                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                            <AlertDialogAction
+                                                onClick={() => handleDelete(product._id)}
+                                            >
+                                                Yes, Delete
+                                            </AlertDialogAction>
+                                        </AlertDialogFooter>
+                                    </AlertDialogContent>
+                                </AlertDialog>
+                            </div>
 
                         </CardFooter>
                     </div>

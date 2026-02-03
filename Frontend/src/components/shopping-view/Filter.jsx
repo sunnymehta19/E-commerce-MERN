@@ -24,7 +24,7 @@ const filterOptions = {
 
 const ProductFilter = ({ filters, handleFilter }) => {
     return (
-        <div className="bg-background rounded-lg shadow-sm h-fit">
+        <div className="bg-background lg:rounded-lg lg:shadow-sm h-fit">
             <div className="p-4 border-b">
                 <h2 className="text-lg font-extrabold">Filters</h2>
             </div>
