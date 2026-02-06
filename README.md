@@ -43,6 +43,7 @@ It provides a modern shopping experience with authentication, product management
 - User registration and login with JWT authentication
 - Secure session handling using HTTP-only cookies
 - Browse all available products
+- Filter products by category and brand
 - View detailed product information
 - Add products to cart
 - Update product quantity or remove items from cart
